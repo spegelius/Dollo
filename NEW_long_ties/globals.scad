@@ -53,4 +53,11 @@ girl_height=obj_leg;
 The Y is so normal that all of those global variables at the top should change all of the setting in it, this section is set her incase there are variables set in the future development of this project.
 */
 
+// stepper
+motor_side_length = 43.2;
+motor_bolt_hole_distance = 31;
+motor_center_hole = 23;
 
+// bolts etc.
+bolt_hole_dia = 3.2;
+bolt_head_hole_dia = 5.8;
