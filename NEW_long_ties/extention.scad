@@ -6,26 +6,26 @@ support = true;
 //max is however large your printer can print
 units = 4;
 
-module extention(){
+module extention(units=2){
 	
 	module added(){
 			translate([0,0,0]) cube([30,30*units,30]);
 	}
 
 	module subtracted(){
-	translate([15,0,15]) rotate([0,45,0]) tie_end();
-	translate([15,units*30,15]) rotate([0,45,0]) rotate([0,0,180]) tie_end();
-	translate([15,15,15]) rotate([90,0,0]) cylinder(h=5000, d= metal_rod_size, center=true);
+        translate([15,0,15]) rotate([0,45,0]) tie_end();
+        translate([15,units*30,15]) rotate([0,45,0]) rotate([0,0,180]) tie_end();
+        translate([15,15,15]) rotate([90,0,0]) cylinder(h=5000, d= metal_rod_size, center=true);
 
-	for (y = [-1:units-2]) // two iterations, z = -1, z = 1
-	{
+        for (y = [-1:units-2]) // two iterations, z = -1, z = 1
+        {
 			translate([15, (y*30)+15, 15]){
-			for (r = [0:4]) // two iterations, z = -1, z = 1
-			{
-				rotate([0,r*90,0]) translate([0,15,15]) rotate([-90,0,0])male_dovetail(height=30);
-			}
-		}
-	}
+                for (r = [0:4]) // two iterations, z = -1, z = 1
+                {
+                    rotate([0,r*90,0]) translate([0,15,15]) rotate([-90,0,0])male_dovetail(height=30);
+                }
+            }
+        }
 
 	} //subtracted
 	difference(){
@@ -43,8 +43,8 @@ if (support==true)
 	translate([30,-30,5/2]) cylinder(h=5, d=6, center=true);
 }
 
-module extention_finished(){
-		rotate([90,0,0]) extention();
+module extention_finished(units=units){
+		rotate([90,0,0]) extention(units);
 }
 
 extention_finished();
