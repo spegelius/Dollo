@@ -103,8 +103,8 @@ module y_mount_taken(){
 		translate([-70,-30,-5]) cube([50,50,50]);
 		translate([-30,-70,-5]) cube([50,50,50]);
 
-		translate([0,0,-5]) cylinder(d=23, h=20);
-        translate([hole_length,hole_length,-5]) cylinder(d=23, h=20);
+		translate([0,0,-5]) cylinder(d=motor_center_hole, h=20);
+        translate([hole_length,hole_length,-5]) cylinder(d=motor_center_hole, h=20);
 
 		#rotate([90,0,-45]) translate([-8,-3,-55+tail_depth]) male_dovetail(height=30);
 		#rotate([90,0,-45]) translate([8,-3,-55+tail_depth]) male_dovetail(height=30);
