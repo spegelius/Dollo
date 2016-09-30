@@ -11,17 +11,21 @@ radius = 37;
 $fn = 40;
 tooth_depth_twist = 2;
 mirror = true;
-mm_per_tooth_gears    = 9;
-pressure_angle_gears  = 28;
+//mm_per_tooth_gears    = 9;
+//pressure_angle_gears  = 28;
+mm_per_tooth_gears    = 4;
+pressure_angle_gears  = 24;
+
 twist_height_units = 3;
 ///////////////////// FOCUS ON THIS NOW //////////////////////////////
 
 
 module frame(){
-    translate([-pillar_space/2,-pillar_space/2,0]) cube([30,30,30], center=true);
-    translate([pillar_space/2,pillar_space/2,0]) cube([30,30,30], center=true);
-    translate([-pillar_space/2,pillar_space/2,0]) cube([30,30,30], center=true);
-    translate([pillar_space/2,-pillar_space/2,0]) cube([30,30,30], center=true);
+    side = pillar_space/2 + 15;
+    translate([-side,-side,0]) cube([30,30,30], center=true);
+    translate([side,side,0]) cube([30,30,30], center=true);
+    translate([-side,side,0]) cube([30,30,30], center=true);
+    translate([side,-side,0]) cube([30,30,30], center=true);
 }
 //frame();
 
@@ -43,22 +47,33 @@ module pins(height=10, z=0, d=5){
 }
 
 module gear_one(hole_diameter_gears=5.5){
-    translate([0,0,thickness_gears]) mirror([0,0,1]) gear(mm_per_tooth_gears,12,thickness_gears,hole_diameter_gears,twist_gears);
-    gear(mm_per_tooth_gears,12,thickness_gears,hole_diameter_gears,twist_gears);
+    teeth=26;
+    translate([0,0,thickness_gears]) mirror([0,0,1]) gear(mm_per_tooth_gears,teeth,thickness_gears,hole_diameter_gears,twist_gears);
+    gear(mm_per_tooth_gears,teeth,thickness_gears,hole_diameter_gears,twist_gears);
     translate([0,4.5,thickness_gears/2]) cube([5,5,thickness_gears*2], center=true);
 }
 		
-		
+module gear_one_with_extra_body(hole_diameter_gears=5.5) {
+    gear_one(hole_diameter_gears);
+    difference() {
+        translate([0,0,thickness_gears]) cylinder(d=15, h=5, $fn=20);
+        translate([0,0,thickness_gears])cylinder(d=hole_diameter_gears, h=5, $fn=20);
+    }
+    translate([0,4.5,thickness_gears+2.5]) cube([5,5,5], center=true);
+}
 		//test
 
 		//end test
 		
-		
+module gear_large_gear() {
+    gear(mm_per_tooth_gears,52,thickness_gears+8,hole_diameter_gears,twist_gears);
+}
+
 module gear_large() {
 	 difference(){
 		union(){
 			difference(){
-				translate([0,0,0]) gear(mm_per_tooth_gears,22,thickness_gears+8,hole_diameter_gears,twist_gears);
+				gear_large_gear();
 				translate([15,-4,4]) linear_extrude(h=20) text("", font="fontawesome");
 			}
 			intersection(){
@@ -75,17 +90,18 @@ module gear_large() {
 	}
 }
 
-module middle_gear(){         
-    gear(mm_per_tooth_gears,12,thickness_gears,hole_diameter_gears,twist_gears);
-    mirror([0,0,1]) translate([0,0,thickness_gears]) gear(mm_per_tooth_gears,12,thickness_gears,hole_diameter_gears,twist_gears);
+module middle_gear(){
+    teeth = 44;    
+    gear(mm_per_tooth_gears,teeth,thickness_gears,hole_diameter_gears,twist_gears);
+    mirror([0,0,1]) translate([0,0,thickness_gears]) gear(mm_per_tooth_gears,teeth,thickness_gears,hole_diameter_gears,twist_gears);
 }
 
 module reverse_gear_one(){         
-    gear(mm_per_tooth_gears,6,thickness_gears*2,hole_diameter_gears,twist_gears);
+    gear(mm_per_tooth_gears,16,thickness_gears*2,hole_diameter_gears,twist_gears);
 }
 
 module reverse_gear_two(){         
-	gear(mm_per_tooth_gears,10,thickness_gears*2,hole_diameter_gears,twist_gears);
+	gear(mm_per_tooth_gears,25,thickness_gears*2,hole_diameter_gears,twist_gears);
 }
 
 module scaled_middle_gear(scaling=1){
@@ -117,7 +133,7 @@ module twist_large() {
             twist_large_extrude();
             //union(){
             //    translate([0,0,3]) cylinder(d=3.5, h=50, center=true);
-            //    translate([0, 0, 0]) pins(height=20, d=3.5 );
+            //    #translate([0, 0, 0]) pins(height=20, d=3.5 );
             //}
         }
         cylinder(r=radius-2, h=10*3);
@@ -132,7 +148,7 @@ module twist_large() {
     }
 	difference(){
 		cylinder(h=10*2, r=radius-2);
-		//rotate([180,0,0])translate([20,-4,-3]) linear_extrude(h=5) text("", font="fontawesome");
+		rotate([180,0,0])translate([20,-4,-3]) linear_extrude(h=5) text("", font="fontawesome");
 	}
 }
 
@@ -144,12 +160,33 @@ module twist_large() {
 //twist_large();
 //middle_gear();
 //gear_one();
+//gear_one_with_extra_body();
 
 // for finding out gear's diameter
 //difference() {
-//    translate([0,0,-20]) cylinder(d=77.7, h=20, $fn=120);
+//    translate([0,0,-20]) cylinder(d=63.7, h=20, $fn=120);
 //    translate([0,0,-20]) cylinder(d=3, h=30);
 //}
 
+module bed_layout() {
+    module motor(){
+        #translate([43.84/2,0]) 		circle(d=3, $fn=20);
+        #translate([-43.84/2,0]) 		circle(d=3, $fn=20);
+        #translate([0,43.84/2]) 		circle(d=3, $fn=20);
+        #translate([0,-43.84/2]) 		circle(d=3, $fn=20);
+    }
+    
+    frame();
+    rotate([0,0,7]) gear_one();
+    //rotate([0,0,45]) 
+    translate([45,0,2]) rotate([0,0,4]) middle_gear();
+    rotate([0,0,180]) translate([45,0,2]) rotate([0,0,4]) middle_gear();
+    rotate([0,0,45]) translate([84.2,0,0]) rotate([0,0,6]) gear_large_gear();
+    rotate([0,0,135]) translate([84.2,0,0]) rotate([0,0,2]) gear_large_gear();
+    rotate([0,0,225]) translate([84.2,0,0]) rotate([0,0,2]) gear_large_gear();
+    rotate([0,0,315]) translate([84.2,0,0]) rotate([0,0,1]) gear_large_gear();
+    rotate([0,0,45]) motor();
+}
 
+//bed_layout();
 
