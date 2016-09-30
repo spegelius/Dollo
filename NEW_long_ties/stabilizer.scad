@@ -1,17 +1,24 @@
+$fn=40;
+
 module master(){
+    
+    // tower
 	hull(){
-		rotate([90,0,0]) translate([-35,-1,-20]) sphere(r=9);
-		rotate([90,0,0]) translate([-35,-1,-9]) sphere(r=9);
+		translate([-23.75,-1,26]) sphere(r=7);
+		translate([-23.75,-1,16]) sphere(r=7);
+        translate([-23.75,-1,0]) cylinder(r=4);
+        translate([-28,-1,0]) cylinder(d=12);
 	}
-	rotate([0,45,0]) translate([-33,0,-25]) cube([5,20,50]);
+    translate([-35,-5,0]) cube([10,43,5]);
+    
 	difference(){
-		rotate([0,45,0]) translate([-33,0,-0]) cube([35,5,30]);
-		union(){
-			rotate([90,0,0]) translate([0,30,0]) cylinder(h=11, d=3.5, center=true, $fn=20);
-			#rotate([90,0,0]) translate([0,30,-8]) cylinder(h=11, d=8, center=true, $fn=20);
+		translate([-25,20,0]) cube([25,18,5]);
+		hull(){
+			translate([-5.5,25,0]) cylinder(h=11, d=3.5, center=true, $fn=20);
+            translate([-5.5,31,0]) cylinder(h=11, d=3.5, center=true, $fn=20);
 		}
 	}
 }
 
-mirror([1,1,0]) rotate([90,0,0]) master();
-rotate([90,0,0]) master();
+mirror([1,0,0]) master();
+master();

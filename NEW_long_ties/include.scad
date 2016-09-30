@@ -149,7 +149,7 @@ module dovetail_3d(max_width=11, min_width=5, depth=5, height=30) {
 
 module dovetail_2d(max_width=11, min_width=5, depth=5) {
 	angle=atan((max_width/2-min_width/2)/depth);
-	echo("angle: ", angle);
+	//echo("angle: ", angle);
 	polygon(paths=[[0,1,2,3,0]], points=[[-min_width/2,0], [-max_width/2,depth], [max_width/2, depth], [min_width/2,0]]);
 }
 

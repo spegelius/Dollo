@@ -1,4 +1,7 @@
 
+include <globals.scad>;
+include <include.scad>;
+
 // case size settings. work in progress. currently only smallest supported
 case_size=0; //small, i.e. one extention per side
 //case_size=1; //large, i.e. two extention per side
@@ -7,8 +10,8 @@ case_size=0; //small, i.e. one extention per side
 gearOne = 39.9;
 // print the rev_gear_two
 gearMiddle = case_size==0 ? 35.5 : gearOne;
-gearLarge = 68.4;
-tip_size = 5.5;
+gearLarge = 68.75;
+tip_size = 5.05;
 gear_middle_hole_offset = gearOne/2 + gearMiddle/2 - tip_size;
 gear_large_hole_offset = gear_middle_hole_offset + gearMiddle/2 + gearLarge/2 - tip_size;
 
@@ -40,9 +43,6 @@ echo (gear_large_hole_offset);
 // piece dimensions
 center_width = 77;
 
-bolt_hole_dia = 3.2;
-bolt_head_hole_dia = 5.8;
-
 height = 12;
 arm_width = 11;
 arm_length = 105 - arm_width;;
@@ -51,8 +51,6 @@ arm_hole_width = arm_width+0.2;
 arm_hole_height = height/2;
 
 extra_corner_offset = 4;
-
-motor_side_length = 43;
 
 module nut() {
     hull() {
@@ -106,7 +104,7 @@ module gear_arm_holes(){
 }
 
 module motor_holes(){
-    cylinder(d=25, h=height);
+    cylinder(d=motor_center_hole, h=height);
     translate([43.84/2,0]) 		cylinder(d=bolt_hole_dia, h=height, $fn=20);
     translate([-43.84/2,0]) 	cylinder(d=bolt_hole_dia, h=height, $fn=20);
     translate([0,43.84/2]) 		cylinder(d=bolt_hole_dia, h=height, $fn=20);
