@@ -61,3 +61,7 @@ motor_center_hole = 23;
 // bolts etc.
 bolt_hole_dia = 3.2;
 bolt_head_hole_dia = 5.8;
+
+
+// priner slop
+slop = 0.15;
