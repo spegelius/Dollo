@@ -1,3 +1,5 @@
+include <globals.scad>;
+
 //////////////////      END SECTION       //////////////////
 
 	module added_pins(){
@@ -182,3 +184,42 @@ module bow_support(){
 		}
 	}
 	}
+
+
+module nut(h=2.4) {
+    hull() {
+        cylinder(d = 6.5, h=h, $fn=6);
+        translate([0,0,2.4]) cylinder(d = 3.2, h=1.2, $fn=20);
+    }
+}
+
+module elongated_nut() {
+    hull() {
+        translate([-2,0,0]) nut();
+        translate([2,0,0]) nut();
+    }
+}
+
+module motor_shaft_hole(h=10) {
+    difference() {
+        cylinder(d=motor_shaft_hole_dia, h=h);
+        translate([0,4.5,h/2]) cube([5,5,h], center=true); 
+    }
+}
+
+module motor_plate(h=5) {
+    difference () {
+        translate([0,0,h/2]) cube([motor_side_length,motor_side_length,h], center=true);
+            
+        translate([0,0,-.5]) cylinder(d=motor_center_hole, h=h+1);
+
+        translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
+        translate([-motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
+        translate([motor_bolt_hole_distance/2,-motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
+        translate([-motor_bolt_hole_distance/2,-motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
+    }
+}
+
+//translate([50,50]) nut();
+//translate([50,50]) elongated_nut();
+//translate([50,47.2]) cube([5.6, 5.6, 2.4]);

@@ -52,26 +52,6 @@ arm_hole_height = height/2;
 
 extra_corner_offset = 4;
 
-module nut() {
-    hull() {
-        cylinder(d = 6.5, h=2.4, $fn=6);
-        translate([0,0,2.4]) cylinder(d = 3.2, h=1.2, $fn=20);
-    }
-}
-
-module elongated_nut() {
-    hull() {
-        translate([-2,0,0]) nut();
-        translate([2,0,0]) nut();
-    }
-}
-
-
-
-//translate([50,50]) nut();
-//translate([50,50]) elongated_nut();
-//translate([50,47.2]) cube([5.6, 5.6, 2.4]);
-
 module gear_middle_hole(dia=3, height=height) {
     translate([gear_middle_hole_offset,0,0]) {
         hull() {

@@ -10,15 +10,13 @@ use <extention.scad>;
 
 units = 2;
 
-lifter_rod_diam = 9.86;
-
-hole_threaded_rod = lifter_rod_diam+2*slop;
-
 lifter_block_size = 30;
 offcenter = 0;
 
 z_lifter_hole = 10 + 2*slop;
 z_lifter_arm = 10;
+
+$fn=60;
 
 module corner() {
     cube([30,30,100]);
@@ -39,32 +37,24 @@ translate([0,0,-50]) %difference() {
 // motor
 module motor_mount() {
     difference() {
-        translate([0,0,2.5]) cube([motor_side_length,motor_side_length,5], center=true);
-        
-        translate([0,0,-.5]) cylinder(d=motor_center_hole, h=7);
-        
-        translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=6, $fn=20);
-        translate([-motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=6, $fn=20);
-        translate([motor_bolt_hole_distance/2,-motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=6, $fn=20);
-        translate([-motor_bolt_hole_distance/2,-motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=6, $fn=20);
-        
+        mheight = 8;
+        motor_plate(mheight);
                 // nut indentations
-        translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,3]) cylinder(d=bolt_head_hole_dia, h=3, $fn=20);
-        translate([-motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,3]) cylinder(d=bolt_head_hole_dia, h=3, $fn=20);
-        translate([-motor_bolt_hole_distance/2,-motor_bolt_hole_distance/2,3]) cylinder(d=bolt_head_hole_dia, h=3, $fn=20);
-        translate([motor_bolt_hole_distance/2,-motor_bolt_hole_distance/2,3]) cylinder(d=bolt_head_hole_dia, h=3, $fn=20);
+        translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,mheight-2]) cylinder(d=bolt_head_hole_dia, h=3, $fn=20);
+        translate([-motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,mheight-2]) cylinder(d=bolt_head_hole_dia, h=3, $fn=20);
+        translate([-motor_bolt_hole_distance/2,-motor_bolt_hole_distance/2,mheight-2]) cylinder(d=bolt_head_hole_dia, h=3, $fn=20);
+        translate([motor_bolt_hole_distance/2,-motor_bolt_hole_distance/2,mheight-2]) cylinder(d=bolt_head_hole_dia, h=3, $fn=20);
     }
 }
 
+module plate(length=40, height=10) {
+    hull() {
+        translate([0,0,0]) cube([30,length,height/2]);
+        translate([7.5,0,height/2]) cube([15,length,height/2]);
+    }
+}
 
 module leg() {
-    
-    module plate() {
-        hull() {
-            translate([0,20,0]) cube([30,40+motor_side_length/2,5]);
-            translate([7.5,20,5]) cube([15,40+motor_side_length/2,5]);
-        }
-    }
     
     module _leg() {
         translate([0,0,-19.5]) difference() {
@@ -74,8 +64,8 @@ module leg() {
     }
     difference() {
         union() {
-            plate();
-            translate([0, 30, 0]) rotate([0,0,-90]) plate();
+            translate([0, 20, 0]) plate(40+motor_side_length/2);
+            translate([20, 30, 0]) rotate([0,0,-90]) plate(40+motor_side_length/2);
 
             translate([0,30]) _leg();
         }
@@ -87,19 +77,27 @@ module leg() {
 module leg_with_motor() {
     module support() {
         linear_extrude(height=5, convexity=2)
-        polygon(points=[[0,0],[30,0],[30,10],[20,10]]);
+        polygon(points=[[0,0],[45,0],[45,30],[40,30], [20,20]]);
     }
     
     union() {
         leg();
-        translate([-motor_side_length/2, 28.4+motor_side_length/2+5, 5]) rotate([180,0,0]) motor_mount();
-        translate([-20,33.4,0]) rotate([90,0,0]) support();
-        translate([-20,38.4+motor_side_length,0]) rotate([90,0,0]) support();
+        translate([-motor_side_length/2, 28.4+motor_side_length/2+5, 8]) rotate([180,0,0]) motor_mount();
+        translate([-40,33.4,0]) rotate([90,0,0]) support();
+        translate([-40,38.4+motor_side_length,0]) rotate([90,0,0]) support();
+        translate([0,33.4,0]) cube([5,motor_side_length,30]);
+        translate([45,33.4+motor_side_length,0]) rotate([90,0,180])  difference() {
+            support();
+            translate([25,0,0]) cube([10,10,5]);
+            translate([0,0,0]) cube([15,20,5]);
+        }
+        
     }
 }
+//leg_with_motor();
 
 
-module top_guide() {
+module rod_guide_top() {
     difference() {
         cube([30,50,10]);
         #translate([15,50,0]) rotate([90,0,0]) male_dovetail(50);
@@ -110,10 +108,41 @@ module top_guide() {
             translate([motor_side_length/2+30,9,0]) cylinder(d=18,h=10, $fn=30);
             translate([30,0,0]) cube([10,18,10]);
         }
-        translate([motor_side_length/2+30,9,-0.5]) cylinder(d=hole_threaded_rod,h=11, $fn=30);
+        translate([motor_side_length/2+30,9,-0.5]) cylinder(d=hole_threaded_rod,h=11);
     }
 }
 
+module rod_guide_side() {
+    difference() {
+        union() {
+            // side
+            translate([-20,-8,0]) cube([20,28.4+motor_side_length/2+6,10]);
+            // hole
+            difference() {
+                hull() {
+                    translate([-(motor_side_length/2),28.4+motor_side_length/2+5,0]) cylinder(d=18,h=10);
+                    translate([-10,28.4+motor_side_length/2-4,0]) cube([10,18,10]);
+                }
+                translate([-(motor_side_length/2-slop),28.4+motor_side_length/2+5+slop,0]) cylinder(d=hole_threaded_rod,h=10, $fn=30);
+            }
+            
+            // hull
+            rotate([90,0,0]) plate(30, 8);
+            translate([0,30,0]) rotate([90,0,-90]) plate(30, 8);
+            translate([30,30,0]) rotate([90,0,-180]) plate(30, 8);
+            linear_extrude(height=30) polygon(points=[[0,0], [7.5,0], [7.5,-8], [-8,-8], [-8,7.5], [0,7.5]]);
+            linear_extrude(height=30) polygon(points=[[0,22.5], [-8,22.5], [-8,38], [7.5,38], [7.5,30], [0,30]]);
+
+        }
+        #translate([15,0,40]) rotate([180,0,0]) male_dovetail(50);
+        #translate([0,15,40]) rotate([180,0,-90]) male_dovetail(50);
+        #translate([15,29.999,40]) rotate([180,0,-180]) male_dovetail(50);
+        #translate([15,25,0]) rotate([90,0,-180]) male_dovetail(20);
+    }
+
+
+}
+//rod_guide_side();
 
 module z_threads() {
     
@@ -205,25 +234,48 @@ module view_proper() {
     translate([120, 120, 0]) rotate([0,0,180]) leg_with_motor();
     translate([120, -120, 0])rotate([0,0,90]) leg();
     translate([-120, 120, 0])rotate([0,0,270]) leg();
-    translate([90,120-(28.4+motor_side_length/2+5)+9,-100]) rotate([180,0,0]) top_guide();
+    translate([90,120-(28.4+motor_side_length/2+5)+9,-100]) rotate([180,0,0]) rod_guide_top();
     translate([90+motor_side_length/2+30,120-(28.4+motor_side_length/2+5),-100]) %cylinder(d=lifter_rod_diam, h=150);
     
     z_x_pos = 90+motor_side_length/2+30 + groove_height/2+3.5;
     translate([z_x_pos,120-(28.4+motor_side_length/2+5),-40]) rotate([180,0,90]) z_lifter();
     translate([z_x_pos,88-(28.4+motor_side_length/2+5),-45]) rotate([180,0,270])z_lifter_arm();
     translate([z_x_pos,109-(28.4+motor_side_length/2+5),-45]) rotate([180,0,270])z_lifter_arm2();
+    
+    translate([120,120,-90]) rotate([0,0,180]) rod_guide_side();
+    translate([120,120,-1]) rotate([0,180,0]) mirror([0,1,0]) rod_guide_side();
 }
 
-module view_parts() {
-    translate([-50, -50, 0]) leg_with_motor();
-    leg();
-    translate([50,50]) top_guide();
-    translate([-20,40]) rotate([-90,0,0]) z_lifter();
-    translate([-20,75]) z_lifter_arm();
-    translate([-35,75]) z_lifter_arm2();
+
+module view_parts(part=0) {
+    
+    if (part == 0) {
+        translate([-50, -50, 0]) leg_with_motor();
+        leg();
+        translate([50,50]) rod_guide_top();
+        translate([-20,40]) rotate([-90,0,0]) z_lifter();
+        translate([-20,75]) z_lifter_arm();
+        translate([-35,75]) z_lifter_arm2();
+        translate([-75,85]) rod_guide_side();
+        translate([-130,115]) mirror([0,1,0]) rod_guide_side();
+    } else if (part == 1) {
+        leg_with_motor();
+    } else if (part == 2) {
+        leg();
+    } else if (part == 3) {
+        rod_guide_top();
+    } else if (part == 4) {
+        rod_guide_side();
+    } else if (part == 5) {
+        z_lifter();
+    } else if (part == 6) {
+        z_lifter_arm();
+    } else if (part == 7) {
+        z_lifter_arm2();
+    }
 }
 
-view_parts();
+view_parts(0);
 //view_proper();
 
 //z_lifter_arm();

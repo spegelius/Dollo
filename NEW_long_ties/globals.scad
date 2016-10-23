@@ -4,6 +4,9 @@ Some of the setting are not mm but at variables that you can set, such as 2*x=2x
 I will try to specify when things are variables and not exact measurements.
 */
 
+// printer slop
+slop = 0.15;
+
 obj_leg = 30;
 leg_length = 5.5;
 small_number = 0.001;
@@ -57,11 +60,14 @@ The Y is so normal that all of those global variables at the top should change a
 motor_side_length = 43.2;
 motor_bolt_hole_distance = 31;
 motor_center_hole = 23;
+motor_shaft_dia = 5;
+motor_shaft_hole_dia = 5+2*slop;
 
 // bolts etc.
 bolt_hole_dia = 3.2;
 bolt_head_hole_dia = 5.8;
 
 
-// priner slop
-slop = 0.15;
+// threaded rod
+lifter_rod_diam = 9.86;
+hole_threaded_rod = lifter_rod_diam+2*slop;

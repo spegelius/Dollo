@@ -1,4 +1,5 @@
 include <publicDomainGearV1.1.scad>;
+include <include.scad>;
 
 
 ///////////////////// FOCUS ON THIS NOW //////////////////////////////
@@ -46,11 +47,15 @@ module pins(height=10, z=0, d=5){
     translate([-pin_position,-pin_position,z]) cylinder(h=height, d=d);
 }
 
-module gear_one(hole_diameter_gears=5.5){
+module gear_one(hole_diameter_gears=1.5){
     teeth=26;
-    translate([0,0,thickness_gears]) mirror([0,0,1]) gear(mm_per_tooth_gears,teeth,thickness_gears,hole_diameter_gears,twist_gears);
-    gear(mm_per_tooth_gears,teeth,thickness_gears,hole_diameter_gears,twist_gears);
-    translate([0,4.5,thickness_gears/2]) cube([5,5,thickness_gears*2], center=true);
+    difference() {
+        union() {
+            translate([0,0,thickness_gears]) mirror([0,0,1]) gear(mm_per_tooth_gears,teeth,thickness_gears,hole_diameter_gears,twist_gears);
+            gear(mm_per_tooth_gears,teeth,thickness_gears,hole_diameter_gears,twist_gears);
+        }
+        translate([0,0,-2]) motor_shaft_hole(thickness_gears*3);
+    }
 }
 		
 module gear_one_with_extra_body(hole_diameter_gears=5.5) {
