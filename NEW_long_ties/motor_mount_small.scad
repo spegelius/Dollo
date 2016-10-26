@@ -7,6 +7,7 @@ include <include.scad>;
 
 frame_width = 35.5;
 tail_depth = 11;
+rack_height = 11.5;
 mount_max = 62.5;
 wabble = 1.5;
 not_tooth_gap = 0;
@@ -20,43 +21,46 @@ hole_length = 0.8;
 
 //$fn=220;
 
-diameter = 3.5;
+// for rounded cube
+diameter = 2;
 
-module rounded_cube(width,depth,height){
-    hull(){
-        translate([width/2-diameter/2,depth/2-diameter/2,height/2-diameter/2]) sphere(d=diameter);
-        translate([width/2-(diameter/2),depth/2-(diameter/2),-height/2+(diameter/2)]) sphere(d=diameter);
-        translate([-width/2+diameter/2,depth/2-diameter/2,height/2-diameter/2]) sphere(d=diameter);
-        translate([-width/2+(diameter/2),depth/2-(diameter/2),-height/2+(diameter/2)]) sphere(d=diameter);
-        
-        translate([width/2-diameter/2,-depth/2+diameter/2,height/2-diameter/2]) sphere(d=diameter);
-        translate([width/2-(diameter/2),-depth/2+(diameter/2),-height/2+(diameter/2)]) sphere(d=diameter);
-        translate([-width/2+diameter/2,-depth/2+diameter/2,height/2-diameter/2]) sphere(d=diameter);
-        translate([-width/2+(diameter/2),-depth/2+(diameter/2),-height/2+(diameter/2)]) sphere(d=diameter);
-    }
-}    
 //rounded_cube(x,y,z,diameter);
 
 
 module y_mount_added(){    
-    
+    //base
     translate([0,2.25-2.25+rack_gap/2,-1]) rounded_cube(depth = 50+rack_gap*2, width = frame_width+15+1, height=4, center=true);
     
-	translate([0,frame_width-15.5+rack_gap,2.5]) rounded_cube(height = 5, width = 50, depth = 11, diameter = 3.5);
+    // lower slide
+    slide_depth = 11;
+    slide_pos_y = frame_width-15+rack_gap;
+	translate([0,slide_pos_y,2.5]) rounded_cube(height = 5, width = 50, depth = slide_depth, diameter = 3.5);
 //towers
-    echo ((17.5+4.25)/2);
-	translate([0-21,-25.75,0.625]) cube([42,18,tower_height]);
-	translate([(32-21-4)+18/2,(11-21+wabble)+15/2,(17.5+4.25)/2]) rounded_cube(18,15,tower_height);
-	translate([(-21-4)+25/2,    (11-21+wabble)+15/2,(17.5+4.25)/2]) rounded_cube(25,15,tower_height);
+    //echo ((17.5+4.25)/2);
 
-	//#translate([17,(not_tooth_gap/2)+5,2.5]) rounded_cube(height = 4, width = 15, depth = not_tooth_gap, diameter = 2);
+    //top tower
+	translate([0-21,-25.75,0.625]) cube([42,18,tower_height]);
+    
+    tower_pos_y = slide_pos_y - slide_depth/2 - 15/2 - rack_height;
+
+    // right tower
+	translate([(32-21-4)+19/2,tower_pos_y,(17.5+4.25)/2]) rounded_cube(19,15,tower_height);
+    translate([(32-21-4)+19-4.5,tower_pos_y+15/2-5.4,tower_height]) cylinder(d=7,h=2);
+    
+    // left tower
+    difference() {
+        translate([(-21-4)+24/2,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height);
+        translate([(-21-4)+3.5,tower_pos_y+15/2-5.4,tower_height-1.5]) cylinder(d=7.25,h=2.5);
+    }
+
+    //translate([17,(not_tooth_gap/2)+5,2.5]) rounded_cube(height = 4, width = 15, depth = not_tooth_gap, diameter = 2);
 	//#translate([-17,(not_tooth_gap/2)+5,2.5]) rounded_cube(height = 4, width = 15, depth = not_tooth_gap, diameter = 2);
 }
 
 module bolt_hole() {
     hull() {
-        cylinder(d=3.5, h=70);
-        translate([hole_length,hole_length,0]) cylinder(d=3.5, h=70);
+        cylinder(d=bolt_hole_dia, h=70);
+        translate([hole_length,hole_length,0]) cylinder(d=bolt_hole_dia, h=70);
     }
 }
 
@@ -95,9 +99,9 @@ module y_mount_taken(){
 
 		//counter sink
 
-        #translate([5.65-21,5.65-21,-3]) bolt_head_hole();
-		#translate([5.65+31-21,5.65-21,-3]) bolt_head_hole();
-		#translate([5.65-21,5.65+31-21,-3]) bolt_head_hole();
+        //#translate([5.65-21,5.65-21,-3]) bolt_head_hole();
+		//#translate([5.65+31-21,5.65-21,-3]) bolt_head_hole();
+		//#translate([5.65-21,5.65+31-21,-3]) bolt_head_hole();
 		#translate([5.65+31-21,5.65+31-21,2.5]) bolt_head_hole();
 
 		translate([-70,-30,-5]) cube([50,50,50]);
