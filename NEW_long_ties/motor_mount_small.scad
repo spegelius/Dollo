@@ -7,7 +7,8 @@ include <include.scad>;
 
 frame_width = 35.5;
 tail_depth = 11;
-rack_height = 11.5;
+rack_height = 12.5;
+rack_slide_height = 8;
 mount_max = 62.5;
 wabble = 1.5;
 not_tooth_gap = 0;
@@ -45,16 +46,17 @@ module y_mount_added(){
 
     // right tower
 	translate([(32-21-4)+19/2,tower_pos_y,(17.5+4.25)/2]) rounded_cube(19,15,tower_height);
-    translate([(32-21-4)+19-4.5,tower_pos_y+15/2-5.4,tower_height]) cylinder(d=7,h=2);
+    translate([(32-21-4)+19-4.5,tower_pos_y+15/2-4.4,tower_height]) cylinder(d=7,h=2);
     
     // left tower
     difference() {
         translate([(-21-4)+24/2,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height);
-        translate([(-21-4)+3.5,tower_pos_y+15/2-5.4,tower_height-1.5]) cylinder(d=7.25,h=2.5);
+        translate([(-21-4)+3.5,tower_pos_y+15/2-4.4,tower_height-1.5]) cylinder(d=7.25,h=2.5);
     }
 
-    //translate([17,(not_tooth_gap/2)+5,2.5]) rounded_cube(height = 4, width = 15, depth = not_tooth_gap, diameter = 2);
-	//#translate([-17,(not_tooth_gap/2)+5,2.5]) rounded_cube(height = 4, width = 15, depth = not_tooth_gap, diameter = 2);
+    slide_size = (rack_height - rack_slide_height) * 2;
+    translate([18,(not_tooth_gap/2)+5,2]) rounded_cube(height = 4, width = 15, depth = slide_size, diameter = 2);
+	translate([-18,(not_tooth_gap/2)+5,2]) rounded_cube(height = 4, width = 15, depth = slide_size, diameter = 2);
 }
 
 module bolt_hole() {
@@ -66,8 +68,8 @@ module bolt_hole() {
 
 module bolt_head_hole() {
     hull() {
-        cylinder(d=6, h=3);
-        translate([hole_length,hole_length,0]) cylinder(d=6, h=3);
+        cylinder(d=6.5, h=3);
+        translate([hole_length,hole_length,0]) cylinder(d=6.5, h=3);
     }
 }
 
@@ -77,14 +79,14 @@ module y_mount_taken(){
 	 ];
 	 
 		 rotate([0,0,-90]) for (a = halign) {
-		   translate([-15, 15,-3]) {
+		   translate([-16, 15,-3]) {
 			 linear_extrude(height = 1) {
 			   text(text = str(text), font = font, size = 8, halign = a[1]);
 			 }
 		   }
 		 }
 		 rotate([0,0,90]) for (a = halign) {
-		   translate([15,15,-3]) {
+		   translate([16,15,-3]) {
 			 linear_extrude(height = 1) {
 			   text(text = str(text), font = font, size = 8, halign = a[1]);
 			 }
@@ -99,9 +101,9 @@ module y_mount_taken(){
 
 		//counter sink
 
-        //#translate([5.65-21,5.65-21,-3]) bolt_head_hole();
-		//#translate([5.65+31-21,5.65-21,-3]) bolt_head_hole();
-		//#translate([5.65-21,5.65+31-21,-3]) bolt_head_hole();
+        #translate([5.65-21,5.65-21,-3]) bolt_head_hole();
+		#translate([5.65+31-21,5.65-21,-3]) bolt_head_hole();
+		#translate([5.65-21,5.65+31-21,-3]) bolt_head_hole();
 		#translate([5.65+31-21,5.65+31-21,2.5]) bolt_head_hole();
 
 		translate([-70,-30,-5]) cube([50,50,50]);
@@ -118,7 +120,7 @@ module y_mount_taken(){
 	}
 }
 
-module motor_mount(){
+module motor_mount( ){
 	difference(){
 		y_mount_added();
 		y_mount_taken();
@@ -133,15 +135,19 @@ module screw_driver(){
 translated_mount();
 }
 
-rotate([0,-90,0]) difference(){
-	screw_driver();
-	translate([-15,0,0]) rotate([0,90,0]) union(){
-		translate([5.65,5.65,-1]) cylinder(d=3.5, h=40);
-		translate([5.65+31,5.65,-1]) cylinder(d=3.5, h=40);
-		translate([5.65,5.65+31,-1]) cylinder(d=9, h=40);
-		translate([5.65+31,5.65+31,-1]) cylinder(d=9, h=40);
+module do_motor_mount() {
+    rotate([0,-90,0]) difference(){
+        screw_driver();
+        translate([-15,0,0]) rotate([0,90,0]) union(){
+            translate([5.65,5.65,-1]) cylinder(d=3.5, h=40);
+            translate([5.65+31,5.65,-1]) cylinder(d=3.5, h=40);
+            translate([5.65,5.65+31,-1]) cylinder(d=9, h=40);
+            translate([5.65+31,5.65+31,-1]) cylinder(d=9, h=40);
 
-		translate([-20,20,15]) rotate([90,0,45]) cylinder(h=70, d=22);
-		translate([20,20,15]) rotate([90,0,-45]) cylinder(h=70, d=22);
-	}
+            translate([-20,20,15]) rotate([90,0,45]) cylinder(h=70, d=22);
+            translate([20,20,15]) rotate([90,0,-45]) cylinder(h=70, d=22);
+        }
+    }
 }
+
+do_motor_mount();
