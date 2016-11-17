@@ -64,7 +64,7 @@ motor_shaft_dia = 5;
 motor_shaft_hole_dia = 5+2*slop;
 
 // bolts etc.
-bolt_hole_dia = 3.2;
+bolt_hole_dia = 3+2*slop;
 bolt_head_hole_dia = 5.8;
 
 m3_nut_side = 5.65;

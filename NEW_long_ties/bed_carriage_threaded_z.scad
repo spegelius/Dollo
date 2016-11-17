@@ -18,21 +18,7 @@ z_lifter_arm = 10;
 
 $fn=60;
 
-module corner() {
-    cube([30,30,100]);
-}
-
-// corners
-%translate([90, -120, -100]) corner();
-%translate([90, 90, -100]) corner();
-%translate([-120, -120, -100]) corner();
-%translate([-120, 90, -100]) corner();
-
-// bed
-translate([0,0,-50]) %difference() {
-    rotate([0,0,45]) cube([210,210,1], center=true);
-    rotate([0,0,45]) cube([190,190,2], center=true);
-}
+frame_mockup();
 
 // motor
 module motor_mount() {
@@ -230,20 +216,20 @@ module z_lifter_arm2() {
 
 //// VIEW
 module view_proper() {
-    translate([-120, -120, 0]) leg_with_motor();
-    translate([120, 120, 0]) rotate([0,0,180]) leg_with_motor();
-    translate([120, -120, 0])rotate([0,0,90]) leg();
-    translate([-120, 120, 0])rotate([0,0,270]) leg();
+    translate([-120, -120, 140]) leg_with_motor();
+    translate([120, 120, 140]) rotate([0,0,180]) leg_with_motor();
+    translate([120, -120, 140])rotate([0,0,90]) leg();
+    translate([-120, 120, 140])rotate([0,0,270]) leg();
     translate([90,120-(28.4+motor_side_length/2+5)+9,-100]) rotate([180,0,0]) rod_guide_top();
-    translate([90+motor_side_length/2+30,120-(28.4+motor_side_length/2+5),-100]) %cylinder(d=lifter_rod_diam, h=150);
+    translate([90+motor_side_length/2+30,120-(28.4+motor_side_length/2+5),-120]) %cylinder(d=lifter_rod_diam, h=250);
     
     z_x_pos = 90+motor_side_length/2+30 + groove_height/2+3.5;
-    translate([z_x_pos,120-(28.4+motor_side_length/2+5),-40]) rotate([180,0,90]) z_lifter();
-    translate([z_x_pos,88-(28.4+motor_side_length/2+5),-45]) rotate([180,0,270])z_lifter_arm();
-    translate([z_x_pos,109-(28.4+motor_side_length/2+5),-45]) rotate([180,0,270])z_lifter_arm2();
+    translate([z_x_pos,120-(28.4+motor_side_length/2+5),80]) rotate([180,0,90]) z_lifter();
+    translate([z_x_pos,88-(28.4+motor_side_length/2+5),75]) rotate([180,0,270])z_lifter_arm();
+    translate([z_x_pos,109-(28.4+motor_side_length/2+5),75]) rotate([180,0,270])z_lifter_arm2();
     
-    translate([120,120,-90]) rotate([0,0,180]) rod_guide_side();
-    translate([120,120,-1]) rotate([0,180,0]) mirror([0,1,0]) rod_guide_side();
+    //translate([120,120,-10]) rotate([0,0,180]) rod_guide_side();
+    translate([120,120,110]) rotate([0,180,0]) mirror([0,1,0]) rod_guide_side();
 }
 
 
@@ -275,8 +261,8 @@ module view_parts(part=0) {
     }
 }
 
-view_parts(0);
-//view_proper();
+//view_parts(0);
+view_proper();
 
 //z_lifter_arm();
 //z_lifter();

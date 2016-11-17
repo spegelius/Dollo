@@ -236,3 +236,38 @@ module rounded_cube(width,depth,height){
 //translate([50,50]) nut();
 //translate([50,50]) elongated_nut();
 //translate([50,47.2]) cube([5.6, 5.6, 2.4]);
+
+module frame_mockup() {
+    module corner(length) {
+        difference() {
+            cube([30,30,length]);
+            translate([15,-0.01,0]) male_dovetail(length);
+            translate([-0.01,15,0]) rotate([0,0,-90]) male_dovetail(length);
+            translate([15,30.01,0]) rotate([0,0,180]) male_dovetail(length);
+            translate([30.01,15,0]) rotate([0,0,90]) male_dovetail(length);
+        }
+    }
+    
+    // corners
+    %translate([90, -120, -100]) corner(240);
+    %translate([90, 90, -100]) corner(240);
+    %translate([-120, -120, -100]) corner(240);
+    %translate([-120, 90, -100]) corner(240);
+    
+    // sides
+    %translate([90, -90, -70]) rotate([-90,0,0]) corner(180);
+    %translate([90, 90, -100]) rotate([0,-90,0]) corner(180);
+    %translate([-90, -120, -70]) rotate([0,90,0]) corner(180);
+    %translate([-120, 90, -100]) rotate([90,0,0]) corner(180);
+
+    %translate([90, -90, 140]) rotate([-90,0,0]) corner(180);
+    %translate([90, 90, 110]) rotate([0,-90,0]) corner(180);
+    %translate([-90, -120, 140]) rotate([0,90,0]) corner(180);
+    %translate([-120, 90, 110]) rotate([90,0,0]) corner(180);
+
+    // bed
+    translate([0,0,-50]) %difference() {
+        rotate([0,0,45]) cube([210,210,1], center=true);
+        rotate([0,0,45]) cube([190,190,2], center=true);
+    }
+}
