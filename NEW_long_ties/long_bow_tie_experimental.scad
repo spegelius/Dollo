@@ -4,21 +4,17 @@ include <globals.scad>;
 use <long_bow_tie.scad>;
 
 length = 50;
-max_width=7.9;
-min_width=4.55;
-height=4.9;
-depth=5;
-
 
 module split() {
-    linear_extrude(height=length) polygon(points=[[0,-1], [0.9,-1], [2.1,-5], [-2.1,-5], [-0.9,-1]]);
+    translate([0,0,-1]) linear_extrude(height=length+2) polygon(points=[[0,-1], [1,-1], [2.1,-5], [-2.1,-5], [-1,-1]]);
 }
 
-rotate([90,0,0]) difference() {
-    union() {
-        dovetail_3d(max_width, min_width, height, length);
-        mirror([0,1,0]) dovetail_3d(max_width, min_width, height, length);
+module long_bow_tie_split(length) {
+    rotate([90,0,0]) difference() {
+        translate([0,-(male_dove_depth-slop),0]) rotate([-90,0,0]) long_bow_tie(length);
+        split();
+        rotate([0,0,180]) split();
     }
-    split();
-    rotate([0,0,180]) split();
 }
+
+long_bow_tie_split(length);

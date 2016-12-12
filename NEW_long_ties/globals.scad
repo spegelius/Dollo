@@ -39,10 +39,14 @@ metal_core_rode = 5;
 ///////////////// X THINGS /////////////////////
 
 //male dove tails
-max_width=8;
-min_width=5;
-depth=5;
-height=obj_leg/2;
+male_dove_max_width=8;
+male_dove_min_width=5;
+male_dove_depth=5;
+male_dove_height=obj_leg/2;
+
+function scaled_male_dove_max_width() = male_dove_max_width - slop;
+function scaled_male_dove_min_width() = male_dove_min_width - slop;
+function scaled_male_dove_depth() = male_dove_depth - slop;
 
 //female dove tails, this is found on the y mounts
 girl_max_width=11;

@@ -1,10 +1,9 @@
 length = 50;
-tilt_level = 1.1;
-scaling_x = .9;
-scaling_y = 1;
-scaling_z = 1;
+
 include <include.scad>;
 include <globals.scad>;
+
+use <long_bow_tie.scad>;
 
 $fn=30;
 module end(){
@@ -15,15 +14,13 @@ module end(){
 }
 
 module tie() {
-    intersection() {
-        intersection() {
-            rotate([90,0,0]) male_dovetail(height=length);
-            rotate([90,0,0]) cylinder(r=5.9, h=200);
-        }
-        translate([0,0,3.3]) rotate([90,0,0]) cylinder(r=3.9, h=100);
+    translate([0,0,scaled_male_dove_depth()]) rotate([0,180,0]) difference(){
+        long_bow_tie(length);
+        translate([-5,-length-1,scaled_male_dove_depth()]) cube([10,length+2,male_dove_depth]);
     }
 }
-scale([scaling_x,scaling_y,scaling_z]) difference () {
+
+difference () {
     tie();
     translate([0, -(length -3.5), 0]) end();
     translate([0, -3.5, 0]) rotate([0,0,180]) end();

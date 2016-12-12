@@ -141,7 +141,7 @@ module stagger_pins() {
 //////////////////      DOVE TAIL       //////////////////
 
 module male_dovetail(height) {
-	dovetail_3d(max_width,min_width,depth,height);
+	dovetail_3d(male_dove_max_width,male_dove_min_width,male_dove_depth,height);
 }
 
 module dovetail_3d(max_width=11, min_width=5, depth=5, height=30) {
@@ -193,10 +193,10 @@ module nut(h=2.4) {
     }
 }
 
-module elongated_nut() {
+module elongated_nut(length=4) {
     hull() {
-        translate([-2,0,0]) nut();
-        translate([2,0,0]) nut();
+        translate([-length/2,0,0]) nut();
+        translate([length/2,0,0]) nut();
     }
 }
 
@@ -237,7 +237,7 @@ module rounded_cube(width,depth,height){
 //translate([50,50]) elongated_nut();
 //translate([50,47.2]) cube([5.6, 5.6, 2.4]);
 
-module frame_mockup() {
+module frame_mockup(bed_angle=45) {
     module corner(length) {
         difference() {
             cube([30,30,length]);
@@ -266,8 +266,8 @@ module frame_mockup() {
     %translate([-120, 90, 110]) rotate([90,0,0]) corner(180);
 
     // bed
-    translate([0,0,-50]) %difference() {
-        rotate([0,0,45]) cube([210,210,1], center=true);
-        rotate([0,0,45]) cube([190,190,2], center=true);
+    translate([0,0,-20]) %difference() {
+        rotate([0,0,bed_angle]) cube([210,210,1], center=true);
+        rotate([0,0,bed_angle]) cube([190,190,2], center=true);
     }
 }
