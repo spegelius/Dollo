@@ -13,15 +13,19 @@ module end(){
     }
 }
 
-module tie() {
+module tie(length) {
     translate([0,0,scaled_male_dove_depth()]) rotate([0,180,0]) difference(){
         long_bow_tie(length);
         translate([-5,-length-1,scaled_male_dove_depth()]) cube([10,length+2,male_dove_depth]);
     }
 }
 
-difference () {
-    tie();
-    translate([0, -(length -3.5), 0]) end();
-    translate([0, -3.5, 0]) rotate([0,0,180]) end();
+module long_tie(length) {
+    difference () {
+        tie(length);
+        translate([0, -(length -3.5), 0]) end();
+        translate([0, -3.5, 0]) rotate([0,0,180]) end();
+    }
 }
+
+long_tie(length);
