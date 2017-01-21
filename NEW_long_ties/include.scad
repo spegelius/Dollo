@@ -237,37 +237,73 @@ module rounded_cube(width,depth,height){
 //translate([50,50]) elongated_nut();
 //translate([50,47.2]) cube([5.6, 5.6, 2.4]);
 
-module frame_mockup(bed_angle=45) {
-    module corner(length) {
+module frame_mockup(bed_angle=45, units=1) {
+    corner_side = 60;
+    unit = 120;
+    unit_len = units*unit;
+    z = 2*corner_side + unit_len - 30;
+    
+    module corner() {
         difference() {
-            cube([30,30,length]);
-            translate([15,-0.01,0]) male_dovetail(length);
-            translate([-0.01,15,0]) rotate([0,0,-90]) male_dovetail(length);
-            translate([15,30.01,0]) rotate([0,0,180]) male_dovetail(length);
-            translate([30.01,15,0]) rotate([0,0,90]) male_dovetail(length);
+            union() {
+                cube([30,30,corner_side]);
+                cube([30,corner_side,30]);
+                cube([corner_side,30,30]);
+            }
+            translate([15,-0.01,0]) male_dovetail(corner_side+1);
+            translate([-0.01,15,0]) rotate([0,0,-90]) male_dovetail(corner_side+1);
+            translate([15,30.01,0]) rotate([0,0,180]) male_dovetail(corner_side+1);
+            translate([30.01,15,0]) rotate([0,0,90]) male_dovetail(corner_side+1);
+        }
+    }
+    
+    module side() {
+        difference() {
+            cube([30,30,unit_len]);
+            translate([15,-0.01,0]) male_dovetail(corner_side+1);
+            translate([-0.01,15,0]) rotate([0,0,-90]) male_dovetail(unit_len+1);
+            translate([15,30.01,0]) rotate([0,0,180]) male_dovetail(unit_len+1);
+            translate([30.01,15,0]) rotate([0,0,90]) male_dovetail(unit_len+1);
         }
     }
     
     // corners
-    %translate([90, -120, -100]) corner(240);
-    %translate([90, 90, -100]) corner(240);
-    %translate([-120, -120, -100]) corner(240);
-    %translate([-120, 90, -100]) corner(240);
+    %translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
+    %mirror([1,0,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
+    %mirror([0,1,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
+    %mirror([1,1,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
+    
+    // corners
+    translate([0,0,2*corner_side + unit_len]) mirror([0,0,1]) {
+        %translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
+        %mirror([1,0,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
+        %mirror([0,1,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
+        %mirror([1,1,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
+    }
+
+    // sides
+    %translate([-corner_side-unit_len/2, unit_len/2, 0]) rotate([90,0,0]) side();
+    %mirror([1,0,0]) translate([-corner_side-unit_len/2, unit_len/2, 0]) rotate([90,0,0]) side();
+    %rotate([0,0,90]) translate([-corner_side-unit_len/2, unit_len/2, 0]) rotate([90,0,0]) side();
+    %mirror([0,1,0]) %rotate([0,0,90]) translate([-corner_side-unit_len/2, unit_len/2, 0]) rotate([90,0,0]) side();
     
     // sides
-    %translate([90, -90, -70]) rotate([-90,0,0]) corner(180);
-    %translate([90, 90, -100]) rotate([0,-90,0]) corner(180);
-    %translate([-90, -120, -70]) rotate([0,90,0]) corner(180);
-    %translate([-120, 90, -100]) rotate([90,0,0]) corner(180);
+    %translate([-corner_side-unit_len/2, unit_len/2, z]) rotate([90,0,0]) side();
+    %mirror([1,0,0]) translate([-corner_side-unit_len/2, unit_len/2, z]) rotate([90,0,0]) side();
+    %rotate([0,0,90]) translate([-corner_side-unit_len/2, unit_len/2, z]) rotate([90,0,0]) side();
+    %mirror([0,1,0]) %rotate([0,0,90]) translate([-corner_side-unit_len/2, unit_len/2, z]) rotate([90,0,0]) side();
 
-    %translate([90, -90, 140]) rotate([-90,0,0]) corner(180);
-    %translate([90, 90, 110]) rotate([0,-90,0]) corner(180);
-    %translate([-90, -120, 140]) rotate([0,90,0]) corner(180);
-    %translate([-120, 90, 110]) rotate([90,0,0]) corner(180);
+    %translate([-corner_side-unit_len/2, -corner_side-unit_len/2, corner_side]) side();
+    %mirror([1,0,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, corner_side]) side();
+    %mirror([0,1,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, corner_side]) side();
+    %mirror([1,1,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, corner_side]) side();
 
     // bed
-    translate([0,0,-20]) %difference() {
+    translate([0,0,60]) %difference() {
         rotate([0,0,bed_angle]) cube([210,210,1], center=true);
         rotate([0,0,bed_angle]) cube([190,190,2], center=true);
     }
+    
 }
+
+//frame_mockup(0, 2);
