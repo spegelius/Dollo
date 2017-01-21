@@ -20,7 +20,7 @@ module tie(length) {
     }
 }
 
-module long_tie(length) {
+module long_tie(length=50) {
     difference () {
         tie(length);
         translate([0, -(length -3.5), 0]) end();
