@@ -63,7 +63,7 @@ module bolt_hole(obj_height) {
 
 module flat_of_shaft(obj_height) {
     if (shaft_has_flat) {
-        translate([5.6/2-0.7+slop,-2.5,-obj_height/2]) cube([1.5,5,obj_height-(shaft_len-shaft_flat_len)], center=false);
+        translate([5.6/2-0.7,-2.5,-obj_height/2]) cube([1.5,5,obj_height-(shaft_len-shaft_flat_len)], center=false);
     }
 }
 
