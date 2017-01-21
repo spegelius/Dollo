@@ -30,33 +30,40 @@ diameter = 2;
 
 module y_mount_added(){    
     //base
-    translate([0,2.25-2.25+rack_gap/2,-1]) rounded_cube(depth = 50+rack_gap*2, width = frame_width+15+1, height=4, center=true);
+    translate([0,-4+rack_gap/2,-1]) rounded_cube(depth=42+rack_gap*2, width = frame_width+15+1, height=4, center=true);
     
     // lower slide
     slide_depth = 11;
-    slide_pos_y = frame_width-15+rack_gap;
-	translate([0,slide_pos_y,2.5]) rounded_cube(height = 5, width = 50, depth = slide_depth, diameter = 3.5);
+    slide_pos_y = frame_width-24.5+rack_gap;
+    
+    module slide() {
+        difference() {
+            rotate([45,0,0]) rounded_cube(height=15, width=15, depth =15, diameter = 3.5);
+            translate([0,0,-10]) cube([60,30,30], center=true);
+        }
+    }
+    
+	translate([-18.25,slide_pos_y,-5]) slide();
+    translate([18.25,slide_pos_y,-5]) slide();
+    
+    translate([0,slide_pos_y-5.5,0.4]) rounded_cube(height=5, width=frame_width+15+1, depth=25.5);
+    
 //towers
-    //echo ((17.5+4.25)/2);
 
     //top tower
 	translate([0-21,-25.75,0.625]) cube([42,18,tower_height]);
     
-    tower_pos_y = slide_pos_y - slide_depth/2 - 15/2 - rack_height;
+    tower_pos_y = -2;
 
     // right tower
 	translate([(32-21-4)+19/2,tower_pos_y,(17.5+4.25)/2]) rounded_cube(19,15,tower_height);
-    translate([(32-21-4)+19-4.5,tower_pos_y+15/2-4.4,tower_height]) cylinder(d=7,h=2);
+    translate([(32-21-4)+19-4.5,tower_pos_y+15/2-4.8,tower_height]) cylinder(d=7,h=2);
     
     // left tower
     difference() {
         translate([(-21-4)+24/2,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height);
-        translate([(-21-4)+3.5,tower_pos_y+15/2-4.4,tower_height-1.5]) cylinder(d=7.25,h=2.5);
+        translate([(-21-4)+3.5,tower_pos_y+15/2-4.8,tower_height-1.5]) cylinder(d=7.25,h=2.5);
     }
-
-    slide_size = (rack_height - rack_slide_height) * 2;
-    translate([18,(not_tooth_gap/2)+5,2]) rounded_cube(height = 4, width = 15, depth = slide_size, diameter = 2);
-	translate([-18,(not_tooth_gap/2)+5,2]) rounded_cube(height = 4, width = 15, depth = slide_size, diameter = 2);
 }
 
 module bolt_hole() {
@@ -79,16 +86,16 @@ module y_mount_taken(){
 	 ];
 	 
 		 rotate([0,0,-90]) for (a = halign) {
-		   translate([-16, 15,-3]) {
+		   translate([-9, 12.5,-3]) {
 			 linear_extrude(height = 1) {
-			   text(text = str(text), font = font, size = 8, halign = a[1]);
+			   text(text = str(text), font = font, size = 6, halign = a[1]);
 			 }
 		   }
 		 }
 		 rotate([0,0,90]) for (a = halign) {
-		   translate([16,15,-3]) {
+		   translate([9,12.5,-3]) {
 			 linear_extrude(height = 1) {
-			   text(text = str(text), font = font, size = 8, halign = a[1]);
+			   text(text = str(text), font = font, size = 6, halign = a[1]);
 			 }
 		   }
 		 }
@@ -97,14 +104,14 @@ module y_mount_taken(){
         translate([5.65-21,5.65-21,-10]) bolt_hole();
 		translate([5.65+31-21,5.65-21,-10]) bolt_hole();
 		translate([5.65-21,5.65+31-21,-10]) bolt_hole();
-		translate([5.65+31-21,5.65+31-21,-10]) bolt_hole();
+		//translate([5.65+31-21,5.65+31-21,-10]) bolt_hole();
 
 		//counter sink
 
-        #translate([5.65-21,5.65-21,-3]) bolt_head_hole();
-		#translate([5.65+31-21,5.65-21,-3]) bolt_head_hole();
-		#translate([5.65-21,5.65+31-21,-3]) bolt_head_hole();
-		#translate([5.65+31-21,5.65+31-21,2.5]) bolt_head_hole();
+        translate([5.65-21,5.65-21,-3]) bolt_head_hole();
+		translate([5.65+31-21,5.65-21,-3]) bolt_head_hole();
+		translate([5.65-21,5.65+31-21,-3]) bolt_head_hole();
+		//translate([5.65+31-21,5.65+31-21,2.5]) bolt_head_hole();
 
 		translate([-70,-30,-5]) cube([50,50,50]);
 		translate([-30,-70,-5]) cube([50,50,50]);
@@ -112,11 +119,11 @@ module y_mount_taken(){
 		translate([0,0,-5]) cylinder(d=motor_center_hole, h=20);
         translate([hole_length,hole_length,-5]) cylinder(d=motor_center_hole, h=20);
 
-		#rotate([90,0,-45]) translate([-8,-3,-55+tail_depth]) male_dovetail(height=30);
-		#rotate([90,0,-45]) translate([8,-3,-55+tail_depth]) male_dovetail(height=30);
+		rotate([90,0,-45]) translate([-8,-3,-53+tail_depth]) male_dovetail(height=30);
+		rotate([90,0,-45]) translate([8,-3,-53+tail_depth]) male_dovetail(height=30);
 
-		#rotate([90,0,-45]) translate([-8,-3,22-tail_depth]) male_dovetail(height=30);
-		#rotate([90,0,-45]) translate([8,-3,22-tail_depth]) male_dovetail(height=30);
+		rotate([90,0,-45]) translate([-8,-3,22-tail_depth]) male_dovetail(height=30);
+		rotate([90,0,-45]) translate([8,-3,22-tail_depth]) male_dovetail(height=30);
 	}
 }
 
