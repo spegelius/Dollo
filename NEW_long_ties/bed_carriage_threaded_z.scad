@@ -10,7 +10,11 @@ use <extention.scad>;
 use <corner_stabilizer.scad>;
 use <rail.scad>;
 
+$fn=60;
+
+//// tunables
 units = 2;
+
 
 lifter_block_size = 30;
 offcenter = 0;
@@ -18,9 +22,8 @@ offcenter = 0;
 z_lifter_hole = 10 + 2*slop;
 z_lifter_arm = 10;
 
-$fn=60;
-
-frame_mockup(bed_angle=40);
+//jointed_nut_height = sqrt((12*12)/2)*2;
+jointed_nut_height = 10;
 
 // motor
 module motor_mount() {
@@ -132,13 +135,13 @@ module rod_guide_side() {
 }
 //rod_guide_side();
 
-module lifter_threading() {
+module lifter_threading(extra_slop=0) {
     // Lifter threading
     
         yspread(printer_slop*1.5) {
             xrot(90) zrot(90) {
                 acme_threaded_rod(
-                    d=lifter_rod_diam+2*printer_slop,
+                    d=lifter_rod_diam+2*printer_slop+extra_slop,
                     l=lifter_block_size+2*lifter_rod_pitch+0.5,
                     pitch=lifter_rod_pitch,
                     thread_depth=lifter_rod_pitch/3,
@@ -255,10 +258,6 @@ module rail_holder() {
     %translate([92.5, 3, motor_side_length/2+1]) rotate([0,0,0]) rail(150, 20);
 }
 
-
-//jointed_nut_height = sqrt((12*12)/2)*2;
-jointed_nut_height = 10;
-
 // not used, too much slack
 module jointed_nut() {
     
@@ -322,8 +321,8 @@ module rail_slide() {
                     }
                 }
             }
-            slide(30, 11);
-            translate([75,0,0]) slide(30, 11);
+            slide(40, 14);
+            translate([75,0,0]) slide(40, 14);
             //translate([37.5, 1, jointed_nut_height/2]) jointed_nut();
 
         }
@@ -337,14 +336,15 @@ module rail_slide() {
                 }
             }
         }
-        translate([37.5, 1, jointed_nut_height/2]) rotate([-90,0,0]) lifter_threading();
+        translate([37.5, 1, jointed_nut_height/2]) rotate([-90,0,0]) lifter_threading(0.3);
+        translate([37.5, 1, 5]) cylinder(d=15, h=10);
     }
     
 }
 
 module slide_bed_adapter() {
     difference() {
-        cube([55,50,10]);
+        cube([53.5,50,10]);
         translate([-1,-1,5]) cube([61,11,10]);
 
         //bolt holes
@@ -367,29 +367,131 @@ module slide_bed_adapter() {
     }
 }
 
+module threads(d=8, multiple=10) {
+    z_step = 1.8;
+    for (i = [0:multiple-1]) {
+        translate([0,0,i*z_step]) linear_extrude(height=z_step, center=true, convexity = 10, twist = -360, $fn = 30) translate([0.5, 0, 0]) circle(d=d-0.5);
+    }
+}
+
+module _nut(d=8, d2=18, h=7, indents=20) {
+    $fn=60;
+    sphere_dia=d2+h/1.8;
+    intersection() {
+        difference() {
+            cylinder(d=d2,h=h);
+            threads(d=d+4*slop, multiple=h);
+            for (i = [0:indents-1]) {
+                rotate([0,20,i*360/indents]) translate([-2,d2/2+2,0]) rotate([0,0,45]) cube([4,4,35], center=true);
+            }
+        }
+        translate([0,0,h-sphere_dia/3]) sphere(d=sphere_dia);
+        translate([0,0,sphere_dia/3]) sphere(d=sphere_dia);
+    }
+}
+
+module slide_bed_adapter2(nuts=true) {
+    difference() {
+        rotate([0,0,54.3]) translate([0,-30,0]) difference() {
+            cube([250,60,10]);
+            for (j=[0:4]) {
+                //for(i=[0:15-j]) {
+                //    translate([j*2+102+i*7,5+j*7,0]) cylinder(d=bolt_hole_dia, h=11);
+                //}
+                translate([102,8+j*11,0]) hull(){ 
+                    cylinder(d=bolt_hole_dia, h=11);
+                    translate([105-j*8,0,0]) cylinder(d=bolt_hole_dia, h=11);
+                }
+                
+            }
+            
+            translate([88,10,0]) cylinder(d=8,h=6);
+            translate([88,50,0]) cylinder(d=8,h=6);
+        }
+        
+        translate([80,182.5,-1]) cube([200,200,20]);
+        translate([148,140,-1]) cube([200,200,20]);
+        translate([80,172.5,-1]) cube([200,200,6]);
+        
+        translate([-50,-50,5]) cube([200,210,6]);
+        
+        rotate([0,0,54.3]) translate([-50,-50,-1]) cube([130,90,10]);
+        
+        //bolt holes
+        translate([143.5,177.5,0]) cylinder(d=bolt_hole_dia, h=11);
+        translate([143.5-5*9,177.5,0]) cylinder(d=bolt_hole_dia, h=11);
+        translate([143.5,177.5,8]) cylinder(d=bolt_head_hole_dia, h=3.5);
+        translate([143.5-5*9,177.5,8]) cylinder(d=bolt_head_hole_dia, h=3.5);
+       
+    }
+    
+    module triangle() {
+        linear_extrude(6) polygon(points=[[0,0], [0,20], [20,20]]);
+    }
+    
+    module holes() {
+        for(i=[0:4]) {
+            translate([-80+i*33,4,0]) triangle();
+        }
+        for(i=[0:4]) {
+            translate([-52.5+i*33,24,0]) rotate([0,0,180]) triangle();
+        }
+    }
+    
+    rotate([0,0,54.3]) translate([120,65,0]) difference() {
+        translate([0,0,2.5]) cube([190,60,5],center=true);
+        translate([88,20,0]) cylinder(d=8,h=6);
+        translate([88,-20,0]) cylinder(d=8,h=6);
+        
+        translate([-88,20,0]) cylinder(d=8,h=6);
+        translate([-88,-20,0]) cylinder(d=8,h=6);
+
+
+
+        holes();
+        mirror([0,1,0]) holes();
+    }
+    diameter=1;
+    union() {
+        intersection() {
+            rotate([-90,0,0]) threads(d=7, multiple=10);
+            cube([7,20,6.5], center=true);
+        }
+        translate([0,-2.5,0]) rounded_cube(20,5,6.5,diameter=2);
+    }
+    
+    //translate([20,0,0]) _nut(d=7, d2=15, h=5, indents=22);
+}
+
 //// VIEW
 module view_proper() {
-    translate([-120, -120, 140]) leg_with_motor();
-    translate([120, 120, 140]) rotate([0,0,180]) leg_with_motor();
-    translate([120, -120, 140])rotate([0,0,90]) leg();
-    translate([-120, 120, 140])rotate([0,0,270]) leg();
-    //translate([90,120-(28.4+motor_side_length/2+5)+9,-100]) rotate([180,0,0]) rod_guide_top();
-    %translate([90+motor_side_length/2+30,120-(28.4+motor_side_length/2+5),-120]) cylinder(d=lifter_rod_diam, h=250);
-    %translate([90+motor_side_length/2+30,120-(28.4+motor_side_length/2+5),111]) cylinder(d=35, h=29);
-    
-    
-    z_x_pos = 90+motor_side_length/2+30 + groove_height/2+3.5;
-    //translate([z_x_pos,120-(28.4+motor_side_length/2+5),80]) rotate([180,0,90]) z_lifter();
-    //translate([z_x_pos,88-(28.4+motor_side_length/2+5),75]) rotate([180,0,270])z_lifter_arm();
-    //translate([z_x_pos,109-(28.4+motor_side_length/2+5),75]) rotate([180,0,270])z_lifter_arm2();
-    
-    //translate([120,120,-10]) rotate([0,0,180]) rod_guide_side();
-    //translate([120,120,110]) rotate([0,180,0]) mirror([0,1,0]) rod_guide_side();
-    translate([120,120,140]) rotate([90,180,90]) rail_holder();
-    translate([120,120,-100]) rotate([90,180,90]) mirror([0,1,0]) rail_holder();
+    frame_mockup(0, 2);
+    //translate([-180, -180, 0]) rotate([180,0,90]) leg_with_motor();
+    //translate([180, 180, 0]) rotate([180,0,-90]) leg_with_motor();
 
-    translate([121+motor_side_length/2,102.5,-10]) rotate([0,180,90]) rail_slide();
-    translate([101+motor_side_length/2,33.5,-21]) rotate([0,0,90]) slide_bed_adapter();
+    //translate([180, -180, 0])rotate([180,0,180]) leg();
+    //translate([-180, 180, 0])rotate([180,0,0]) leg();
+    ////translate([90,120-(28.4+motor_side_length/2+5)+9,-100]) rotate([180,0,0]) rod_guide_top();
+    //%translate([-180+(28.4+motor_side_length/2+5),-180-motor_side_length/2,0]) cylinder(d=lifter_rod_diam, h=450);
+    //%translate([-180+(28.4+motor_side_length/2+5),-180-motor_side_length/2,1]) cylinder(d=35, h=29);
+    
+    
+    ////z_x_pos = 90+motor_side_length/2+30 + groove_height/2+3.5;
+    ////translate([z_x_pos,120-(28.4+motor_side_length/2+5),80]) rotate([180,0,90]) z_lifter();
+    ////translate([z_x_pos,88-(28.4+motor_side_length/2+5),75]) rotate([180,0,270])z_lifter_arm();
+    ////translate([z_x_pos,109-(28.4+motor_side_length/2+5),75]) rotate([180,0,270])z_lifter_arm2();
+    
+    ////translate([120,120,-10]) rotate([0,0,180]) rod_guide_side();
+    ////translate([120,120,110]) rotate([0,180,0]) mirror([0,1,0]) rod_guide_side();
+    //translate([-180,-180,0]) rotate([90,0,0]) rail_holder();
+    //translate([-180,-180,360]) rotate([90,0,0]) mirror([0,1,0]) rail_holder();
+
+    translate([-162.5,-181-motor_side_length/2,34]) rail_slide();
+    //translate([-94.5,-161-motor_side_length/2,44]) rotate([0,180,0]) slide_bed_adapter();
+    
+    translate([0,0,34]) rotate([0,0,180]) slide_bed_adapter2();
+    
+    
 }
 
 
@@ -426,11 +528,68 @@ module view_parts(part=0) {
         rail_slide();
     } else if (part == 11) {
         slide_bed_adapter();
+    } else if (part == 12) {
+        slide_bed_adapter2();
     }
 }
 
-view_parts(10);
+view_parts(12);
 //view_proper();
 
 //z_lifter_arm();
 //z_lifter();
+//translate([37.5-side/2,-side/2,10]) 
+side=31;
+
+// temp, do not use
+module qnd_fix() {
+    difference() {
+
+        cube([side,side,5]);
+        translate([side/2,side/2,0]) rotate([90,0,0]) lifter_threading(extra_slop=0.3);
+        translate([5,5,0]) cylinder(d=bolt_hole_dia, h=6);
+        translate([5,5,3]) cylinder(d=bolt_head_hole_dia, h=6);
+
+        translate([5,side-5,0]) cylinder(d=bolt_hole_dia, h=6);
+        translate([5,side-5,3]) cylinder(d=bolt_head_hole_dia, h=6);
+
+        translate([side-5,5,0]) cylinder(d=bolt_hole_dia, h=6);
+        translate([side-5,5,3]) cylinder(d=bolt_head_hole_dia, h=6);
+
+        translate([side-5,side-5,0]) cylinder(d=bolt_hole_dia, h=6);
+        translate([side-5,side-5,3]) cylinder(d=bolt_head_hole_dia, h=6);
+
+    }
+}
+
+module qnd_fix2() {
+    difference() {
+        union() {
+            rotate([90,0,0]) difference() {
+                _rail(17, 20*1.75);
+                _rail(18, 20*1.54);
+                translate([0,10,0]) _rail(18, 20*1.57);
+            }
+            slide(10, 3);
+        }
+        translate([0,19,0]) cube([50,10,50], center=true);
+        translate([20,9.40,15]) cube([50,50,10], center=true);
+    }
+    
+
+    translate([45,0,0]) {
+        difference() {
+            union() {
+                rotate([90,0,0]) difference() {
+                    _rail(17, 20*1.75);
+                    _rail(18, 20*1.54);
+                    translate([0,10,0]) _rail(18, 20*1.57);
+                }
+                slide(10, 3);
+            }
+            translate([0,19,0]) cube([50,10,50], center=true);
+        }
+    }
+}
+
+//qnd_fix2();
