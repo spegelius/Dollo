@@ -54,12 +54,31 @@ module mount(){
 }
 
 module clamp() {
+    
+    module cable_hole() {
+        difference() {
+            union() {
+                hull() {
+                    cylinder(d=11, h=3);
+                    translate([0,5,0]) cylinder(d=11, h=3);
+                }
+                translate([-5.5,-5.5,0]) cube([11,6,3]);
+            }
+            rotate([-40,0,0]) translate([0,0,-3]) hull() {
+                cylinder(d=7, h=19);
+                translate([0,2,0]) cylinder(d=7, h=19);
+            }
+            rotate([20,0,0]) translate([2,2,-5]) cube([4,4,10]);
+        }
+    }
+    
     union(){
         translate([-8,0,5]) long_bow_tie_split(15);
         translate([8,0,5]) long_bow_tie_split(15);
-        translate([-11.75,-15,-2]) cube([23.5,15,2]);
+        translate([-11.75,-15,-3]) cube([23.5,15,3]);
         translate([-11.75,-15,0]) cube([7.5,15,0.6]);
         translate([4.25,-15,0]) cube([7.5,15,0.6]);
+        translate([0,4,-3]) cable_hole();
     }
 }
 
@@ -67,4 +86,4 @@ module clamp() {
 translate([0,0,25/2-1]) mount();
 translate([0,-65,25/2-1]) mirror([0,1,0]) mount();
 
-translate([-20,-25,2]) clamp();
+translate([-20,-25,3]) clamp();
