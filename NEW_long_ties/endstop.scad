@@ -40,7 +40,7 @@ module button_plus(){
 
 
 module endstop_v1() {
-    translate([-3,-2,switch_depth+2]) #cube([4,9,1]);
+    translate([-3,-2,switch_depth+2]) cube([4,9,1]);
     difference(){
         difference(){
             translate([-3,-2,-7]) cube([switch_length+6,switch_width+3,switch_depth+9]);
@@ -61,5 +61,19 @@ module endstop_v2() {
     }
 }
 
+module z_endstop() {
+    difference() {
+        union() {
+            endstop_v1();
+            translate([-3,-9,-9]) cube([switch_length+6,switch_width+11,12]);
+        }
+        #translate([-5,-2,-9]) rotate([90,0,90]) male_dovetail(height=41);
+        translate([-3,switch_width-1,-9]) rotate([0,0,25]) cube([10,10,15]);
+    }
+    //translate([0,-2,-20]) %cube([30,30,30],center=true);
+}
+
+
 //endstop_v1();
-endstop_v2();
+//endstop_v2();
+z_endstop();

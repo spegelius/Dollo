@@ -71,7 +71,12 @@ motor_shaft_hole_dia = 5+2*slop;
 bolt_hole_dia = 3+2*slop;
 bolt_head_hole_dia = 5.8;
 
+m4_bolt_hole_dia = 4+2*slop;
+m4_bolt_head_hole_dia = 6.8+2*slop;
+
+
 m3_nut_side = 5.65;
+m4_nut_side = 6.85;
 
 // threaded rod
 lifter_rod_diam = 9.86;

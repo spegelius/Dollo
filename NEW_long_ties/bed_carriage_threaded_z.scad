@@ -310,32 +310,48 @@ module jointed_nut() {
 }
 
 module rail_slide() {
+    
+    module shelf() {
+        intersection() {
+            translate([8,-15.5,0]) cube([60,45.5,50]);
+            union() {
+                translate([6,-20,0]) rotate([0,0,-30]) cube([36.5,95,50]);
+                translate([40,-40,0]) rotate([0,0,30]) cube([35,95,50]);
+            }
+        }
+    }
+    
     difference() {
         union() {
-            difference() {
-                intersection() {
-                    translate([8,-15.5,0]) cube([60,45.5,jointed_nut_height]);
-                    union() {
-                        translate([6,-20,0]) rotate([0,0,-30]) cube([35,95,jointed_nut_height]);
-                        translate([40,-40,0]) rotate([0,0,30]) cube([35,95,jointed_nut_height]);
-                    }
-                }
+            shelf();
+            if (FAST) {
+                slide(50, 14);
+                translate([75,0,0]) slide(50, 14);
             }
-            slide(40, 14);
-            translate([75,0,0]) slide(40, 14);
-            //translate([37.5, 1, jointed_nut_height/2]) jointed_nut();
+        }
+        translate([-29,motor_side_length/2-7.5,0]) cube([43.5,30,50]);
+        translate([68,motor_side_length/2-7.5,0]) cube([43.5,30,50]);
+        translate([16.5,motor_side_length/2-7.5,jointed_nut_height/2]) cube([49.5,30,30]);
+        
+        translate([0,35,20]) rotate([0,90,0]) cylinder(d=35,h=80);
+        
+        translate([0,motor_side_length/2-7.5,jointed_nut_height/2+35]) cube([80,30,30]);
+
+        translate([31.25,motor_side_length/2-7.5,0]) cube([20,30,50]);
+
+        if (FAST) {
+            translate([14.5+16.75/2,22,0]) threads(d=8+4*slop);
+            translate([68-16.75/2,22,0]) threads(d=8+4*slop);
+        } else {
+            translate([14.5+16.75/2,22,0]) cylinder(d=8+4*slop,h=10);
+            translate([68-16.75/2,22,0]) cylinder(d=8+4*slop,h=10);
 
         }
-        translate([-29,motor_side_length/2-6.5,0]) cube([43.5,30,50]);
-        translate([0,20,jointed_nut_height/2]) cube([80,30,jointed_nut_height]);
-        difference() {
-            for(i=[0:5]) {
-                translate([19+i*9,25,0]) {
-                    cylinder(d=bolt_hole_dia, h=jointed_nut_height);
-                    nut();
-                }
-            }
-        }
+
+        translate([14.5+16.75/2,22,30]) cylinder(d=8+4*slop,h=10);
+        translate([68-16.75/2,22,30]) cylinder(d=8+4*slop,h=10);;
+
+        
         translate([37.5, 1, jointed_nut_height/2]) rotate([-90,0,0]) lifter_threading(0.3);
         translate([37.5, 1, 5]) cylinder(d=15, h=10);
     }
@@ -370,7 +386,7 @@ module slide_bed_adapter() {
 module threads(d=8, multiple=10) {
     z_step = 1.8;
     for (i = [0:multiple-1]) {
-        translate([0,0,i*z_step]) linear_extrude(height=z_step, center=true, convexity = 10, twist = -360, $fn = 30) translate([0.5, 0, 0]) circle(d=d-0.5);
+        translate([0,0,i*z_step]) linear_extrude(height=z_step, center=true, convexity = 10, twist = -360, $fn = 30) translate([0.5, 0, 0]) circle(d=d-1.0);
     }
 }
 
@@ -391,40 +407,7 @@ module _nut(d=8, d2=18, h=7, indents=20) {
 }
 
 module slide_bed_adapter2(nuts=true) {
-    difference() {
-        rotate([0,0,54.3]) translate([0,-30,0]) difference() {
-            cube([250,60,10]);
-            for (j=[0:4]) {
-                //for(i=[0:15-j]) {
-                //    translate([j*2+102+i*7,5+j*7,0]) cylinder(d=bolt_hole_dia, h=11);
-                //}
-                translate([102,8+j*11,0]) hull(){ 
-                    cylinder(d=bolt_hole_dia, h=11);
-                    translate([105-j*8,0,0]) cylinder(d=bolt_hole_dia, h=11);
-                }
-                
-            }
-            
-            translate([88,10,0]) cylinder(d=8,h=6);
-            translate([88,50,0]) cylinder(d=8,h=6);
-        }
-        
-        translate([80,182.5,-1]) cube([200,200,20]);
-        translate([148,140,-1]) cube([200,200,20]);
-        translate([80,172.5,-1]) cube([200,200,6]);
-        
-        translate([-50,-50,5]) cube([200,210,6]);
-        
-        rotate([0,0,54.3]) translate([-50,-50,-1]) cube([130,90,10]);
-        
-        //bolt holes
-        translate([143.5,177.5,0]) cylinder(d=bolt_hole_dia, h=11);
-        translate([143.5-5*9,177.5,0]) cylinder(d=bolt_hole_dia, h=11);
-        translate([143.5,177.5,8]) cylinder(d=bolt_head_hole_dia, h=3.5);
-        translate([143.5-5*9,177.5,8]) cylinder(d=bolt_head_hole_dia, h=3.5);
-       
-    }
-    
+
     module triangle() {
         linear_extrude(6) polygon(points=[[0,0], [0,20], [20,20]]);
     }
@@ -438,7 +421,36 @@ module slide_bed_adapter2(nuts=true) {
         }
     }
     
-    rotate([0,0,54.3]) translate([120,65,0]) difference() {
+    difference() {
+        rotate([0,0,54.3]) translate([0,-30,-5]) difference() {
+            cube([250,60,40-slop]);
+            //translate([88,10,0]) cylinder(d=8+4*slop,h=6);
+            //translate([88,50,0]) cylinder(d=8+4*slop,h=6);            
+        }
+        
+        translate([80,188.4,-6]) cube([200,200,65]);
+        translate([146-slop,140,-6]) cube([200,200,65]);
+        translate([60,172.5,-6]) cube([200,200,11]);
+        translate([60,148,-6]) cube([200,200,6]);
+        translate([80,172.5,-6]) cube([146-49.5-80,100,65]);
+        
+        translate([80,120,-6]) cube([30,30,5]);
+        
+        translate([50,120,6]) rotate([30,0,0]) cube([100,100,65]);
+        
+        translate([-50,-50,5]) cube([200,180,66]);
+        
+        rotate([0,0,54.3]) translate([-50,-50,-6]) cube([100,90,20]);
+        
+        //bolt holes
+        translate([139.625,180.6,0]) cylinder(d=8+4*slop, h=61);
+        translate([102.875,180.6,0]) cylinder(d=8+4*slop, h=61);
+       
+    }
+    
+
+    
+    /*rotate([0,0,54.3]) translate([120,65,0]) difference() {
         translate([0,0,2.5]) cube([190,60,5],center=true);
         translate([88,20,0]) cylinder(d=8,h=6);
         translate([88,-20,0]) cylinder(d=8,h=6);
@@ -454,11 +466,11 @@ module slide_bed_adapter2(nuts=true) {
     diameter=1;
     union() {
         intersection() {
-            rotate([-90,0,0]) threads(d=7, multiple=10);
-            cube([7,20,6.5], center=true);
+            rotate([-90,0,0]) threads(d=8, multiple=10);
+            cube([8,20,6.5], center=true);
         }
         translate([0,-2.5,0]) rounded_cube(20,5,6.5,diameter=2);
-    }
+    }*/
     
     //translate([20,0,0]) _nut(d=7, d2=15, h=5, indents=22);
 }
@@ -533,8 +545,11 @@ module view_parts(part=0) {
     }
 }
 
-view_parts(12);
-//view_proper();
+// st this to true before rendering
+FAST=false;
+
+//view_parts(10);
+view_proper();
 
 //z_lifter_arm();
 //z_lifter();
