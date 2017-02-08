@@ -44,12 +44,12 @@ module slide(height=10, wiggles) {
     module long_cube() {
         hull() {
             rotate([45,0,0]) cube([10,1.5,1.5], center=true);
-            translate([0,2,0]) rotate([45,0,0]) cube([10,1.5,1.5], center=true);
+            translate([0,1.5,0]) rotate([45,0,0]) cube([10,1.5,1.5], center=true);
         }
     }
     
     module spring(wiggles) {
-        $fn=60;
+        $fn=30;
         z_step = height/(wiggles);
         intersection() {
             difference() {
@@ -58,10 +58,10 @@ module slide(height=10, wiggles) {
                 cylinder(d=11, h=height);
                 cylinder(d=11-2*spring_width, h=height, wiggles=wiggles);
                 for (i=[1:wiggles]) {
-                    translate([-7.8,-4.5,i*z_step-1.5]) rotate([0,0,25]) long_cube();
+                    translate([-8.1,-4.5,i*z_step-1.5]) rotate([0,0,25]) long_cube();
                 }
             }
-            translate([-13,2,height/2]) rotate([0,0,-65]) cube([20,20,height], center=true);
+            translate([-13,1.8,height/2]) rotate([0,0,-65]) cube([20,20,height], center=true);
         }
     }
 
@@ -80,9 +80,9 @@ module rail_finished() {
     translate([-25,-length/2,0]) cube([width/2-slop, length/2,width/2-slop]);
 }
 
-rail_finished();
+//rail_finished();
 //translate([32,0,0]) rotate([90,0,0]) rail(length,width);
-//translate([35,0,0]) slide(15, 5);
+translate([35,0,0]) slide(15, 5);
 
 
 
