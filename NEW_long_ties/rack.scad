@@ -38,7 +38,7 @@ module rackObject() {
         union() {
             translate([0,0,-0.5]) cube([unit_length*units+20,36,7], center=true);
 
-            translate([0,-9,4]) rounded_cube(unit_length*units+15,18,6,$fn=40);
+            translate([0,-9,4]) rounded_cube(unit_length*units+15,18,6,$fn=40,diameter=diameter);
         }
         // side indents
         translate([2,-26,0]) rotate([45,0,0]) cube([unit_length*units+5,15,15], center=true);
@@ -60,14 +60,14 @@ module do_rack() {
     intersection(){
     //translate([0,0,-10]) cube([20,20,20]);
         intersection(){
-            translate([-slop-head_offset,0,0]) rounded_cube(unit_length*units+2*head_offset,40,20,$fn=40);
+            translate([-slop-head_offset,0,0]) rounded_cube(unit_length*units+2*head_offset,40,20,$fn=40,diameter=diameter);
             union(){
                 intersection(){
                     rackObject();
 
                     difference(){
                         union(){
-                            translate([0,0,6]) rounded_cube(unit_length*units-slop,40,20,$fn=50);
+                            translate([0,0,6]) rounded_cube(unit_length*units-slop,40,20,$fn=50,diameter=diameter);
                             translate([-units*unit_length/2-head_offset+slop,6,-15]) rotate([0,0,-teeth_angle]) cube([10,10,30]);
                             translate([-units*unit_length/2-head_offset+slop,6,-15]) mirror([0,1,0]) rotate([0,0,-teeth_angle]) cube([10,10,30]);
                             

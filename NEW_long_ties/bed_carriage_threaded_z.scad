@@ -9,6 +9,7 @@ include <include.scad>;
 use <extention.scad>;
 use <corner_stabilizer.scad>;
 use <rail.scad>;
+use <stabilizer_center.scad>;
 
 $fn=60;
 
@@ -407,50 +408,6 @@ module slide_bed_adapter() {
     }
 }
 
-module threads(d=8, multiple=10) {
-    z_step = 1.8;
-    for (i = [0:multiple-1]) {
-        translate([0,0,i*z_step]) linear_extrude(height=z_step, center=true, convexity = 10, twist = -360, $fn = 30) translate([0.5, 0, 0]) circle(d=d-1.0);
-    }
-}
-
-module _nut(d=8, d2=18, h=7, indents=20) {
-    $fn=60;
-    sphere_dia=d2+h/1.8;
-    intersection() {
-        difference() {
-            cylinder(d=d2,h=h);
-            threads(d=d+4*slop, multiple=h);
-            for (i = [0:indents-1]) {
-                rotate([0,20,i*360/indents]) translate([-2,d2/2+2,0]) rotate([0,0,45]) cube([4,4,35], center=true);
-            }
-        }
-        translate([0,0,h-sphere_dia/3]) sphere(d=sphere_dia);
-        translate([0,0,sphere_dia/3]) sphere(d=sphere_dia);
-    }
-}
-
-module _bolt(d=8, h=20, h2=20, diameter=1, shaft=0) {
-    
-    module _thread(thread_len, thread_y) {
-        translate([0,thread_y,0]) intersection() {
-            rotate([-90,0,0]) threads(d=d, multiple=thread_len/1.5);
-            translate([0,thread_len/2,d*0.1]) cube([d,thread_len,d], center=true);
-        }
-    }
-    
-    if (shaft == 0) {
-        _thread(h,0);
-    } else {
-        _thread(h-shaft, shaft);
-        intersection() {
-            translate([0,-diameter,0]) rotate([-90,0,0]) cylinder(d=d, h=shaft+2*diameter);
-            translate([0,shaft/2,d*0.1]) cube([d,shaft+2*diameter,d], center=true);
-        }
-    }
-    translate([0,-2.5,d*0.05]) rounded_cube(h2,5,d*0.9,diameter=diameter);
-}
-
 module triangle() {
     linear_extrude(56) polygon(points=[[0,0], [0,19], [19,19]]);
 }
@@ -547,7 +504,7 @@ module slide_bed_adapter2_center() {
 
 //// VIEW
 module view_proper() {
-    frame_mockup(0, 2);
+    frame_mockup(0, 2, 2, 3.5);
     //translate([-180, -180, 0]) rotate([180,0,90]) leg_with_motor();
     //translate([180, 180, 0]) rotate([180,0,-90]) leg_with_motor();
 
@@ -573,7 +530,11 @@ module view_proper() {
     //translate([-94.5,-161-motor_side_length/2,44]) rotate([0,180,0]) slide_bed_adapter();
     
     translate([0,0,34]) rotate([0,0,180]) slide_bed_adapter2();
-    translate([0,0,34]) rotate([0,0,180]) slide_bed_adapter2_center();
+    //translate([0,0,34]) rotate([0,0,180]) slide_bed_adapter2_center();
+    
+    //translate([-165,-125,23]) rotate([135,0,0]) frame_clip_corner2();
+    translate([-185,-100,60]) rotate([90,-45,90]) frame_clip();
+    translate([-147.5,-100,60]) mirror([1,0,0]) rotate([90,-45,90]) frame_clip_slim();
     
     
 }
@@ -626,8 +587,8 @@ module view_parts(part=0) {
 // set this to false before rendering!
 FAST=true;
 
-view_parts(15);
-//view_proper();
+//view_parts(13);
+view_proper();
 
 //z_lifter_arm();
 //z_lifter();

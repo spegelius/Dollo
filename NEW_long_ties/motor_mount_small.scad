@@ -30,7 +30,7 @@ diameter = 2;
 
 module y_mount_added(){    
     //base
-    translate([0,-4+rack_gap/2,-1]) rounded_cube(depth=42+rack_gap*2, width = frame_width+15+1, height=4, center=true);
+    translate([0,-4+rack_gap/2,-1]) rounded_cube(depth=42+rack_gap*2, width = frame_width+15+1, height=4, center=true, diameter=diameter);
     
     // lower slide
     slide_depth = 11;
@@ -38,7 +38,7 @@ module y_mount_added(){
     
     module slide() {
         difference() {
-            rotate([45,0,0]) rounded_cube(height=15, width=15, depth =15, diameter = 3.5);
+            rotate([45,0,0]) rounded_cube(height=15, width=15, depth=15, diameter=3.5);
             translate([0,0,-10]) cube([60,30,30], center=true);
         }
     }
@@ -46,7 +46,7 @@ module y_mount_added(){
 	translate([-18.25,slide_pos_y,-5]) slide();
     translate([18.25,slide_pos_y,-5]) slide();
     
-    translate([0,slide_pos_y-5.5,0.4]) rounded_cube(height=5, width=frame_width+15+1, depth=25.5);
+    translate([0,slide_pos_y-5.5,0.4]) rounded_cube(height=5, width=frame_width+15+1, depth=25.5, diameter=diameter);
     
 //towers
 
@@ -56,12 +56,12 @@ module y_mount_added(){
     tower_pos_y = -2;
 
     // right tower
-	translate([(32-21-4)+19/2,tower_pos_y,(17.5+4.25)/2]) rounded_cube(19,15,tower_height);
+	translate([(32-21-4)+19/2,tower_pos_y,(17.5+4.25)/2]) rounded_cube(19,15,tower_height, diameter=diameter);
     translate([(32-21-4)+19-4.5,tower_pos_y+15/2-4.8,tower_height]) cylinder(d=7,h=2);
     
     // left tower
     difference() {
-        translate([(-21-4)+24/2,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height);
+        translate([(-21-4)+24/2,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height, diameter=diameter);
         translate([(-21-4)+3.5,tower_pos_y+15/2-4.8,tower_height-1.5]) cylinder(d=7.25,h=2.5);
     }
 }
@@ -158,3 +158,5 @@ module do_motor_mount() {
 }
 
 do_motor_mount();
+
+#translate([0,-7,-9]) cube([23,38,23], center=true);

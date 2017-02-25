@@ -220,7 +220,7 @@ module motor_plate(h=5) {
     }
 }
 
-module rounded_cube(width,depth,height){
+module rounded_cube(width,depth,height,diameter){
     hull(){
         translate([width/2-diameter/2,depth/2-diameter/2,height/2-diameter/2]) sphere(d=diameter);
         translate([width/2-(diameter/2),depth/2-(diameter/2),-height/2+(diameter/2)]) sphere(d=diameter);
@@ -233,15 +233,71 @@ module rounded_cube(width,depth,height){
         translate([-width/2+(diameter/2),-depth/2+(diameter/2),-height/2+(diameter/2)]) sphere(d=diameter);
     }
 }
+
+module _threads(d=8, h=10, z_step=1.8, depth=0.5, direction=0) {
+    
+    function get_twist(dir) = (direction == 0) ? -360 : 360;
+
+    multiple = h/z_step+1;
+    
+    for (i = [0:multiple]) {
+        translate([0,0,i*z_step]) linear_extrude(height=z_step, center=true, convexity = 10, twist = get_twist(direction), $fn = 30) translate([depth, 0, 0]) circle(d=d-2*depth);
+    }
+}
+
+module _nut(d=8, d2=18, h=7, indents=20, z_step=1.8, depth=0.5) {
+    $fn=60;
+    sphere_dia=d2+h/1.8;
+    intersection() {
+        difference() {
+            cylinder(d=d2,h=h);
+            _threads(d=d+4*slop, h=h, z_step=z_step, depth=depth);
+            for (i = [0:indents-1]) {
+                rotate([0,20,i*360/indents]) translate([-2,d2/2+2,0]) rotate([0,0,45]) cube([4,4,35], center=true);
+            }
+        }
+        translate([0,0,h-sphere_dia/3]) sphere(d=sphere_dia);
+        translate([0,0,sphere_dia/3]) sphere(d=sphere_dia);
+    }
+}
+
+module _bolt_shaft(d, h, shaft=0, z_step=1.8, depth=0.5, direction=0) {
+    module _do_shaft(th) {
+        intersection() {
+            rotate([-90,0,0]) _threads(d=d, h=th, z_step=z_step, depth=depth, direction=direction);
+            translate([0,th/2,d*0.1]) cube([d,th,d], center=true);
+        }
+    }
+
+    if (shaft == 0) {
+        _do_shaft(h);
+    } else {
+        translate([0,shaft,0]) _do_shaft(h-shaft);
+        intersection() {
+            rotate([-90,0,0]) cylinder(d=d, h=shaft);
+            translate([0,shaft/2,d*0.1]) cube([d,shaft,d], center=true);
+        }
+    }
+}
+
+module _bolt(d=8, h=20, h2=20, shaft=0, diameter=1, z_step=1.8, depth=0.5) {
+  
+    _bolt_shaft(d=d, h=h, shaft=shaft, z_step=z_step, depth=depth);
+    translate([0,-1.4,d*0.05]) rounded_cube(d,3,d*0.9,diameter=diameter);
+    translate([0,-6,d*0.05]) rounded_cube(4,10,d*0.9,diameter=diameter);
+}
+
 //translate([50,50]) nut();
 //translate([50,50]) elongated_nut();
 //translate([50,47.2]) cube([5.6, 5.6, 2.4]);
 
-module frame_mockup(bed_angle=45, units=1) {
+module frame_mockup(bed_angle=45, units_x=1, units_y=1, units_z=1) {
     corner_side = 60;
     unit = 120;
-    unit_len = units*unit;
-    z = 2*corner_side + unit_len - 30;
+    unit_len_x = units_x*unit;
+    unit_len_y = units_y*unit;
+    unit_len_z = units_z*unit;
+    z = 2*corner_side + unit_len_z - 30;
     
     module corner() {
         difference() {
@@ -257,46 +313,46 @@ module frame_mockup(bed_angle=45, units=1) {
         }
     }
     
-    module side() {
+    module side(length) {
         difference() {
-            cube([30,30,unit_len]);
+            cube([30,30,length]);
             translate([15,-0.01,0]) male_dovetail(corner_side+1);
-            translate([-0.01,15,0]) rotate([0,0,-90]) male_dovetail(unit_len+1);
-            translate([15,30.01,0]) rotate([0,0,180]) male_dovetail(unit_len+1);
-            translate([30.01,15,0]) rotate([0,0,90]) male_dovetail(unit_len+1);
+            translate([-0.01,15,0]) rotate([0,0,-90]) male_dovetail(length+1);
+            translate([15,30.01,0]) rotate([0,0,180]) male_dovetail(length+1);
+            translate([30.01,15,0]) rotate([0,0,90]) male_dovetail(length+1);
         }
     }
     
     // corners
-    %translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
-    %mirror([1,0,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
-    %mirror([0,1,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
-    %mirror([1,1,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
+    %translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0]) corner();
+    %mirror([1,0,0]) translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0]) corner();
+    %mirror([0,1,0]) translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0]) corner();
+    %mirror([0,1,0]) mirror([1,0,0]) translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0]) corner();
     
     // corners
-    translate([0,0,2*corner_side + unit_len]) mirror([0,0,1]) {
-        %translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
-        %mirror([1,0,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
-        %mirror([0,1,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
-        %mirror([1,1,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, 0]) corner();
+    translate([0,0,2*corner_side + unit_len_z]) mirror([0,0,1]) {
+        %translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0]) corner();
+        %mirror([1,0,0]) translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0]) corner();
+        %mirror([0,1,0]) translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0]) corner();
+        %mirror([0,1,0]) mirror([1,0,0]) translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0]) corner();
     }
 
     // sides
-    %translate([-corner_side-unit_len/2, unit_len/2, 0]) rotate([90,0,0]) side();
-    %mirror([1,0,0]) translate([-corner_side-unit_len/2, unit_len/2, 0]) rotate([90,0,0]) side();
-    %rotate([0,0,90]) translate([-corner_side-unit_len/2, unit_len/2, 0]) rotate([90,0,0]) side();
-    %mirror([0,1,0]) %rotate([0,0,90]) translate([-corner_side-unit_len/2, unit_len/2, 0]) rotate([90,0,0]) side();
+    %translate([-corner_side-unit_len_x/2, unit_len_y/2, 0]) rotate([90,0,0]) side(unit_len_y);
+    %mirror([1,0,0]) translate([-corner_side-unit_len_x/2, unit_len_y/2, 0]) rotate([90,0,0]) side(unit_len_y);
+    %rotate([0,0,90]) translate([-corner_side-unit_len_y/2, unit_len_x/2, 0]) rotate([90,0,0]) side(unit_len_x);
+    %mirror([0,1,0]) %rotate([0,0,90]) translate([-corner_side-unit_len_y/2, unit_len_x/2, 0]) rotate([90,0,0]) side(unit_len_x);
     
     // sides
-    %translate([-corner_side-unit_len/2, unit_len/2, z]) rotate([90,0,0]) side();
-    %mirror([1,0,0]) translate([-corner_side-unit_len/2, unit_len/2, z]) rotate([90,0,0]) side();
-    %rotate([0,0,90]) translate([-corner_side-unit_len/2, unit_len/2, z]) rotate([90,0,0]) side();
-    %mirror([0,1,0]) %rotate([0,0,90]) translate([-corner_side-unit_len/2, unit_len/2, z]) rotate([90,0,0]) side();
+    %translate([-corner_side-unit_len_x/2, unit_len_y/2, z]) rotate([90,0,0]) side(unit_len_y);
+    %mirror([1,0,0]) translate([-corner_side-unit_len_x/2, unit_len_y/2, z]) rotate([90,0,0]) side(unit_len_y);
+    %rotate([0,0,90]) translate([-corner_side-unit_len_y/2, unit_len_x/2, z]) rotate([90,0,0]) side(unit_len_x);
+    %mirror([0,1,0]) %rotate([0,0,90]) translate([-corner_side-unit_len_y/2, unit_len_x/2, z]) rotate([90,0,0]) side(unit_len_x);
 
-    %translate([-corner_side-unit_len/2, -corner_side-unit_len/2, corner_side]) side();
-    %mirror([1,0,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, corner_side]) side();
-    %mirror([0,1,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, corner_side]) side();
-    %mirror([1,1,0]) translate([-corner_side-unit_len/2, -corner_side-unit_len/2, corner_side]) side();
+    %translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, corner_side]) side(unit_len_z);
+    %mirror([1,0,0]) translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, corner_side]) side(unit_len_z);
+    %mirror([0,1,0]) translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, corner_side]) side(unit_len_z);
+    %mirror([0,1,0]) mirror([1,0,0]) translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, corner_side]) side(unit_len_z);
 
     // bed
     translate([0,0,60]) %difference() {
@@ -306,4 +362,4 @@ module frame_mockup(bed_angle=45, units=1) {
     
 }
 
-//frame_mockup(0, 2);
+//frame_mockup(0, 2, 3, 4);

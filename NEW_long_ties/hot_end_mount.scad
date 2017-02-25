@@ -4,6 +4,7 @@ include <include.scad>;
 use <long_tie.scad>;
 use <long_bow_tie_experimental.scad>;
 use <long_bow_tie.scad>;
+use <motor_mount_small.scad>;
 
 hotend_depth = 75;
 mounting_diamiter = 12+slop;
@@ -16,7 +17,7 @@ $fn=60;
 
 module motor_mount_small(height=15){
 	//scale([.9,.9,.9]) translate([-8.75,1,snap_location]) male_dovetail(35);
-    translate([-8+slop,0.95,snap_location-4.5]) rotate([-90,0,0]) scale([.98,1,0.99]) long_tie(.9*35);
+    translate([-8+slop,0.95,snap_location-6.2]) rotate([-90,0,0]) scale([.98,1,0.99]) long_tie(.9*35);
 }
 
 module y_mount_added(){
@@ -28,14 +29,26 @@ module y_mount_added(){
 	translate([1,1,0]) cube([25,8,5],center=true);
 }
 
+module dove_end() {
+    intersection() {
+        union() {
+            translate([-8+slop,0.95,-2.5]) male_dovetail(20);
+            translate([-8+slop,0.95,-2.5]) rotate([0,0,180]) male_dovetail(20);
+            translate([-11.5,-8,-2.5]) cube([5,15,20]);
+        }
+        translate([-11.5,-8,-2.5]) cube([10,17,20]);
+    }
+}
+
 module y_mount_taken(){
+    
+
+    
         translate([0,-13,hotend_depth/2]) cylinder(h=70, d=mounting_diamiter);
 	    translate([0,-13,0]) cylinder(h=70, d=top_diamiter);
 		translate([0,-26,hotend_depth-natch_height]) rotate([0,-90,0]) cylinder(h=30, d=bolt_hole_dia, $fn=20);
 		translate([0,-2,hotend_depth-natch_height+3]) rotate([0,-90,0]) cylinder(h=30, d=bolt_hole_dia, $fn=20);
-        translate([-8+slop,1,-1]) male_dovetail(20);
-        translate([-8+slop,1,-1]) rotate([0,0,180]) male_dovetail(20);
-        translate([-12,-8,-1]) cube([5,15,20]);
+        dove_end();
 }
 module mount(){
 	difference(){
@@ -59,16 +72,16 @@ module clamp() {
         difference() {
             union() {
                 hull() {
-                    cylinder(d=11, h=3);
-                    translate([0,5,0]) cylinder(d=11, h=3);
+                    cylinder(d=12, h=3);
+                    translate([0,8.5,0]) cylinder(d=12, h=3);
                 }
-                translate([-5.5,-5.5,0]) cube([11,6,3]);
+                translate([-6,-6,0]) cube([12,6,3]);
             }
-            rotate([-40,0,0]) translate([0,0,-3]) hull() {
+            rotate([-45,0,0]) translate([0,0,-4]) hull() {
                 cylinder(d=7, h=19);
-                translate([0,2,0]) cylinder(d=7, h=19);
+                translate([0,4,0]) cylinder(d=7, h=19);
             }
-            rotate([20,0,0]) translate([2,2,-5]) cube([4,4,10]);
+            rotate([30,0,0]) translate([2,2,-5]) cube([4,4,10]);
         }
     }
     
@@ -78,12 +91,21 @@ module clamp() {
         translate([-11.75,-15,-3]) cube([23.5,15,3]);
         translate([-11.75,-15,0]) cube([7.5,15,0.6]);
         translate([4.25,-15,0]) cube([7.5,15,0.6]);
-        translate([0,4,-3]) cable_hole();
+        translate([0,5,-3]) cable_hole();
     }
 }
 
+module do_motor_mount_small() {
+    translate([0,0,25/2-1]) mount();
+    translate([0,-65,25/2-1]) mirror([0,1,0]) mount();
+    translate([-25,-35,3]) clamp();
+}
 
-translate([0,0,25/2-1]) mount();
-translate([0,-65,25/2-1]) mirror([0,1,0]) mount();
+module view_proper() {
+    rotate([0,-90,0]) mount();
+    rotate([0,-90,0]) mirror([0,0,1]) mount();
+    %translate([0,21.6,-28.7]) rotate([-90,0,0]) do_motor_mount();
+}
 
-translate([-20,-25,3]) clamp();
+do_motor_mount_small();
+//view_proper();
