@@ -56,9 +56,9 @@ module hole(obj_height) {
     cylinder(d=shaft, h=obj_height*2.1, center=true);
 }
 
-module bolt_hole(obj_height) {
+module bolt_hole(bolt_size, obj_height) {
     hole_pos = shaft_len - shaft_flat_len + shaft_flat_len/2;
-    translate([0, 0, obj_height/2-hole_pos]) rotate([0,90,0]) cylinder(d=m4_bolt_hole_dia, h=10);
+    translate([0, 0, obj_height/2-hole_pos]) rotate([0,90,0]) cylinder(d=bolt_size, h=10);
 }
 
 module flat_of_shaft(obj_height) {
@@ -104,12 +104,12 @@ module gear_v2() {
 
 
 
-module gear_v3() {
+module gear_v3(nut_size=m3_nut_side, nut_height=m3_nut_height, bolt_size=bolt_hole_dia) {
     difference() {
         union() {
             difference() {
                 union() {
-                    nogear(8, 17);
+                    nogear(8, 16);
                     translate([0,0,11]) gear (
                         mm_per_tooth    = 5,
                         number_of_teeth = 8,
@@ -140,10 +140,10 @@ module gear_v3() {
                     }
                 }
             }
-            translate([0,0,14]) flat_of_shaft(24);
+            translate([0,0,15.56]) flat_of_shaft(23);
         }
-        translate([0,0,8]) bolt_hole(21);
-        #translate([shaft/2-0.5,-(m4_nut_side+2*slop)/2,0]) cube([3.10+slop, m4_nut_side+2*slop, 7.5]);
+        translate([0,0,8]) bolt_hole(bolt_size, 21);
+        #translate([shaft/2+0.5,-(nut_size+2*slop)/2,0]) cube([nut_height+slop, nut_size+2*slop, 7.5]);
     }
 }
 
