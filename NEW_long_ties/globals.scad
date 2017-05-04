@@ -76,8 +76,13 @@ m4_bolt_head_hole_dia = 6.8+2*slop;
 
 
 m3_nut_side = 5.65;
+m3_nut_height = 2.3;
 m4_nut_side = 6.85;
+m4_nut_height = 3.1;
 
 // threaded rod
 lifter_rod_diam = 9.86;
 hole_threaded_rod = lifter_rod_diam+2*slop;
+
+// for the extensions
+metal_rod_size = 9;

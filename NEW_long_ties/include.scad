@@ -186,10 +186,12 @@ module bow_support(){
 	}
 
 
-module nut(h=2.4) {
+module nut(h=2.4, cone=true) {
     hull() {
         cylinder(d = 6.5, h=h, $fn=6);
-        translate([0,0,2.4]) cylinder(d = 3.2, h=1.2, $fn=20);
+        if (cone) {
+            translate([0,0,2.4]) cylinder(d=3.2, h=1.2, $fn=20);
+        }
     }
 }
 
