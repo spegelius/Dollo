@@ -259,6 +259,27 @@ module rail_holder() {
     %translate([92.5, 3, motor_side_length/2+1]) rotate([0,0,0]) rail(150, 20);
 }
 
+module rail_top() {
+    $fn=90;
+    module cone() {
+        difference() {
+            translate([0,0,-20]) cylinder(d=lifter_rod_diam*2, h=40);
+            rotate_extrude(convexity=2) translate([200/2+lifter_rod_diam/2+1,0,0]) circle(d=200);
+        }
+    }
+
+    difference() {
+        union() {
+            translate([0,0,3/2]) cube([85,20,3], center=true);
+            translate([0,1,0]) cylinder(d=17,h=23);
+            translate([-37.5,0,0]) rotate([90,0,0]) rail(8, 20, false);
+            translate([37.5,0,0]) rotate([90,0,0]) rail(8, 20, false);
+            }
+        translate([0,1,11.5]) cone();
+    }
+
+}
+
 // not used, too much slack
 module jointed_nut() {
     
@@ -522,21 +543,21 @@ module view_proper() {
     
     ////translate([120,120,-10]) rotate([0,0,180]) rod_guide_side();
     ////translate([120,120,110]) rotate([0,180,0]) mirror([0,1,0]) rod_guide_side();
-    //translate([-180,-180,0]) rotate([90,0,0]) rail_holder();
-    //translate([-180,-180,360]) rotate([90,0,0]) mirror([0,1,0]) rail_holder();
+    translate([-180,-180,0]) rotate([90,0,0]) rail_holder();
+    translate([-180,-180,540]) rotate([90,0,0]) mirror([0,1,0]) rail_holder();
 
-    translate([-162.5,-181-motor_side_length/2,34]) rail_slide();
-    translate([-140,-181,74]) rotate([-90,0,90]) rail_slide_bolt();
+    //translate([-162.5,-181-motor_side_length/2,34]) rail_slide();
+    //translate([-140,-181,74]) rotate([-90,0,90]) rail_slide_bolt();
     //translate([-94.5,-161-motor_side_length/2,44]) rotate([0,180,0]) slide_bed_adapter();
     
     translate([0,0,34]) rotate([0,0,180]) slide_bed_adapter2();
-    //translate([0,0,34]) rotate([0,0,180]) slide_bed_adapter2_center();
+    translate([0,0,34]) rotate([0,0,180]) slide_bed_adapter2_center();
     
     //translate([-165,-125,23]) rotate([135,0,0]) frame_clip_corner2();
-    translate([-185,-100,60]) rotate([90,-45,90]) frame_clip();
     translate([-147.5,-100,60]) mirror([1,0,0]) rotate([90,-45,90]) frame_clip_slim();
     
-    
+    translate([-125,-203,540]) rotate([180,0,0]) rail_top();
+
 }
 
 
@@ -581,13 +602,15 @@ module view_parts(part=0) {
         slide_bed_adapter2_bolt();
     } else if (part == 15) {
         slide_bed_adapter2_center();
+    } else if (part == 16) {
+        rail_top();
     }
 }
 
 // set this to false before rendering!
 FAST=true;
 
-//view_parts(13);
+//view_parts(16);
 view_proper();
 
 //z_lifter_arm();
