@@ -1,11 +1,10 @@
-length = 50;
 include <include.scad>;
 include <globals.scad>;
 use <long_bow_tie.scad>;
 
 $fn=60;
 
-module long_bow_tie_half() {
+module long_bow_tie_half(length=50) {
     intersection() {
         long_bow_tie(length);
         translate([0,-length,-1]) cube([6, length, 12]);
@@ -13,4 +12,4 @@ module long_bow_tie_half() {
     }
 }
 
-rotate ([0,-90,0]) long_bow_tie_half();
+rotate ([0,-90,0]) long_bow_tie_half(50);
