@@ -1,5 +1,8 @@
 include <include.scad>;
 include <globals.scad>;
+
+use <long_tie.scad>;
+
 $fn=20;
 switch_length = 20.5;
 switch_depth = 6.5;
@@ -61,6 +64,20 @@ module endstop_v2() {
     }
 }
 
+module endstop_v3() {
+    intersection() {
+        endstop_v1();
+        translate([0,0,10/2]) cube([50,50,10],center=true);
+    }
+    intersection() {
+        translate ([8,50/2+9/2,2]) difference() {
+            rotate([0,180,0]) long_tie();
+            cube([10,101,4],center=true);
+        }
+        translate([-3,-2,-7]) cube([switch_length+6,switch_width+3,switch_depth+9]);
+    }
+}
+
 module z_endstop() {
     difference() {
         union() {
@@ -76,4 +93,9 @@ module z_endstop() {
 
 //endstop_v1();
 //endstop_v2();
-z_endstop();
+endstop_v3();
+
+module do_tie() {
+
+}
+//z_endstop();
