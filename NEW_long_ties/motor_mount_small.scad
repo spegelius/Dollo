@@ -43,10 +43,10 @@ module y_mount_added(){
         }
     }
     
-	translate([-18.25,slide_pos_y,-5]) slide();
-    translate([18.25,slide_pos_y,-5]) slide();
+	translate([-18.25,slide_pos_y,-4.9]) slide();
+    translate([18.25,slide_pos_y,-4.9]) slide();
     
-    translate([0,slide_pos_y-5.5,0.4]) rounded_cube(height=5, width=frame_width+15+1, depth=25.5, diameter=diameter);
+    translate([0,slide_pos_y-5.5,0.6]) rounded_cube(height=5, width=frame_width+15+1, depth=25.5, diameter=diameter);
     
 //towers
 
@@ -158,5 +158,3 @@ module do_motor_mount() {
 }
 
 do_motor_mount();
-
-#translate([0,-7,-9]) cube([23,38,23], center=true);
