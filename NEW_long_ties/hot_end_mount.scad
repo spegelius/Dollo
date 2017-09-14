@@ -73,14 +73,13 @@ module clamp() {
         difference() {
             union() {
                 hull() {
-                    cylinder(d=12.5, h=3);
-                    translate([0,10.5,0]) cylinder(d=12.5, h=3);
+                    translate([-13.5/2,-12.5/2,0]) cube([13.5,6,3]);
+                    translate([0,16,0]) cylinder(d=13.5, h=3);
                 }
-                translate([-12.5/2,-12.5/2,0]) cube([12.5,6,3]);
             }
             rotate([-45,0,0]) translate([0,0,-4]) hull() {
                 cylinder(d=7, h=19);
-                translate([0,5.5,0]) cylinder(d=7, h=19);
+                translate([0,9,0]) cylinder(d=7, h=29);
             }
             rotate([30,0,0]) translate([2,2,-5]) cube([5,4,10]);
         }
@@ -127,10 +126,10 @@ module prox_sensor_clamp() {
 }
 
 module fan_duct() {
-    
+
     nozzle_offset = 1.5;
     nozzle_width = 30;
-    
+
     module fan_base() {
         difference() {
             translate([0,0,-2]) union() {
@@ -148,55 +147,66 @@ module fan_duct() {
                 translate([0,0,1]) duct(d2=12, x=nozzle_width-2);
             }
             translate([0,0,-4]) cylinder(d=40,h=4,$fn=60);
-            translate([-32.5/2,-32.5/2,-2]) cylinder(d=bolt_hole_dia-0.2, h=8);
-            translate([32.5/2,-32.5/2,-2]) cylinder(d=bolt_hole_dia-0.2, h=8);
-            translate([32.5/2,32.5/2,-2]) cylinder(d=bolt_hole_dia-0.2, h=8);
-            translate([-32.5/2,32.5/2,-2]) cylinder(d=bolt_hole_dia-0.2, h=8);
+            translate([-32.5/2,-32.5/2,-2]) cylinder(d=bolt_hole_dia-0.1, h=8);
+            translate([32.5/2,-32.5/2,-2]) cylinder(d=bolt_hole_dia-0.1, h=8);
+            translate([32.5/2,32.5/2,-2]) cylinder(d=bolt_hole_dia-0.1, h=8);
+            translate([-32.5/2,32.5/2,-2]) cylinder(d=bolt_hole_dia-0.1, h=8);
             
             translate([-26/2+4,-42/2-3,6/2-2]) rotate([0,90,0]) cylinder(d=bolt_hole_dia, h=30);
             
-            translate([0,0,-1]) duct(d=41, d2=10, x=nozzle_width-2);
+            translate([0,0,-1]) duct(d=41, d2=10, x=nozzle_width-2, h=31.31);
         }
     }
-    
+
     module capsule_3d(d=12, x=20, h=1) {
         hull() {
             translate([0,x/2,0]) cylinder(d=d, h=h, $fn=30);
             translate([0,-x/2,0]) cylinder(d=d, h=h, $fn=30);
         }
     }
-    
-    module duct(d=43, d2=10, x=nozzle_width) {
+
+    module duct(d=43, d2=10, x=nozzle_width, h=31.3) {
         hull() {
             cylinder(d=d,h=1);
-            translate([nozzle_offset,12,31.3]) rotate([0,-18,90]) capsule_3d(d=d2, x=x);
+            translate([nozzle_offset,11,h]) rotate([0,-18,90]) capsule_3d(d=d2, x=x);
         }
     }
 
     module nozzle() {
-        
+
         module tube(d=8, h=20) {
             rotate([-90,0,0]) {
+
                 hull() {
                     cylinder(d=d+2);
-                    translate([-1,1,4]) cylinder(d=d);
-                    translate([-1,1,0]) cube([d/2, d/2, 4]);
+                    difference() {
+                        hull() {
+                            translate([-1,1,4]) cylinder(d=d);
+                            translate([-1,d/2-2+1,0]) cube([d/2, 2, 4]);
+                        }
+                        translate([d-3,-d-1.5,4]) rotate([0,0,55]) cube([d,d,10]);
+                    }
                 }
-                hull() {
-                    translate([-1,1,4]) cylinder(d=d);
-                    translate([-1,1,h]) sphere(d=d);
-                    translate([-1,1,4]) cube([d/2, d/2, h-4]);
-                }
+                difference() {
+                    hull() {
+                        hull() {
+                            translate([-1,1,4]) cylinder(d=d);
+                            translate([-1,1,h]) sphere(d=d);
+                        }
+                        translate([-1,d/2-2+1,4]) cube([d/2, 2, h-4]);
+                    }
+                    translate([d-3,-d-1.5,0]) rotate([0,0,55]) cube([d,d,h+20]);
+               }
             }
         }
-        
+
         module hollow_tube() {
             difference() {
                 tube(d=10, h=23);
                 tube(d=8, h=23);
             }
         }
-        
+
         module nozzle_main() {
             translate([-nozzle_width/2+1+nozzle_offset,0,0]) hollow_tube();
             translate([nozzle_width/2-1+nozzle_offset,0,0]) mirror([1,0,0])  hollow_tube();
@@ -208,19 +218,19 @@ module fan_duct() {
                 translate([nozzle_width/2+nozzle_offset,0,-1]) cylinder(d=12,h=2);
             }
         }
-        
+
         difference() {
             nozzle_main();
-            translate([nozzle_width/2+nozzle_offset-4,24/2+1,-5]) rotate([0,45,0]) cube([2, 24, 5], center=true);
-            translate([-nozzle_width/2+nozzle_offset+4,24/2+1,-5]) rotate([0,-45,0]) cube([2, 24, 5], center=true);
+            translate([nozzle_width/2+nozzle_offset-4,24/2+1,-4]) rotate([0,55,0]) cube([2.5, 24, 5], center=true);
+            translate([-nozzle_width/2+nozzle_offset+4,24/2+1,-4]) rotate([0,-55,0]) cube([2.5, 24, 5], center=true);
             
-            translate([nozzle_offset,1,-4]) rotate([60,0,0]) cube([10,2.5,5], center=true);
+            translate([nozzle_offset,1,-4]) rotate([60,0,0]) cube([12,2.5,5], center=true);
         }
         
     }
     
     fan_base();
-    translate([0,11.75,31]) rotate([108,0,0]) nozzle();
+    translate([0,10.7,31.2]) rotate([108,0,0]) nozzle();
 
 }
 
@@ -292,9 +302,12 @@ module view_proper() {
 //do_mount();
 //clamp();
 //rotate([0,-90,0])  prox_sensor_clamp();
-
-fan_duct();
+//intersection() {
+//    fan_duct();
+//    cube([100,100,36]);
+//}
+//fan_duct();
 //fan_mount_clip();
 //fan_mount();
 
-//view_proper();
+view_proper();
