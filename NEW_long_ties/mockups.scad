@@ -65,10 +65,54 @@ module e3dv6() {
     translate([0,0,5]) heater_block(); 
     translate([0,0,18]) heatsink();
     translate([0,0,62.3-16.7]) neck();
+}
+
+module prometheus() {
+
+    module nozzle() {
+        hull() {
+            cylinder(d=1, h=1, $fn=30);
+            translate([0,0,2]) cylinder(d=3, h=1, $fn=30);
+        }
+        translate([0,0,2]) cylinder(d=7,h=2.5, $fn=6);
+        translate([0,0,4.5]) cylinder(d=4,h=2, $fn=30);
+    }
+
+    module heater_block() {
+        color("LightGrey") {
+            translate([-8, -8, 0]) cube([16,23,11.5]);
+            cylinder(d=5,h=15, $fn=30);
+        }
+    }
     
+    module heatsink() {
+        intersection() {
+            color("LightGrey") {
+                cylinder(d=10,h=28, $fn=50);
+                for (i = [0:9]) {
+                    translate([0,0,i*2.5]) cylinder(r=15, h=1, $fn=50);
+                }
+                translate([0,0,25]) cylinder(d=16,h=1, $fn=50);
+            }
+            translate([0,0,40/2]) cube([30,20,40], center=true);
+        }
+    }
     
+    module neck() {
+        color("LightGrey") {
+            $fn=50;
+            cylinder(d=16, h=3);
+            translate([0,0,3]) cylinder(d=12, h=6);
+            translate([0,0,9]) cylinder(d=16, h=3.7);
+        }
+    }
+    nozzle();
+    translate([0,0,5]) heater_block();
+    translate([0,0,18]) heatsink();
+    translate([0,0,62.3-16.7]) neck();
 }
 
 //proximity_sensor();
 
 //e3dv6();
+//prometheus();
