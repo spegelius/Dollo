@@ -65,7 +65,7 @@ motor_side_length = 43.2;
 motor_bolt_hole_distance = 31;
 motor_center_hole = 23;
 motor_shaft_dia = 5;
-motor_shaft_hole_dia = 5+2*slop;
+motor_shaft_hole_dia = 5;
 
 // bolts etc.
 bolt_hole_dia = 3+2*slop;
@@ -73,7 +73,6 @@ bolt_head_hole_dia = 5.8;
 
 m4_bolt_hole_dia = 4+2*slop;
 m4_bolt_head_hole_dia = 6.8+2*slop;
-
 
 m3_nut_side = 5.65;
 m3_nut_height = 2.3;
