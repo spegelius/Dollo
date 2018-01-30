@@ -11,9 +11,6 @@ obj_height = 20;
 units = 4; //only even numbers
 unit_length = 30;
 tail_depth = -4;
-tie_scale_x = 1;
-tie_scale_y = 1;
-tie_scale_z = 1;
 
 resolution = 10;
 
@@ -23,8 +20,8 @@ teeth_angle = 30;
 diameter = 3;
 
 module tie_taken(){
-    translate([-(unit_length*units+20)/2,0,tail_depth]) rotate([90,0,90]) scale([tie_scale_x,tie_scale_z,tie_scale_y]) male_dovetail(height=units*unit_length+20);
-    translate([-(unit_length*units+20)/2,-9,9.4]) rotate([90,180,90]) scale([tie_scale_x,tie_scale_z,tie_scale_y]) male_dovetail(height=units*unit_length+20);
+    translate([-(unit_length*units+20)/2,0,tail_depth]) rotate([90,0,90]) male_dovetail(height=units*unit_length+20);
+    translate([-(unit_length*units+20)/2,-9,9.4]) rotate([90,180,90]) male_dovetail(height=units*unit_length+20);
 }
 
 //herring bone style rack made from inkscape and OpenScad

@@ -22,7 +22,7 @@ module bow_tie_master(){
                     translate([0,length/4,length*.5]) rotate([45,0,0]) sphere(d=length*tilt_level);
                 }
             }
-			rotate([-90,0,0]) long_bow_tie_split(length);
+			rotate([-90,0,0]) translate([0,0,-scaled_male_dove_depth()]) long_bow_tie_split(length);
 		}
 	}
 }
@@ -31,14 +31,14 @@ module bow_holes() {
 	translate([-10,2.5,-2.5]) rotate([0,90,0]) #cylinder(h=50, d=1.5);
 }
 
-module finished(){
-	rotate([0,45*0,0]){
+module bow_tie(){
+	translate([0,0,13]) rotate([0,45*0,0]){
 		difference(){
 			rotate([0,180,0]) bow_tie_master();
 			//bow_holes();
-            #translate([0,5,-4]) rotate([90,0,0]) cylinder(d=2.5, h=50);
+            translate([0,5,-4]) rotate([90,0,0]) cylinder(d=2.5, h=50);
 		}
 	}
 }
 
-finished();
+bow_tie();

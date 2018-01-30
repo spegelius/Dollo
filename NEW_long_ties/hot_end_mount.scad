@@ -22,7 +22,7 @@ module motor_mount_small(height=15){
 }
 
 module y_mount_added(){
-	motor_mount_small();
+	#motor_mount_small();
 	translate([1,-4+((10-arm_thickness)/2),hotend_depth/2]) cube([25,arm_thickness,hotend_depth], center=true);
     translate([1,-15,hotend_depth-(natch_height)]) cube([25,30,natch_height*2],center=true);
 	translate([-4,-15,hotend_depth-17]) rotate([-45,0,0]) cube([15,33.2,natch_height*2],center=true);
@@ -86,8 +86,8 @@ module clamp() {
     }
     
     union(){
-        translate([-8,0,5]) long_bow_tie_split(15);
-        translate([8,0,5]) long_bow_tie_split(15);
+        translate([-8,0,slop]) long_bow_tie_split(15);
+        translate([8,0,slop]) long_bow_tie_split(15);
         translate([-11.75,-15,-3]) cube([23.5,15,3]);
         translate([-11.75,-15,0]) cube([7.5,15,0.6]);
         translate([4.25,-15,0]) cube([7.5,15,0.6]);
@@ -299,7 +299,7 @@ module view_proper() {
     translate([-17.5,10,-71.5]) rotate([-4,0,0]) fan_mount_clip();
 }
 
-//do_mount();
+do_mount();
 //clamp();
 //rotate([0,-90,0])  prox_sensor_clamp();
 //intersection() {
@@ -310,4 +310,4 @@ module view_proper() {
 //fan_mount_clip();
 //fan_mount();
 
-view_proper();
+//view_proper();

@@ -10,7 +10,7 @@ module split() {
 }
 
 module long_bow_tie_split(length) {
-    rotate([90,0,0]) difference() {
+    translate([0,0,male_dove_depth-slop]) rotate([90,0,0]) difference() {
         translate([0,-(male_dove_depth-slop),0]) rotate([-90,0,0]) long_bow_tie(length);
         split();
         rotate([0,0,180]) split();
