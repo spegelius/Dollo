@@ -75,14 +75,13 @@ module slide(height=10, wiggles) {
     }
 }
 
-module rail_finished() {
-    translate([0,-length/2,width/2]) rail(length,width);
-    translate([-25,-length/2,0]) cube([width/2-slop, length/2,width/2-slop]);
+module rail_inner() {
+    translate([0,-length/4,0]) cube([width/2-slop, length/2,width/2-slop]);
 }
 
-//rail_finished();
-//translate([32,0,0]) rotate([90,0,0]) rail(length,width);
-translate([35,0,0]) slide(15, 5);
+//rail_inner();
+//translate([0,-length/2,width/2]) rail(length,width);
+slide(15, 5);
 
 
 
