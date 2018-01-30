@@ -285,8 +285,8 @@ module _bolt_shaft(d, h, shaft=0, z_step=1.8, depth=0.5, direction=0) {
 module _bolt(d=8, h=20, h2=20, shaft=0, diameter=1, z_step=1.8, depth=0.5) {
   
     _bolt_shaft(d=d, h=h, shaft=shaft, z_step=z_step, depth=depth);
-    translate([0,-1.4,d*0.05]) rounded_cube(d,3,d*0.9,diameter=diameter);
-    translate([0,-6,d*0.05]) rounded_cube(4,10,d*0.9,diameter=diameter);
+    translate([0,-1.4,0]) rounded_cube(d*1.1,3,d*1.1,diameter=diameter);
+    translate([0,-6,0]) rounded_cube(4,10,d*1.1,diameter=diameter);
 }
 
 //translate([50,50]) nut();
