@@ -30,7 +30,7 @@ diameter = 2;
 
 module y_mount_added(){    
     //base
-    translate([0,-4+rack_gap/2,-1]) rounded_cube(depth=42+rack_gap*2, width = frame_width+15+1, height=4, center=true, diameter=diameter);
+    translate([0,-5.75+rack_gap/2,-1]) rounded_cube(depth=38.5+rack_gap*2, width = frame_width+35+1, height=4, center=true, diameter=diameter);
     
     // lower slide
     slide_depth = 11;
@@ -38,17 +38,20 @@ module y_mount_added(){
     
     module slide() {
         difference() {
-            rotate([45,0,0]) rounded_cube(height=15, width=15, depth=15, diameter=3.5);
-            translate([0,0,-10]) cube([60,30,30], center=true);
+            rotate([45,0,0]) rounded_cube(height=15, width=17, depth=15, diameter=3.5);
+            translate([0,0,-8]) cube([60,30,30], center=true);
         }
     }
     
-	translate([-18.25,slide_pos_y,-4.9]) slide();
-    translate([18.25,slide_pos_y,-4.9]) slide();
+	translate([-27.25,slide_pos_y,-4.9]) slide();
+    translate([0,slide_pos_y,-4.9]) slide();
+    translate([27.25,slide_pos_y,-4.9]) slide();
     
-    translate([0,slide_pos_y-5.5,0.6]) rounded_cube(height=5, width=frame_width+15+1, depth=25.5, diameter=diameter);
+    translate([0,slide_pos_y-7.25,0.6]) rounded_cube(height=5, width=frame_width+35+1, depth=22, diameter=diameter);
     
-//towers
+    translate([0,slide_pos_y,0.05]) rounded_cube(height=6.1, width=30, depth=28, diameter=diameter);
+    
+    //towers
 
     //top tower
 	translate([0-21,-25.75,0.625]) cube([42,18,tower_height]);
@@ -56,12 +59,12 @@ module y_mount_added(){
     tower_pos_y = -2;
 
     // right tower
-	translate([(32-21-4)+19/2,tower_pos_y,(17.5+4.25)/2]) rounded_cube(19,15,tower_height, diameter=diameter);
+	translate([17,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height, diameter=diameter);
     translate([(32-21-4)+19-4.5,tower_pos_y+15/2-4.8,tower_height]) cylinder(d=7,h=2);
     
     // left tower
     difference() {
-        translate([(-21-4)+24/2,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height, diameter=diameter);
+        translate([-17,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height, diameter=diameter);
         translate([(-21-4)+3.5,tower_pos_y+15/2-4.8,tower_height-1.5]) cylinder(d=7.25,h=2.5);
     }
 }
@@ -80,20 +83,27 @@ module bolt_head_hole() {
     }
 }
 
+module tapered_bolt_head_hole() {
+    hull() {
+        cylinder(d1=bolt_hole_dia, d2=6.5, h=3);
+        translate([hole_length,hole_length,0]) cylinder(d1=bolt_hole_dia, d=6.5, h=3);
+    }
+}
+
 module y_mount_taken(){
 	halign = [
 	   [0, "center"]
 	 ];
 	 
 		 rotate([0,0,-90]) for (a = halign) {
-		   translate([-9, 12.5,-3]) {
+		   translate([-7, 12.5,-3]) {
 			 linear_extrude(height = 1) {
 			   text(text = str(text), font = font, size = 6, halign = a[1]);
 			 }
 		   }
 		 }
 		 rotate([0,0,90]) for (a = halign) {
-		   translate([9,12.5,-3]) {
+		   translate([7,12.5,-3]) {
 			 linear_extrude(height = 1) {
 			   text(text = str(text), font = font, size = 6, halign = a[1]);
 			 }
@@ -101,20 +111,21 @@ module y_mount_taken(){
 		 }
 		 
 	rotate([0,0,45]) {
-        translate([5.65-21,5.65-21,-10]) bolt_hole();
-		translate([5.65+31-21,5.65-21,-10]) bolt_hole();
-		translate([5.65-21,5.65+31-21,-10]) bolt_hole();
-		//translate([5.65+31-21,5.65+31-21,-10]) bolt_hole();
+        // bolt holes. leave 0.2 = one layer which can be easily drilled out
+        translate([5.65-21,5.65-21,0.2]) bolt_hole();
+		translate([5.65+31-21,5.65-21,0.2]) bolt_hole();
+		translate([5.65-21,5.65+31-21,0.2]) bolt_hole();
+		translate([5.65+31-21,5.65+31-21,-10]) bolt_hole();
 
 		//counter sink
 
         translate([5.65-21,5.65-21,-3]) bolt_head_hole();
 		translate([5.65+31-21,5.65-21,-3]) bolt_head_hole();
 		translate([5.65-21,5.65+31-21,-3]) bolt_head_hole();
-		//translate([5.65+31-21,5.65+31-21,2.5]) bolt_head_hole();
+		translate([5.65+31-21,5.65+31-21,0.5]) tapered_bolt_head_hole();
 
-		translate([-70,-30,-5]) cube([50,50,50]);
-		translate([-30,-70,-5]) cube([50,50,50]);
+		translate([-70,-30,-5]) cube([50,70,50]);
+		translate([-30,-70,-5]) cube([70,50,50]);
 
 		translate([0,0,-5]) cylinder(d=motor_center_hole, h=20);
         translate([hole_length,hole_length,-5]) cylinder(d=motor_center_hole, h=20);
