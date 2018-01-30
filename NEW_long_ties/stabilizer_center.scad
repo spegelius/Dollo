@@ -28,7 +28,7 @@ module center() {
 }
 
 module bolt() {
-    _bolt(d=bolt_dia, h=32, h2=20, diameter=1, shaft=18, z_step=3, depth=1);
+    _bolt(d=bolt_dia, h=30, h2=20, diameter=1, shaft=20, z_step=3, depth=1);
 }
 
 module clip_bolt() {
@@ -223,6 +223,17 @@ module long_nut() {
     
 }
 
+module frame_center_clip() {
+    difference() {
+        intersection() {
+            translate([0,0,5/2]) rotate([0,0,45]) cube([41,41,5], center=true);
+            translate([-25,0,0]) cube([50,24,10]);
+        }
+        translate([0,bolt_dia_minus/2+5]) cylinder(d=bolt_dia_minus, h=5);
+    }
+    translate([-45/2,4.5,0]) rotate([0,-90,90]) long_bow_tie_half(45);
+}
+
 module view_proper() {
     frame_mockup(0, 2, 2, 3.5);
     
@@ -243,7 +254,7 @@ module view_proper() {
 FAST=false;
 
 //center();
-//bolt();
+bolt();
 //nut();
 //hook(0);
 
@@ -255,11 +266,12 @@ FAST=false;
 //frame_clip_corner4();
 //frame_clip_middle();
 //frame_clip_middle_2x();
+//frame_center_clip();
 
 //clip_bolt();
 //clip_nut();
 
-long_bolt(0);
+//long_bolt(0);
 //long_bolt(1);
 //long_nut();
 
