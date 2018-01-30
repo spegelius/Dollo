@@ -18,10 +18,10 @@ module basic_corner(){
 		rotate([0,90,0]) cylinder(d=23, h=28, center=true);
 		rotate([90,0,0]) cylinder(d=23, h=28, center=true);
 		module wrap(){
-			translate([0,-15,0]) male_dovetail(height=50);
-			rotate([0,0,90]) translate([0,-15,0]) male_dovetail(height=50);
-			rotate([0,0,180]) translate([0,-15,0]) male_dovetail(height=50);
-			rotate([0,0,-90]) translate([0,-15,0]) male_dovetail(height=50);
+			translate([0,-15.005,0]) male_dovetail(height=50);
+			rotate([0,0,90]) translate([0,-15.005,0]) male_dovetail(height=50);
+			rotate([0,0,180]) translate([0,-15.005,0]) male_dovetail(height=50);
+			rotate([0,0,-90]) translate([0,-15.005,0]) male_dovetail(height=50);
 		}
 		wrap();
 		rotate([0,90,0]) wrap();
@@ -57,7 +57,7 @@ module full_corner(){
 	difference(){
 		translate([0,0,0]) rotate([0,-35,0])basic_corner();
 		union(){
-			cylinder(h=50, d=15);
+			//cylinder(h=50, d=15);
 			//translate([-20,0,0]) cylinder(h=50, d=7);
 			//translate([10,17,0]) cylinder(h=50, d=7);
 			//translate([10,-17,0]) cylinder(h=50, d=7);
