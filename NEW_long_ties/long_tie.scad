@@ -28,4 +28,23 @@ module long_tie(length=50) {
     }
 }
 
+module long_tie_split(length=50) {
+    union() {
+        difference() {
+            translate([0,0,-male_dove_depth+slop]) long_bow_tie_split(length);
+            translate([0,-length/2, -3.5]) cube([10,length+1,7], center=true);
+        }
+        translate([0,-length/2, 0.8]) cube([4,length,1.6], center=true);
+    }
+}
+
+module long_tie_half(length=50) {
+    rotate([0,-90,0]) intersection() {
+        long_tie(length);
+        translate([0,-length,0]) cube([5,length,5]);
+    }
+}
+
 long_tie(length);
+//long_tie_half(length);
+//long_tie_split(length);

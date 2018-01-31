@@ -25,17 +25,26 @@ module long_bow_tie(length) {
     }
 }
 
-module split() {
+module split(length) {
     translate([0,0,-1]) linear_extrude(height=length+2) polygon(points=[[0,-1], [1,-1], [2.1,-5], [-2.1,-5], [-1,-1]]);
 }
 
 module long_bow_tie_split(length) {
     translate([0,0,male_dove_depth-slop]) rotate([90,0,0]) difference() {
         translate([0,-(male_dove_depth-slop),0]) rotate([-90,0,0]) long_bow_tie(length);
-        split();
+        split(length);
         rotate([0,0,180]) split();
     }
 }
 
+module long_bow_tie_half(length=50) {
+    rotate([0,-90,0]) intersection() {
+        long_bow_tie(length);
+        translate([0,-length,-1]) cube([6, length, 12]);
+        translate([-length/1.9,-length/2,-3]) rotate([0,0,0]) cylinder(d=length*1.5,h=20,$fn=60);
+    }
+}
+
+long_bow_tie_half(length);
 //long_bow_tie(length);
-long_bow_tie_split(length);
+//long_bow_tie_split(length);
