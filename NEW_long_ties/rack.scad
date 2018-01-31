@@ -36,7 +36,7 @@ module rackObject() {
         union() {
             translate([0,0,-0.5]) cube([unit_length*units+20,36,7], center=true);
 
-            translate([0,-9,4]) rounded_cube(unit_length*units+15,18,6,$fn=40,diameter=diameter);
+            translate([0,-9,4]) rounded_cube(unit_length*units+15,18,6,diameter,center=true,$fn=40);
         }
         // side indents
         translate([2,-26,0]) rotate([45,0,0]) cube([unit_length*units+5,15,15], center=true);
@@ -54,7 +54,7 @@ module rackObject() {
 
 head_offset = 2.8;
 
-module do_rack() {
+module do_rack(units=units) {
 
     difference() {
         union(){
@@ -63,7 +63,7 @@ module do_rack() {
 
                 difference(){
                     union(){
-                        translate([0,0,6]) rounded_cube(unit_length*units-slop,40,20,$fn=50,diameter=diameter);
+                        translate([0,0,6]) rounded_cube(unit_length*units-slop,40,20,diameter,center=true,$fn=50);
                         translate([-units*unit_length/2-head_offset+slop,6,-15]) rotate([0,0,-teeth_angle]) cube([10,10,30]);
                         translate([-units*unit_length/2-head_offset+slop,6,-15]) mirror([0,1,0]) rotate([0,0,-teeth_angle]) cube([10,10,30]);
 

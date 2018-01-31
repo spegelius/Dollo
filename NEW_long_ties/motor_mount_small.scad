@@ -25,12 +25,9 @@ hole_length = 0.8;
 // for rounded cube
 diameter = 2;
 
-//rounded_cube(x,y,z,diameter);
-
-
 module y_mount_added(){    
     //base
-    translate([0,-5.75+rack_gap/2,-1]) rounded_cube(depth=38.5+rack_gap*2, width = frame_width+35+1, height=4, center=true, diameter=diameter);
+    translate([0,-5.75+rack_gap/2,-1]) rounded_cube(y=38.5+rack_gap*2, x=frame_width+35+1, z=4, center=true, corner=diameter);
     
     // lower slide
     slide_depth = 11;
@@ -38,7 +35,7 @@ module y_mount_added(){
     
     module slide() {
         difference() {
-            rotate([45,0,0]) rounded_cube(height=15, width=17, depth=15, diameter=3.5);
+            rotate([45,0,0]) rounded_cube(z=15, x=17, y=15, corner=3.5, center=true);
             translate([0,0,-8]) cube([60,30,30], center=true);
         }
     }
@@ -47,9 +44,9 @@ module y_mount_added(){
     translate([0,slide_pos_y,-4.9]) slide();
     translate([27.25,slide_pos_y,-4.9]) slide();
     
-    translate([0,slide_pos_y-7.25,0.6]) rounded_cube(height=5, width=frame_width+35+1, depth=22, diameter=diameter);
+    translate([0,slide_pos_y-7.25,0.6]) rounded_cube(z=5, x=frame_width+35+1, y=22, corner=diameter,center=true);
     
-    translate([0,slide_pos_y,0.05]) rounded_cube(height=6.1, width=30, depth=28, diameter=diameter);
+    translate([0,slide_pos_y,0.05]) rounded_cube(z=6.1, x=30, y=28, corner=diameter, center=true);
     
     //towers
 
@@ -59,12 +56,12 @@ module y_mount_added(){
     tower_pos_y = -2;
 
     // right tower
-	translate([17,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height, diameter=diameter);
+	translate([17,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height,diameter,center=true);
     translate([(32-21-4)+19-4.5,tower_pos_y+15/2-4.8,tower_height]) cylinder(d=7,h=2);
     
     // left tower
     difference() {
-        translate([-17,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height, diameter=diameter);
+        translate([-17,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height, diameter,center=true);
         translate([(-21-4)+3.5,tower_pos_y+15/2-4.8,tower_height-1.5]) cylinder(d=7.25,h=2.5);
     }
 }

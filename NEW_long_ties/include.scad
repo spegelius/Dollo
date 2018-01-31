@@ -222,17 +222,43 @@ module motor_plate(h=5) {
     }
 }
 
-module rounded_cube(width,depth,height,diameter){
-    hull(){
-        translate([width/2-diameter/2,depth/2-diameter/2,height/2-diameter/2]) sphere(d=diameter);
-        translate([width/2-(diameter/2),depth/2-(diameter/2),-height/2+(diameter/2)]) sphere(d=diameter);
-        translate([-width/2+diameter/2,depth/2-diameter/2,height/2-diameter/2]) sphere(d=diameter);
-        translate([-width/2+(diameter/2),depth/2-(diameter/2),-height/2+(diameter/2)]) sphere(d=diameter);
+module rounded_cube(x,y,z,corner,center=false) {
+    fn=50;
+    module rcube(x,y,z,corner) {
+        translate([corner/2,corner/2,corner/2]) hull() {
+            sphere(d=corner, $fn=fn);
+            if (x>corner) translate([x-corner,0,0]) sphere(d=corner, $fn=fn);
+            if (x>corner && y>corner) translate([x-corner,y-corner,0]) sphere(d=corner, $fn=fn);
+            if (y>corner) translate([0,y-corner,0]) sphere(d=corner, $fn=fn);
+            if (z>corner) translate([0,0,z-corner]) sphere(d=corner, $fn=fn);
+            if (z>corner && x>corner) translate([x-corner,0,z-corner]) sphere(d=corner, $fn=fn);
+            if (z>corner && x>corner && y>corner) translate([x-corner,y-corner,z-corner]) sphere(d=corner, $fn=fn);
+            if (z>corner && y>corner)translate([0,y-corner,z-corner]) sphere(d=corner, $fn=fn);
+        }
+    }
+
+    module wrap() {
+        diff_x = x<corner ? (corner-x)/2 : 0;
+        diff_y = y<corner ? (corner-y)/2 : 0;
+        diff_z = z<corner ? (corner-z)/2 : 0;
         
-        translate([width/2-diameter/2,-depth/2+diameter/2,height/2-diameter/2]) sphere(d=diameter);
-        translate([width/2-(diameter/2),-depth/2+(diameter/2),-height/2+(diameter/2)]) sphere(d=diameter);
-        translate([-width/2+diameter/2,-depth/2+diameter/2,height/2-diameter/2]) sphere(d=diameter);
-        translate([-width/2+(diameter/2),-depth/2+(diameter/2),-height/2+(diameter/2)]) sphere(d=diameter);
+        translate([-diff_x,-diff_y,-diff_z]) intersection() {
+            rcube(x,y,z,corner);
+            translate([diff_x,diff_y,diff_z]) cube([x,y,z]);
+        }
+    }
+    
+    if (center) {
+        translate([-x/2, -y/2, -z/2]) wrap();
+    } else {
+        wrap();
+    }
+}
+
+module rounded_cube_side(x,y,z,corner,center=false) {
+    intersection() {
+        cube([x,y,z]);
+        translate([0,0,-corner]) rounded_cube(x,y,z+2*corner,corner,center);
     }
 }
 
@@ -285,8 +311,8 @@ module _bolt_shaft(d, h, shaft=0, z_step=1.8, depth=0.5, direction=0) {
 module _bolt(d=8, h=20, h2=20, shaft=0, diameter=1, z_step=1.8, depth=0.5) {
   
     _bolt_shaft(d=d, h=h, shaft=shaft, z_step=z_step, depth=depth);
-    translate([0,-1.4,0]) rounded_cube(d*1.1,3,d*1.1,diameter=diameter);
-    translate([0,-6,0]) rounded_cube(4,10,d*1.1,diameter=diameter);
+    translate([0,-1.4,0]) rounded_cube(d*1.1,3,d*1.1,diameter,center=true);
+    translate([0,-6,0]) rounded_cube(4,10,d*1.1,diameter,center=true);
 }
 
 //translate([50,50]) nut();

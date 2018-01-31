@@ -49,7 +49,7 @@ module hook(direction=0) {
         union() {
             difference() {
                 hull() {
-                    translate([10,10.5,height/2]) rounded_cube(20,20,height,4);
+                    translate([10,10.5,height/2]) rounded_cube(20,20,height,4, center=true);
                     translate([0,28,height/2]) rotate([0,90,0]) cylinder(d=height,h=20);
                 }
                 translate([5-slop,7,0]) cube([10+2*slop,40,30]);
@@ -109,7 +109,7 @@ module frame_clip_middle() {
     difference() {
         union() {
             intersection() {
-                rotate([0,0,45]) rounded_cube(60,60,10,5);
+                rotate([0,0,45]) rounded_cube(60,60,10,5,center=true);
                 translate([-40,0,0]) cube([80,80,2.5]);
             }
             translate([40,0,-2.35]) rotate([0,0,-90]) difference() {
@@ -210,7 +210,7 @@ module long_nut() {
     side = 16;
     length = 80;
     difference() {
-        translate([side/2,0,side/2]) rounded_cube(side,length,side,4);
+        translate([side/2,0,side/2]) rounded_cube(side,length,side,4,center=true);
         if (FAST) {
             translate([side/2,-length/2-.5,side/2]) rotate([-90,0,0]) cylinder(d=pin_bolt_dia_minus, h=length/2);
             translate([side/2,0.5,side/2]) rotate([-90,0,0]) cylinder(d=pin_bolt_dia_minus, h=length/2);
@@ -254,7 +254,7 @@ module view_proper() {
 FAST=false;
 
 //center();
-bolt();
+//bolt();
 //nut();
 //hook(0);
 
@@ -273,6 +273,6 @@ bolt();
 
 //long_bolt(0);
 //long_bolt(1);
-//long_nut();
+long_nut();
 
 //view_proper();

@@ -112,6 +112,22 @@ module prometheus() {
     translate([0,0,62.3-16.7]) neck();
 }
 
+// SS-5GL13
+module mechanical_endstop() {
+    difference() {
+        color("black") cube([20, 11, 6]);
+        translate([5, 3, -0.1]) cylinder(d=2, h=7, $fn=20);
+        translate([20-5, 3, -0.1]) cylinder(d=2, h=7, $fn=20);
+    }
+    translate([0,11,1]) rotate([0,0,15]) color("grey") cube([19,0.5,4]);
+    translate([1.5,-4,1]) color("grey") cube([0.5, 4, 4]);
+    translate([10.5,-4,1]) color("grey") cube([0.5, 4, 4]);
+    translate([20-1.5,-4,1]) color("grey") cube([0.5, 4, 4]);
+    
+}
+
+//mechanic_endstop();
+
 //proximity_sensor();
 
 //e3dv6();
