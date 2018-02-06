@@ -1,7 +1,7 @@
 include <globals.scad>;
 include <include.scad>;
 
-use <long_bow_tie_experimental.scad>;
+use <long_bow_tie.scad>;
 
 psu_height = 50;
 psu_width = 114;

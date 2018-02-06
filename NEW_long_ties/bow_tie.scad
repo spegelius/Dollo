@@ -3,7 +3,7 @@ length = 13;
 tilt_level = 1.1;
 include <include.scad>;
 include <globals.scad>;
-use <long_bow_tie_experimental.scad>;
+use <long_bow_tie.scad>;
 
 obj_leg= 12;
 $fn = smoothing;
