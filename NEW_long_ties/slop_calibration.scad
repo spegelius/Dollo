@@ -4,7 +4,6 @@ include <globals.scad>;
 include <include.scad>;
 use <bow_tie.scad>;
 use <long_bow_tie.scad>;
-use <long_bow_tie_experimental.scad>;
 
 slop = 0.15;
 

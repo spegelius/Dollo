@@ -2,7 +2,6 @@ include <globals.scad>;
 include <include.scad>;
 
 use <long_tie.scad>;
-use <long_bow_tie_experimental.scad>;
 use <long_bow_tie.scad>;
 use <motor_mount_small.scad>;
 include <mockups.scad>;
