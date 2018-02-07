@@ -6,29 +6,20 @@ include <globals.scad>;
 use <long_bow_tie.scad>;
 
 $fn=30;
-module end(){
-    difference() {
-        translate([-4, -5, -0.2]) cube([8, 5, 6]);
-        translate([0, 0, -0.5])cylinder(r=3.8, h=7);
-    }
-}
 
-module tie(length) {
+// alter these the get properly fitting parts
+scale_x = scale_x();
+scale_z = scale_z();
+length = 50;
+
+module long_tie(length=length) {
     translate([0,0,scaled_male_dove_depth()]) rotate([0,180,0]) difference(){
-        long_bow_tie(length);
+        long_bow_tie(length, scale_x=scale_x, scale_z=scale_z);
         translate([-5,-length-1,scaled_male_dove_depth()]) cube([10,length+2,male_dove_depth]);
     }
 }
 
-module long_tie(length=50) {
-    difference () {
-        tie(length);
-        translate([0, -(length -3.5), 0]) end();
-        translate([0, -3.5, 0]) rotate([0,0,180]) end();
-    }
-}
-
-module long_tie_split(length=50) {
+module long_tie_split(length=length) {
     union() {
         difference() {
             translate([0,0,-male_dove_depth+slop]) long_bow_tie_split(length);
@@ -38,13 +29,13 @@ module long_tie_split(length=50) {
     }
 }
 
-module long_tie_half(length=50) {
+module long_tie_half(length=length) {
     rotate([0,-90,0]) intersection() {
         long_tie(length);
         translate([0,-length,0]) cube([5,length,5]);
     }
 }
 
-long_tie(length);
+//long_tie(length);
 //long_tie_half(length);
-//long_tie_split(length);
+long_tie_split(length);
