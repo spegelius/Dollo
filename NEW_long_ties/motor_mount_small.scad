@@ -18,7 +18,7 @@ tower_height = 17.5+3;
 text = "Dollo";
 font = "Liberation Sans";
 
-hole_length = 0.8;
+hole_length = 0.5;
 
 //$fn=220;
 
@@ -40,9 +40,9 @@ module y_mount_added(){
         }
     }
     
-	translate([-27.25,slide_pos_y,-4.9]) slide();
-    translate([0,slide_pos_y,-4.9]) slide();
-    translate([27.25,slide_pos_y,-4.9]) slide();
+    translate([-27.25,slide_pos_y,-4.7]) slide();
+    translate([0,slide_pos_y,-4.7]) slide();
+    translate([27.25,slide_pos_y,-4.7]) slide();
     
     translate([0,slide_pos_y-7.25,0.6]) rounded_cube(z=5, x=frame_width+35+1, y=22, corner=diameter,center=true);
     
@@ -151,7 +151,7 @@ translated_mount();
 }
 
 module do_motor_mount() {
-    rotate([0,-90,0]) difference(){
+    translate([0,0,20.5]) rotate([0,-90,0]) difference(){
         screw_driver();
         translate([-15,0,0]) rotate([0,90,0]) union(){
             translate([5.65,5.65,-1]) cylinder(d=3.5, h=40);
