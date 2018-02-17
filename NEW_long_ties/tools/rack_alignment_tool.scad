@@ -1,7 +1,10 @@
 
-include <include.scad>;
-include <globals.scad>;
-use <rack.scad>;
+include <../include.scad>;
+include <../globals.scad>;
+use <../rack.scad>;
+
+
+use <../../snappy-reprap/xy_sled_parts.scad>;
 
 clip_bolt_dia = 10-2*slop;
 clip_bolt_dia_minus = 10+2*slop;
@@ -12,6 +15,8 @@ rack_width = 36;
 
 temp = sqrt((5*5)/2);
 echo(temp);
+
+teeth_angle = 30;
 
 module plate() {
     cube([length,40,5]);
@@ -64,11 +69,38 @@ module temp() {
     
 }
 
-//translate([40,3,5+18.5]) %rotate([-90,0,0]) do_rack();
+module herringbone_base() {
+    
+    difference() {
+        union() {
+            cube([70,11,10]);
+            //translate([0,11,0]) cube([70,30,4]);
+        }
+        translate([35,5.5,7]) rotate([-90,0,0]) herringbone_rack(l=80, h=12, w=10, tooth_size=5, CA=teeth_angle);
+        translate([35,11/2,0]) rotate([45,0,0]) cube([70,3,3], center=true);
+    }
+}
+
+module herringbone_clip() {
+    $fn=50;
+    union() {
+        difference() {
+            cylinder(d=30, h=30);
+            cylinder(d=20, h=31);
+            translate([0,10,31/2-0.1]) cube([18,20,31], center=true);
+            translate([8,10,0]) cube([3,3,31]);
+        }
+        translate([10.5,7.5,0]) cylinder(d=7, h=30);
+    }
+}
+
+translate([39,13,13]) %rotate([-180,0,0]) do_rack();
 //plate1();
 //plate2();
 //translate([-length-5,0,0]) rotate([]) plate2();
-
 //bolt();
+//temp();
 
-temp();
+//herringbone_base();
+herringbone_clip();
+//translate([0,-2,8]) rotate([0,90,0]) herringbone_clip();
