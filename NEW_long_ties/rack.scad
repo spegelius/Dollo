@@ -4,11 +4,12 @@ use <../snappy-reprap/xy_sled_parts.scad>
 use <motor_mount_small.scad>;
 use <gear.scad>;
 use <long_tie.scad>;
+use <long_bow_tie.scad>;
 
 //globals
 
 obj_height = 20;
-units = 5; //only even numbers
+units = 4; //only even numbers
 unit_length = 30;
 tail_depth = -4;
 
@@ -17,10 +18,15 @@ resolution = 10;
 teeth_angle = 30;
 
 // for rounded cube
-diameter = 3;
+diameter = 2;
 
 module tie_taken(){
     translate([-(unit_length*units+20)/2,0,tail_depth]) rotate([90,0,90]) male_dovetail(height=units*unit_length+20);
+
+    // bit of room for bridging droop
+    br_depth = 0.2;
+    translate([0,0,tail_depth+male_dove_depth+br_depth/2]) cube([units*unit_length+20,male_dove_max_width,br_depth], center=true);
+
     translate([-(unit_length*units+20)/2,-9,9.4]) rotate([90,180,90]) male_dovetail(height=units*unit_length+20);
 }
 
@@ -36,7 +42,7 @@ module rackObject() {
         union() {
             translate([0,0,-0.5]) cube([unit_length*units+20,36,7], center=true);
 
-            translate([0,-9,4]) rounded_cube(unit_length*units+15,18,6,diameter,center=true,$fn=40);
+            translate([0,-9,4]) rounded_cube(unit_length*units+15,18,6,diameter,center=true,$fn=20);
         }
         // side indents
         translate([2,-25.8,0]) rotate([45,0,0]) cube([unit_length*units+5,15,15], center=true);
@@ -51,7 +57,22 @@ module rackObject() {
 // height measurement cube
 //translate([20,-20,-4]) cube([20,40,12.5]);
 
-head_offset = 2.8;
+head_offset = 2;
+dove_scale_x = 1;
+dove_scale_y = 0.98;
+
+// pin for locking the male dovetail
+module dove_pin(length=5, width=3) {
+    cylinder(d=2.5,h=length, $fn=30);
+    translate([0,0,length/2]) cube([1.5,width,length],center=true);
+}
+
+module scaled_dove(h) {
+    difference() {
+        scale([dove_scale_x, dove_scale_y, 1]) male_dovetail(h);
+        translate([0,3,0]) dove_pin(h, width=4);
+    }
+}
 
 module do_rack(units=units) {
 
@@ -62,16 +83,16 @@ module do_rack(units=units) {
 
                 difference(){
                     union(){
-                        translate([0,0,6]) rounded_cube(unit_length*units-slop,40,20,diameter,center=true,$fn=50);
+                        translate([0,0,6]) rounded_cube(unit_length*units-slop,40,20,diameter,center=true,$fn=20);
                         translate([-units*unit_length/2-head_offset+slop,6,-15]) rotate([0,0,-teeth_angle]) cube([10,10,30]);
                         translate([-units*unit_length/2-head_offset+slop,6,-15]) mirror([0,1,0]) rotate([0,0,-teeth_angle]) cube([10,10,30]);
 
                         // couplers
-                        translate([-units*unit_length/2+slop, 11.5, -4]) rotate([0,0,90]) scale([0.95,0.95,0.95]) male_dovetail(3);
-                        translate([-units*unit_length/2+slop, 11.5, -4]) rotate([0,0,-90]) scale([0.95,0.95,0.95]) male_dovetail(1);
+                        translate([-units*unit_length/2+slop, 9, -4]) rotate([0,0,90]) scaled_dove(5.2);
+                        translate([-units*unit_length/2+slop, 9, -4]) rotate([0,0,-90]) scaled_dove(1);
                         
-                        translate([-units*unit_length/2+slop, -9, -4]) rotate([0,0,90]) scale([0.95,0.95,0.95]) male_dovetail(5);
-                        translate([-units*unit_length/2+slop, -9, -4]) rotate([0,0,-90]) scale([0.95,0.95,0.95]) male_dovetail(1);
+                        translate([-units*unit_length/2+slop, -9, -4]) rotate([0,0,90]) scaled_dove(8.5);
+                        translate([-units*unit_length/2+slop, -9, -4]) rotate([0,0,-90]) scaled_dove(1);
                     }
                     union(){
                         translate([units*unit_length/2-head_offset-slop/2,6,-15]) rotate([0,0,-teeth_angle]) cube([10,10,30]);
@@ -79,14 +100,14 @@ module do_rack(units=units) {
                     }
 
                     // coupler holes
-                    translate([units*unit_length/2, 11.5, -4]) rotate([0,0,90]) male_dovetail(3+2*slop);
-                    translate([units*unit_length/2, -9, -4]) rotate([0,0,90]) male_dovetail(5+2*slop);
+                    translate([units*unit_length/2+slop, 9, -4]) rotate([0,0,90]) male_dovetail(6);
+                    translate([units*unit_length/2+slop, -9, -4]) rotate([0,0,90]) male_dovetail(8.4);
                 }
             //intersection
             }
         //union
         }
-        translate([0,0,0]) tie_taken();
+        tie_taken();
     //difference
     }
 }
@@ -99,11 +120,13 @@ module do_tie() {
 }
 
 do_rack();
+//dove_pin();
+//translate([units*unit_length,0,0]) do_rack();
 //do_tie();
 //translate([units*unit_length,0,0]) do_rack();
 //translate([0,0,0]) rotate([90,0,0]) herringbone_rack(l=35, h=12, w=6, tooth_size=5, CA=teeth_angle);
 
-%translate([0,-24.1,13.5]) rotate([-90,0,0]) do_motor_mount();
-%mirror([0,1,0]) translate([0,-24.1,13.5]) rotate([-90,0,0]) do_motor_mount();
-%translate([0,20,13.5]) rotate([90,-8,0]) gear_v3();
+//%translate([0,-24.1,13.5]) rotate([-90,0,0]) do_motor_mount();
+//%mirror([0,1,0]) translate([0,-24.1,13.5]) rotate([-90,0,0]) do_motor_mount();
+//%translate([0,20,13.5]) rotate([90,-8,0]) gear_v3();
 //translate([20,-9,9.4]) rotate([0,0,90]) do_tie();
