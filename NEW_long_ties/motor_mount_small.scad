@@ -35,14 +35,14 @@ module y_mount_added(){
     
     module slide() {
         difference() {
-            rotate([45,0,0]) rounded_cube(z=15, x=17, y=15, corner=3.5, center=true);
+            rotate([45,0,0]) rounded_cube(z=15, x=17, y=15, corner=2.5, center=true);
             translate([0,0,-8]) cube([60,30,30], center=true);
         }
     }
     
-    translate([-27.25,slide_pos_y,-4.7]) slide();
-    translate([0,slide_pos_y,-4.7]) slide();
-    translate([27.25,slide_pos_y,-4.7]) slide();
+    translate([-27.25,slide_pos_y,-4.65]) slide();
+    translate([0,slide_pos_y,-4.65]) slide();
+    translate([27.25,slide_pos_y,-4.65]) slide();
     
     translate([0,slide_pos_y-7.25,0.6]) rounded_cube(z=5, x=frame_width+35+1, y=22, corner=diameter,center=true);
     
