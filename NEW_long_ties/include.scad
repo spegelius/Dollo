@@ -227,6 +227,7 @@ module rounded_cube(x,y,z,corner,center=false) {
     module rcube(x,y,z,corner) {
         translate([corner/2,corner/2,corner/2]) hull() {
             sphere(d=corner, $fn=fn);
+            cube([x-corner,y-corner,z-corner]);
             if (x>corner) translate([x-corner,0,0]) sphere(d=corner, $fn=fn);
             if (x>corner && y>corner) translate([x-corner,y-corner,0]) sphere(d=corner, $fn=fn);
             if (y>corner) translate([0,y-corner,0]) sphere(d=corner, $fn=fn);
