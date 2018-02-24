@@ -67,18 +67,6 @@ module flat_of_shaft(obj_height) {
     }
 }
 
-// original style gear. tune height if so inclined; longer gear seems to cause uneven movement, though...
-module gear_v1() {
-    twist_ratio = 1.62;
-    difference() {
-        union() {
-            flat_of_shaft(22);
-            gear_master(22, twist_ratio);
-        }
-        #bolt_hole(22);
-    }
-}
-
 // flat body
 module nogear(height, diameter=10) {
     difference() {
@@ -87,24 +75,7 @@ module nogear(height, diameter=10) {
     }
 }
 
-// v2 is to be used with the new style rack
-module gear_v2() {
-    twist_ratio = 1.62;
-    mirror([0,1,0]) difference() {
-        union() {
-            translate([0,0,12/2+(12-20)/2]) nogear(8);
-            translate([0,0,6]) flat_of_shaft(22);
-            translate([0,0,(12-20)/2]) gear_master(12, twist_ratio);
-        }
-        translate([0,0,9]) #bolt_hole(20);
-    }
-}
-//translate([20,0,0]) gear_v1();
-//translate([20,0,0]) gear_v2();
-
-
-
-module gear_v3(nut_size=m3_nut_side, nut_height=m3_nut_height, bolt_size=bolt_hole_dia) {
+module motor_gear(nut_size=m3_nut_side, nut_height=m3_nut_height, bolt_size=bolt_hole_dia) {
     difference() {
         union() {
             difference() {
@@ -147,4 +118,4 @@ module gear_v3(nut_size=m3_nut_side, nut_height=m3_nut_height, bolt_size=bolt_ho
     }
 }
 
-gear_v3();
+motor_gear();
