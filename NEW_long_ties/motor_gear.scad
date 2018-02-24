@@ -111,10 +111,10 @@ module motor_gear(nut_size=m3_nut_side, nut_height=m3_nut_height, bolt_size=bolt
                     }
                 }
             }
-            translate([0,0,15.56]) flat_of_shaft(23);
+            translate([0,0,15.5]) flat_of_shaft(23);
         }
         translate([0,0,8]) bolt_hole(bolt_size-0.15, 21);
-        #translate([shaft/2+0.5,-(nut_size)/2,0]) cube([nut_height+slop, nut_size, 7.5]);
+        translate([shaft/2+0.5,-(nut_size)/2,0]) cube([nut_height+slop, nut_size, 7.5]);
     }
 }
 
