@@ -263,6 +263,34 @@ module rounded_cube_side(x,y,z,corner,center=false) {
     }
 }
 
+module chamfered_cube(x,y,z, chamfer, center=false) {
+
+    hull() {
+        if (center) {
+            cube([x, y-2*chamfer,z-2*chamfer], center=center);
+            cube([x-2*chamfer,y,z-2*chamfer], center=center);
+            cube([x-2*chamfer,y-2*chamfer,z], center=center);
+        } else {
+            translate([0,chamfer,chamfer]) cube([x, y-2*chamfer,z-2*chamfer], center=center);
+            translate([chamfer,0,chamfer]) cube([x-2*chamfer,y,z-2*chamfer], center=center);
+            translate([chamfer,chamfer,0]) cube([x-2*chamfer,y-2*chamfer,z], center=center);
+        }
+    }
+}
+
+module chamfered_cube_side(x,y,z, chamfer, center=false) {
+
+    hull() {
+        if (center) {
+            cube([x, y-2*chamfer,z], center=center);
+            cube([x-2*chamfer,y,z], center=center);
+        } else {
+            translate([0,chamfer,0]) cube([x, y-2*chamfer,z], center=center);
+            translate([chamfer,00]) cube([x-2*chamfer,y,z], center=center);
+        }
+    }
+}
+
 module _threads(d=8, h=10, z_step=1.8, depth=0.5, direction=0) {
     
     function get_twist(dir) = (direction == 0) ? -360 : 360;
@@ -384,9 +412,12 @@ module frame_mockup(bed_angle=45, units_x=1, units_y=1, units_z=1) {
     %mirror([0,1,0]) mirror([1,0,0]) translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, corner_side]) side(unit_len_z);
 
     // bed
-    translate([0,0,60]) %difference() {
+    translate([0,0,units_z*120]) %difference() {
         rotate([0,0,bed_angle]) cube([210,210,1], center=true);
-        rotate([0,0,bed_angle]) cube([190,190,2], center=true);
+        translate([-(210/2-4),-(210/2-4),-1]) cylinder(d=3,h=2, $fn=20);
+        translate([(210/2-4),-(210/2-4),-1]) cylinder(d=3,h=2, $fn=20);
+        translate([(210/2-4),(210/2-4),-1]) cylinder(d=3,h=2, $fn=20);
+        translate([-(210/2-4),(210/2-4),-1]) cylinder(d=3,h=2, $fn=20);
     }
     
 }
