@@ -2,7 +2,7 @@ include <include.scad>;
 include <globals.scad>;
 use <../snappy-reprap/xy_sled_parts.scad>
 use <motor_mount_small.scad>;
-use <gear.scad>;
+use <motor_gear.scad>;
 use <long_tie.scad>;
 use <long_bow_tie.scad>;
 
@@ -31,11 +31,13 @@ module tie_taken(){
 }
 
 //herring bone style rack made from inkscape and OpenScad
-module rackObject() {
+module rackObject(units=units, fast_render=false) {
 
-    intersection() {
-        translate([0,6,6]) rotate([90,0,0]) herringbone_rack(l=units*unit_length+10, h=12, w=10, tooth_size=5, CA=teeth_angle);
-        translate([0,6,3]) rotate([0,90,0]) cylinder(d=13, h=units*unit_length+10, center=true);
+    if (!fast_render) {
+        intersection() {
+            translate([0,6,6]) rotate([90,0,0]) herringbone_rack(l=units*unit_length+10, h=12, w=10, tooth_size=5, CA=teeth_angle);
+            translate([0,6,3]) rotate([0,90,0]) cylinder(d=13, h=units*unit_length+10, center=true);
+        }
     }
     
     difference(){
@@ -74,12 +76,12 @@ module scaled_dove(h) {
     }
 }
 
-module do_rack(units=units) {
+module do_rack(units=units, fast_render=false) {
 
     difference() {
         union(){
             intersection(){
-                rackObject();
+                rackObject(units=units, fast_render=fast_render);
 
                 difference(){
                     union(){
@@ -112,6 +114,7 @@ module do_rack(units=units) {
     }
 }
 
+// slim tie, for the rack top groove
 module do_tie() {
     translate ([0,0,5]) difference() {
         rotate([0,180,0]) long_tie();
@@ -119,7 +122,7 @@ module do_tie() {
     }
 }
 
-do_rack();
+do_rack(fast_render=false);
 //dove_pin();
 //translate([units*unit_length,0,0]) do_rack();
 //do_tie();
