@@ -4,6 +4,8 @@ include <include.scad>;
 use <long_tie.scad>;
 use <long_bow_tie.scad>;
 use <motor_mount_small.scad>;
+use <extention.scad>;
+use <rack.scad>;
 include <mockups.scad>;
 
 hotend_depth = 75;
@@ -16,17 +18,22 @@ natch_height = 6;
 $fn=60;
 
 module motor_mount_small(height=15){
-	//scale([.9,.9,.9]) translate([-8.75,1,snap_location]) male_dovetail(35);
     translate([-8+slop,0.95,snap_location-6.2]) rotate([-90,0,0]) scale([.98,1,0.99]) long_tie(.9*35);
 }
 
 module y_mount_added(){
-	#motor_mount_small();
-	translate([1,-4+((10-arm_thickness)/2),hotend_depth/2]) cube([25,arm_thickness,hotend_depth], center=true);
-    translate([1,-15,hotend_depth-(natch_height)]) cube([25,30,natch_height*2],center=true);
-	translate([-4,-15,hotend_depth-17]) rotate([-45,0,0]) cube([15,33.2,natch_height*2],center=true);
-    translate([-4,-5,hotend_depth-27]) cube([15,5,natch_height*2],center=true);
-	translate([1,1,0]) cube([25,8,5],center=true);
+    difference() {
+        union() {
+            motor_mount_small();
+            translate([1,-4+((10-arm_thickness)/2),hotend_depth/2]) cube([25,arm_thickness,hotend_depth], center=true);
+            translate([1,-15,hotend_depth-(natch_height)]) cube([25,30,natch_height*2],center=true);
+            translate([-4,-15,hotend_depth-17]) rotate([-45,0,0]) cube([15,33.2,natch_height*2],center=true);
+            translate([-4,-5,hotend_depth-27]) cube([15,5,natch_height*2],center=true);
+            translate([1,1,0]) cube([25,8,5],center=true);
+            translate([-11.5,1,65]) cube([26,8,28]);
+        }
+        translate([-12,9.01,86]) rotate([90,0,0]) rotate([0,90,0]) rotate([0,0,90]) male_dovetail(15);
+    }
 }
 
 module dove_end() {
@@ -41,9 +48,6 @@ module dove_end() {
 }
 
 module y_mount_taken(){
-    
-
-    
         translate([0,-13,hotend_depth/2]) cylinder(h=70, d=mounting_diamiter);
 	    translate([0,-13,-0.5]) cylinder(h=70, d=top_diamiter);
 		translate([0,-26,hotend_depth-natch_height]) rotate([0,-90,0]) cylinder(h=30, d=bolt_hole_dia, $fn=20);
@@ -127,7 +131,7 @@ module prox_sensor_clamp() {
 module fan_duct() {
 
     nozzle_offset = 1.5;
-    nozzle_width = 30;
+    nozzle_width = 32;
 
     module fan_base() {
         difference() {
@@ -139,11 +143,8 @@ module fan_duct() {
                 translate([-32.5/2,32.5/2,0]) cylinder(d=6, h=9);
                 
                 cylinder(d=43,h=2,$fn=60);
-                translate([-26/2+4,-42/2-1,0]) hull() {
-                    cube([26, 9, 6]);
-                    translate([0,6/2-5,6/2]) rotate([0,90,0]) cylinder(d=6,h=26);
-                }
                 translate([0,0,1]) duct(d2=12, x=nozzle_width-2);
+                rotate([11,0,0]) translate([1.5,-13.25,16.6/2+4.3]) cube([23,15,16.5], center=true);
             }
             translate([0,0,-4]) cylinder(d=40,h=4,$fn=60);
             translate([-32.5/2,-32.5/2,-2]) cylinder(d=bolt_hole_dia-0.1, h=8);
@@ -154,6 +155,8 @@ module fan_duct() {
             translate([-26/2+4,-42/2-3,6/2-2]) rotate([0,90,0]) cylinder(d=bolt_hole_dia, h=30);
             
             translate([0,0,-1]) duct(d=41, d2=10, x=nozzle_width-2, h=31.31);
+            
+            translate([-25/2,-17.5,15.9]) rotate([-90+11,0,0]) rotate([0,90,0]) male_dovetail(27);
         }
     }
 
@@ -167,7 +170,7 @@ module fan_duct() {
     module duct(d=43, d2=10, x=nozzle_width, h=31.3) {
         hull() {
             cylinder(d=d,h=1);
-            translate([nozzle_offset,11,h]) rotate([0,-18,90]) capsule_3d(d=d2, x=x);
+            translate([nozzle_offset,11,h]) rotate([0,-11,90]) capsule_3d(d=d2, x=x);
         }
     }
 
@@ -220,8 +223,8 @@ module fan_duct() {
 
         difference() {
             nozzle_main();
-            translate([nozzle_width/2+nozzle_offset-4,24/2+1,-4]) rotate([0,55,0]) cube([2.5, 24, 5], center=true);
-            translate([-nozzle_width/2+nozzle_offset+4,24/2+1,-4]) rotate([0,-55,0]) cube([2.5, 24, 5], center=true);
+            translate([nozzle_width/2+nozzle_offset-4,24/2+1,-4]) rotate([0,55,0]) cube([3.5, 24, 5], center=true);
+            translate([-nozzle_width/2+nozzle_offset+4,24/2+1,-4]) rotate([0,-55,0]) cube([3.5, 24, 5], center=true);
             
             translate([nozzle_offset,1,-4]) rotate([60,0,0]) cube([12,2.5,5], center=true);
         }
@@ -229,55 +232,8 @@ module fan_duct() {
     }
     
     fan_base();
-    translate([0,10.7,31.2]) rotate([108,0,0]) nozzle();
+    translate([0,10.7,31.2]) rotate([101,0,0]) nozzle();
 
-}
-
-module fan_mount() {
-    
-    module mount_body() {
-        union() {
-            cube([4,34,10]);
-            translate([-22,-4.1,0]) cube([26,7,10]);
-            translate([-22, -4.1,-5]) cube([26,5.1, 7]);
-            translate([-22,-4,-7.5]) hull() {
-                cube([26,5, 6]);
-                translate([0,-1,3]) rotate([0,90,0]) cylinder(d=6, h=26);
-            }
-        }
-    }
-    
-    difference() {
-        mount_body();
-        translate([5,6,3.5]) rotate([0,-90,0]) cylinder(d=bolt_hole_dia, h=10, $fn=20);
-        translate([5,30,6.5]) rotate([0,-90,0]) cylinder(d=bolt_hole_dia, h=10, $fn=20);
-        
-        translate([5,-5,-4.5]) rotate([0,-90,0]) cylinder(d=bolt_hole_dia, h=30, $fn=20);
-        
-        translate([4.1,6,3.5]) rotate([0,-90,0]) nut(cone=false);
-        translate([4.1,30,6.5]) rotate([0,-90,0]) nut(cone=false);
-        
-        // doves
-        translate([-3.7,3,3]) rotate([0,0,180]) male_dovetail();
-        translate([-19.4,3,3]) rotate([0,0,180]) male_dovetail();
-    }
-}
-
-module fan_mount_clip() {
-    length = 9;
-    gap = 26.3;
-    rotate([0,90,0]) difference() {
-        hull () {
-            cylinder(d=6, h=gap+4);
-            translate([0,length,0]) cylinder(d=6,h=gap+4);
-            translate([-4,2,0]) cube([1,5,gap+4]);
-        }
-        cylinder(d=bolt_hole_dia, h=32);
-        translate([0,length,0]) cylinder(d=bolt_hole_dia, h=32);
-        
-        translate([0,-2,2]) cylinder(d=11, h=gap);
-        translate([0,length+2,2]) cylinder(d=11, h=gap);
-    }
 }
 
 module do_mount() {
@@ -288,17 +244,17 @@ module do_mount() {
 module view_proper() {
     rotate([0,-90,0]) mount();
     rotate([0,-90,0]) mirror([0,0,1]) mount();
-    %translate([0,21.6,-28.7]) rotate([-90,0,0]) do_motor_mount();
+    %translate([0,1,-28.7]) rotate([-90,0,0]) do_motor_mount();
+    %translate([0,25.3,-42.1]) do_rack(fast_render=true);
     %translate([0,-13,-124]) rotate([0,0,180]) e3dv6();
     %translate([29,-13.5,-120]) proximity_sensor(25.5,5);
-    translate([29,-13.5,-90]) prox_sensor_clamp();
+    %translate([20,10.3,-76.2]) rotate([0,0,90]) extention();
     
-    translate([-11.5,4,-75.5]) rotate([0,0,180]) fan_mount();
-    translate([1.5,28,-96]) rotate([-108,0,180]) fan_duct();
-    translate([-17.5,10,-71.5]) rotate([-4,0,0]) fan_mount_clip();
+    translate([29,-13.5,-90]) prox_sensor_clamp();
+    translate([1.5,28,-100]) rotate([-101,0,180]) fan_duct();
 }
 
-do_mount();
+//do_mount();
 //clamp();
 //rotate([0,-90,0])  prox_sensor_clamp();
 //intersection() {
@@ -306,7 +262,5 @@ do_mount();
 //    cube([100,100,36]);
 //}
 //fan_duct();
-//fan_mount_clip();
-//fan_mount();
 
-//view_proper();
+view_proper();
