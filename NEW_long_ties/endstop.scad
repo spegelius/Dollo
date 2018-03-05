@@ -65,17 +65,24 @@ module endstop_v2() {
     %translate([4.5,28,0]) rotate([0,0,90]) do_rack(1);
 }
 
-module endstop_v3() {
-    intersection() {
-        endstop_v1();
-        translate([0,0,10/2]) cube([50,50,10],center=true);
-    }
-    intersection() {
-        translate ([8,50/2+9/2,2]) difference() {
-            rotate([0,180,0]) long_tie();
-            cube([10,101,4],center=true);
+module xy_endstop_racktop() {
+    l = 10;
+    rotate([270,0,0]) translate([0,-12,0]) union() {
+        difference() {
+            rounded_cube(25,12,l,3);
+            translate([2.5,-1.5,2]) cube([20+slop,12,6+2*slop]);
+            translate([3.5,-4,2.5]) cube([18+slop,18,8+3*slop]);
+
+            translate([2.8,5,2+slop]) cube([4, 11, 5.9]);
+            translate([2.5+8.8,5,2]) cube([4, 11, 8]);
+            translate([2.5+17,5,2+slop]) cube([3, 11, 5.9]);
+            translate([14,3.98,-7.15]) rotate([0,0,-90]) do_rack(1);
         }
-        translate([-3,-2,-7]) cube([switch_length+6,switch_width+3,switch_depth+9]);
+        intersection() {
+            translate ([5,15,2.25]) rotate([0,180,0]) long_tie_split();
+            translate([-3,0,-4.5]) cube([switch_length+6,12,6]);
+        }
+        %translate([2.5+slop/2,12.9-3+slop/2,8.2]) rotate([180,0,0]) mechanical_endstop();
     }
 }
 
@@ -91,30 +98,31 @@ module z_endstop() {
     //translate([0,-2,-20]) %cube([30,30,30],center=true);
 }
 
-module xy_endstop() {
+module xy_endstop_rackend() {
     l = 21;
     difference() {
         rounded_cube(30,l,12,3);
-        translate([5,l-8,1]) cube([20+slop,6+slop, 12]);
+        translate([5,l-8.2,1.5]) cube([20+slop,6+3*slop, 12]);
+        translate([6,l-7.2,0]) cube([18+slop,6+8*slop, 12]);
         
         translate([5.15,l-8,-0.1]) cube([3, 6, 11]);
         translate([5+9.2,l-8,-0.1]) cube([3, 6, 11]);
         translate([5+20-2.5,l-8,-0.1]) cube([2.5, 6, 11]);
         
-        translate([10+slop/2, l+.1, 4]) rotate([90,0,0]) cylinder(d=2.2, h=10, $fn=30);
-        translate([20+slop/2, l+.1, 4]) rotate([90,0,0]) cylinder(d=2.2, h=10, $fn=30);
+        translate([10+slop/2, l+.1, 4]) rotate([90,0,0]) cylinder(d=2.2, h=15, $fn=30);
+        translate([20+slop/2, l+.1, 4]) rotate([90,0,0]) cylinder(d=2.2, h=15, $fn=30);
         
-        translate([4.8,0,12.1]) rotate([-90,0,0]) male_dovetail(5);
-        translate([25.3,0,12.1]) rotate([-90,0,0]) male_dovetail(5);
-        translate([14.8,11.9,12]) rotate([90,0,0]) linear_extrude(13) polygon(points=[[0,2], [10,2], [10,0], [5,-2.9], [0,0]]);
+        translate([5.8,0,12.2]) rotate([-90,0,0]) scale([1.03,1,1]) male_dovetail(8.8);
+        translate([23.8,0,12.2]) rotate([-90,0,0]) scale([1.03,1,1]) male_dovetail(6.6);
+        translate([15.8,11.9,12.5]) rotate([90,0,0]) linear_extrude(13) polygon(points=[[0,2], [10,2], [10,0], [5,-2.9], [0,0]]);
     }
     
-    %translate([5+slop/2,l-2+slop/2,1]) rotate([90,0,0]) mechanical_endstop();
-    %translate([13.8,3.98,27]) rotate([0,-90,-90]) do_rack(1);
+    %translate([5+slop/2,l-2+slop/2,2]) rotate([90,0,0]) mechanical_endstop();
+    %translate([14.8,3.98,27]) rotate([0,-90,-90]) do_rack(1);
 }
 
 //endstop_v1();
 //endstop_v2();
-//endstop_v3();
 //z_endstop();
-xy_endstop();
+xy_endstop_racktop();
+//xy_endstop_rackend();
