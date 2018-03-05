@@ -27,27 +27,46 @@ module _rail(length, width) {
     rotate([-90,0,0]) hexagon(width, length);
 }
 
-module rail(length, width, hollow=true) {
+module rail(length=length, width=width, hollow=true) {
     if (hollow) {
         difference() {
             _rail(length, width);
-            translate([0,length/2,0]) rotate([0,45,0]) cube([width/2, length, width/2], center=true);
+            rotate([0,135,0]) translate([0,slop,0]) rail_center(width/2+slop, length+1);
+            rotate([0,135,0]) translate([0,length-slop,0]) rail_center(width/2+slop, length+1);
         }
     } else {
         _rail(length, width);
     }
 }
 
+module rail_center(width=width, length=length/2) {
 
-module slide(height=10, wiggles) {
+    module side_notch() {
+        intersection() {
+            rotate([0,45,0]) cube([width/7,width/5,width/7],  center=true);
+            rotate([0,0,45]) cube([width/6,width/6,width/5], center=true);
+        }
+    }
+
+    union() {
+        cube([width, length, width], center=true);
+        translate([-width/2,0,0]) side_notch();
+        translate([width/2,0,0]) side_notch();
+        translate([width/2-width/12,0,width/2-width/12]) rotate([0,45,0]) cube([width/4,length,width/4], center=true);
+    }
+}
+
+module rail_slide(width=width, height=10, wiggles=3) {
     
     module long_cube() {
         hull() {
-            rotate([45,0,0]) cube([10,1.5,1.5], center=true);
-            translate([0,1.5,0]) rotate([45,0,0]) cube([10,1.5,1.5], center=true);
+            translate([0,-1.5/2,0]) rotate([45,0,0]) cube([10,1.5,1.5], center=true);
+            translate([0,1.5/2,0]) rotate([45,0,0]) cube([10,1.5,1.5], center=true);
         }
     }
     
+    spring_d = width*0.6;
+
     module spring(wiggles) {
         $fn=30;
         z_step = height/(wiggles);
@@ -55,33 +74,34 @@ module slide(height=10, wiggles) {
             difference() {
                 //wiggly(d=11, h=height, wiggles=wiggles);
                 //wiggly(d=11-2*spring_width, h=height, wiggles=wiggles);
-                cylinder(d=11, h=height);
-                cylinder(d=11-2*spring_width, h=height, wiggles=wiggles);
+                cylinder(d=spring_d, h=height);
+                translate([0,0,-0.1]) cylinder(d=spring_d-2*spring_width, h=height+1, wiggles=wiggles);
                 for (i=[1:wiggles]) {
-                    translate([-8.1,-4.5,i*z_step-1.5]) rotate([0,0,25]) long_cube();
+                    translate([0,0,i*z_step-1.5]) rotate([0,0,45]) long_cube();
                 }
             }
-            translate([-13,1.8,height/2]) rotate([0,0,-65]) cube([20,20,height], center=true);
+            translate([-width/2,-width/2+spring_d/4,height/2]) cube([width,width,height], center=true);
         }
     }
+    // debug
+    //translate([0,30,0]) spring(1);
 
     rotate([90,0,0]) difference() {
-        _rail(height, width*1.55);
-        _rail(height+1, width*1.25);
+        _rail(height, width+spring_d*1);
+        translate([0,-0.1,0]) _rail(height+1, width+spring_d-5);
     }
     for (i = [1:6]) {
         angle = 360/6*i;
-        rotate([0,0,angle]) translate([0,15.5,0]) rotate([0,0,65]) spring(wiggles);
+        rotate([0,0,angle]) translate([0,width/2+spring_d/2-0.1,0]) rotate([0,0,45]) spring(wiggles);
     }
 }
 
-module rail_inner() {
-    translate([0,-length/4,0]) cube([width/2-slop, length/2,width/2-slop]);
-}
 
-//rail_inner();
-//translate([0,-length/2,width/2]) rail(length,width);
-slide(15, 5);
+
+//rail_center();
+translate([0,-length/2,width/2]) rail(length,width);
+//rotate([90,0,0]) rail(20,15);
+//rail_slide(15,10,3);
 
 
 
