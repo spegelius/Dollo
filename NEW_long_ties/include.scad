@@ -297,8 +297,11 @@ module _threads(d=8, h=10, z_step=1.8, depth=0.5, direction=0) {
 
     multiple = h/z_step+1;
     
-    for (i = [0:multiple]) {
-        translate([0,0,i*z_step]) linear_extrude(height=z_step, center=true, convexity = 10, twist = get_twist(direction), $fn = 30) translate([depth, 0, 0]) circle(d=d-2*depth);
+    intersection() {
+        for (i = [0:multiple]) {
+            translate([0,0,i*z_step]) linear_extrude(height=z_step, center=true, convexity = 10, twist = get_twist(direction), $fn = 30) translate([depth, 0, 0]) circle(d=d-2*depth);
+        }
+        cylinder(d=2*d,h=h);
     }
 }
 
@@ -342,6 +345,10 @@ module _bolt(d=8, h=20, h2=20, shaft=0, diameter=1, z_step=1.8, depth=0.5) {
     _bolt_shaft(d=d, h=h, shaft=shaft, z_step=z_step, depth=depth);
     translate([0,-1.4,0]) rounded_cube(d*1.1,3,d*1.1,diameter,center=true);
     translate([0,-6,0]) rounded_cube(4,10,d*1.1,diameter,center=true);
+}
+
+module cube_donut(d, h, angle=360, rotation=45) {
+    rotate_extrude(angle=angle, convexity=10) translate([d/2,0,0]) rotate([0,0,rotation]) square([h,h], center=true);
 }
 
 //translate([50,50]) nut();
@@ -411,13 +418,15 @@ module frame_mockup(bed_angle=45, units_x=1, units_y=1, units_z=1) {
     %mirror([0,1,0]) translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, corner_side]) side(unit_len_z);
     %mirror([0,1,0]) mirror([1,0,0]) translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, corner_side]) side(unit_len_z);
 
-    // bed
+    // bed mk2
+    bed_w = 214;
+    hole_distance = 209;
     translate([0,0,units_z*120]) %difference() {
-        rotate([0,0,bed_angle]) cube([210,210,1], center=true);
-        translate([-(210/2-4),-(210/2-4),-1]) cylinder(d=3,h=2, $fn=20);
-        translate([(210/2-4),-(210/2-4),-1]) cylinder(d=3,h=2, $fn=20);
-        translate([(210/2-4),(210/2-4),-1]) cylinder(d=3,h=2, $fn=20);
-        translate([-(210/2-4),(210/2-4),-1]) cylinder(d=3,h=2, $fn=20);
+        rotate([0,0,bed_angle]) cube([bed_w,bed_w,1], center=true);
+        translate([-hole_distance/2,-hole_distance/2,-1]) cylinder(d=3,h=2, $fn=20);
+        translate([hole_distance/2,-hole_distance/2,-1]) cylinder(d=3,h=2, $fn=20);
+        translate([hole_distance/2,hole_distance/2,-1]) cylinder(d=3,h=2, $fn=20);
+        translate([-hole_distance/2,hole_distance/2,-1]) cylinder(d=3,h=2, $fn=20);
     }
     
 }
