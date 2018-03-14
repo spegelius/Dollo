@@ -3,7 +3,6 @@ $fn=100;
 include <globals.scad>;
 include <include.scad>;
 use <long_bow_tie.scad>;
-use <long_bow_tie_half.scad>;
 use <extention.scad>;
 
 bolt_dia = 15-2*slop;
