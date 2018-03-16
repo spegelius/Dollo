@@ -5,7 +5,7 @@ use <rail.scad>;
 $fn = 50;
 
 // keep this low until rendering final models
-steps = 100;
+steps = 10;
 
 z_step = 3;
 
@@ -80,57 +80,67 @@ module side_screw() {
     difference() {
         for (i = [0:5]) {
             hull() translate([0,0,i*z_step+z_step/2]) cube_donut(10+2*y_step(steps[i]), cube_w(z_step), angle=360, rotation=45, $fn=100);
-            echo(2*y_step(steps[i]));
+            //echo(2*y_step(steps[i]));
         }
         cylinder(d=side_screw_axle_d, h=6*z_step+1, $fn=60);
     }
 }
 
-screw_housing_height = side_screw_height + 10;
+screw_housing_height = side_screw_height + 2/3 * z_step + 9;
 screw_housing_thread_d = 7;
 screw_housing_bolt_d = screw_housing_thread_d-4*slop;
 
 module _screw_housing() {
+
+    module screw_hole() {
+        h = side_screw_height + 2 + 6;
+        translate([0,0,-h/2]) union() {
+            cylinder(d=side_screw_d+z_step+1, h=side_screw_height + 2);
+            translate([0,0,-3]) cylinder(d1=side_screw_axle_d-1,d2=side_screw_axle_d,h=3);
+        }
+    }
+
+    _z_step = z_step/side_screws;
+    z = screw_housing_height/2;
+    
     difference() {
-        cylinder(d=screw_d+22, h=screw_housing_height/2);
-        cylinder(d=screw_d+1, h=screw_housing_height/2+1);
+        translate([0,0,-z]) cylinder(d=screw_d+22, h=screw_housing_height/2, $fn=100);
+        translate([0,0,-z]) cylinder(d=screw_d+1, h=screw_housing_height/2+1);
         for(i = [0:side_screws-1]) {
-            rotate([0,0,i*side_screw_angle]) translate([side_screw_offset,0,1]) rotate([rise_angle,0,0]) {
-                translate([0,0,3]) cylinder(d=side_screw_d+z_step+1,h=7*z_step);
-                cylinder(d1=side_screw_axle_d-1,d2=side_screw_axle_d,h=3);
+            rotate([0,0,i*side_screw_angle]) translate([side_screw_offset,0,0]) rotate([rise_angle,0,0]) {
+                translate([0,0,2+i*_z_step]) screw_hole();
             }
         }
     }
-    %translate([side_screw_offset,0,5]) rotate([rise_angle,0,0]) side_screw();
-    //%z_screw(6);
 }
 
 module screw_housing_bottom() {
     
+    z = screw_housing_height/2;
     difference() {
         _screw_housing();
         for(i = [0:side_screws-1]) {
-            rotate([0,0,i*side_screw_angle+45]) translate([side_screw_offset,0,screw_housing_height/2-3]) cylinder(d1=4,d2=5, h=3);
-            rotate([0,0,i*side_screw_angle-45]) translate([side_screw_offset+1,0,1]) _threads(d=screw_housing_thread_d, h=screw_housing_height, z_step=1.8, depth=0.5, direction=0);
+            rotate([0,0,i*side_screw_angle+45]) translate([side_screw_offset,0,-3]) cylinder(d1=4,d2=5, h=3);
+            rotate([0,0,i*side_screw_angle-45]) translate([side_screw_offset+1,0,-z+1]) _threads(d=screw_housing_thread_d, h=screw_housing_height, z_step=1.8, depth=0.5, direction=0);
         }
     }
 }
 
 module screw_housing_top() {
-    
+   
+    z = screw_housing_height/2;
     difference() {
         _screw_housing();
         for(i = [0:side_screws-1]) {
-            rotate([0,0,i*side_screw_angle+45]) translate([side_screw_offset+1,0,-0.1]) {
+            rotate([0,0,i*side_screw_angle+45]) translate([side_screw_offset+1,0,-z-0.1]) {
                 cylinder(d=screw_housing_thread_d,h=screw_housing_height);
                 cylinder(d1=screw_housing_thread_d+3,d2=screw_housing_thread_d, h=2);
             }
         }
     }
     for(i = [0:side_screws-1]) {
-        rotate([0,0,i*side_screw_angle-45]) translate([side_screw_offset,0,screw_housing_height/2]) cylinder(d1=5-slop,d2=4-slop, h=3);
+        rotate([0,0,i*side_screw_angle-45]) translate([side_screw_offset,0,0]) cylinder(d1=5-slop,d2=4-slop, h=3);
     }
-
 }
 
 module screw_housing_bolt() {
@@ -148,7 +158,7 @@ module screw_housing_bolt() {
 module side_screw_axle() {
     $fn=100;
     d = side_screw_axle_d;
-    h = screw_housing_height-8-slop;
+    h = side_screw_height + 2 - slop;
     union() {
         cylinder(d1=d-slop-1,d2=d,h=3);
         translate([0,0,3]) cylinder(d=d,h=h);
@@ -168,13 +178,27 @@ module side_screw_axle_bearing() {
 
 // debug
 module debug() {
+    z = screw_housing_height/2;
     intersection() {
         union() {
-            rotate([0,0,180]) z_screw(10);
-            translate([side_screw_offset,0,z_step/2]) rotate([rise_angle,0,0]) side_screw();
+            //rotate([0,0,180]) z_screw(8);
+            screw_housing_bottom();
+            translate([0,0,0]) rotate([180,0,-1/3*360]) screw_housing_top();
+            translate([side_screw_offset,0,0]) rotate([rise_angle,0,0]) translate([0,0,-side_screw_height/2-1]) side_screw();
+            rotate([0,0,side_screw_angle]) translate([side_screw_offset,0,0]) rotate([rise_angle,0,0]) translate([0,0,-side_screw_height/2]) side_screw();
+            rotate([0,0,side_screw_angle*2]) translate([side_screw_offset,0,0]) rotate([rise_angle,0,0]) translate([0,0,-side_screw_height/2+1]) side_screw();
+            
+            //translate([side_screw_offset,0,0]) rotate([rise_angle,0,0]) translate([0,0,-side_screw_height/2-2]) side_screw_axle_bearing();
+            //translate([side_screw_offset,0,0]) rotate([rise_angle,0,0]) translate([0,0,side_screw_height/2-1]) side_screw_axle_bearing();
+            
+            translate([side_screw_offset,0,0]) rotate([rise_angle,0,0]) translate([0,0,-(side_screw_height+8-slop)/2-1]) scale([0.9,0.9,1])  side_screw_axle();
+
         }
-        translate([-1,-1,0]) cube([30,30,100]);
+        translate([-1,-1,-50]) cube([30,30,100]);
+        //rotate([0,0,1/3*360]) translate([-1,-1,-50]) cube([30,30,100]);
+        //rotate([0,0,2/3*360]) translate([-1,-1,-50]) cube([30,30,100]);
     }
+    
 }
 
 //_thread_slice(20, 5, angle=360, rotation=45);
@@ -184,7 +208,6 @@ module debug() {
 //side_screw();
 //screw_housing_bottom();
 screw_housing_top();
-//translate([0,0,screw_housing_height]) rotate([180,0,-rise_angle]) screw_housing_top();
 //screw_housing_bolt();
 //side_screw_axle();
 //side_screw_axle_bearing();
