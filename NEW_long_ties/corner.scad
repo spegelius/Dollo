@@ -4,11 +4,12 @@ include <globals.scad>;
     support = false;
 	slot_translate = .5;
 	rod_size = .5;
+  cube_outset = 0.001;
 module basic_corner(){
 	module added(){
-			translate([0,0,15]) cube([obj_leg,obj_leg,obj_leg*2], center=true);
-			translate([0,15,0]) cube([obj_leg,obj_leg*2,obj_leg], center=true);
-			translate([15,0,0]) cube([obj_leg*2,obj_leg,obj_leg], center=true);
+			translate([0,0,15]) cube([obj_leg+cube_outset,obj_leg+cube_outset,obj_leg*2], center=true);
+			translate([0,15,0]) cube([obj_leg+cube_outset,obj_leg*2+cube_outset,obj_leg], center=true);
+			translate([15,0,0]) cube([obj_leg*2+cube_outset,obj_leg+cube_outset,obj_leg], center=true);
 	}
 	module taken(){
 		cylinder(d=8.5, h=obj_leg*5, center=true);
