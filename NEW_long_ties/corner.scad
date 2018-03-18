@@ -48,12 +48,17 @@ module full_corner(){
 		
 		translate([39-slot_translate/2,18,24]) rotate([0,-40,0]) cylinder(h=6,d=4);
 		translate([39-slot_translate/2,-18,24]) rotate([0,-40,0]) cylinder(h=6,d=4);
+    
+    // Secondary center support pillar
+    translate([2.5,4,0]) cylinder(h=14.85,d=4);
 	}
 	if (support==true)
 	{
 		support_pillers();
 		rotate([0,0,(360/3)*2]) support_pillers();
 		rotate([0,0,(360/3)*1]) support_pillers();
+    //center support
+    cylinder(h=14.4,d1=16,d2=3);
 	}
 	difference(){
 		translate([0,0,0]) rotate([0,-35,0])basic_corner();
