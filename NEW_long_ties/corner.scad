@@ -4,11 +4,12 @@ include <globals.scad>;
     support = false;
 	slot_translate = .5;
 	rod_size = .5;
+  cube_outset = 0.001;
 module basic_corner(){
 	module added(){
-			translate([0,0,15]) cube([obj_leg,obj_leg,obj_leg*2], center=true);
-			translate([0,15,0]) cube([obj_leg,obj_leg*2,obj_leg], center=true);
-			translate([15,0,0]) cube([obj_leg*2,obj_leg,obj_leg], center=true);
+			translate([0,0,15]) cube([obj_leg+cube_outset,obj_leg+cube_outset,obj_leg*2], center=true);
+			translate([0,15,0]) cube([obj_leg+cube_outset,obj_leg*2,obj_leg+cube_outset], center=true);
+			translate([15,0,0]) cube([obj_leg*2,obj_leg+cube_outset,obj_leg+cube_outset], center=true);
 	}
 	module taken(){
 		cylinder(d=8.5, h=obj_leg*5, center=true);
@@ -47,12 +48,17 @@ module full_corner(){
 		
 		translate([39-slot_translate/2,18,24]) rotate([0,-40,0]) cylinder(h=6,d=4);
 		translate([39-slot_translate/2,-18,24]) rotate([0,-40,0]) cylinder(h=6,d=4);
+    
+    // Secondary center support pillar
+    translate([2.5,4,0]) cylinder(h=14.85,d=4);
 	}
 	if (support==true)
 	{
 		support_pillers();
 		rotate([0,0,(360/3)*2]) support_pillers();
 		rotate([0,0,(360/3)*1]) support_pillers();
+    //center support
+    cylinder(h=14.4,d1=16,d2=3);
 	}
 	difference(){
 		translate([0,0,0]) rotate([0,-35,0])basic_corner();
