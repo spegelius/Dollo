@@ -54,7 +54,7 @@ module gear_one(hole_diameter_gears=1.5){
             translate([0,0,thickness_gears]) mirror([0,0,1]) gear(mm_per_tooth_gears,teeth,thickness_gears,hole_diameter_gears,twist_gears);
             gear(mm_per_tooth_gears,teeth,thickness_gears,hole_diameter_gears,twist_gears);
         }
-        translate([0,0,-2]) motor_shaft_hole(thickness_gears*3);
+        translate([0,0,-2]) motor_shaft(thickness_gears*3);
     }
 }
 		

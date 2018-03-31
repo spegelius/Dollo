@@ -202,23 +202,37 @@ module elongated_nut(length=4) {
     }
 }
 
-module motor_shaft_hole(h=10) {
-    difference() {
-        cylinder(d=motor_shaft_hole_dia, h=h);
-        translate([0,4.5,h/2]) cube([5,5,h], center=true); 
+module motor_shaft(h=10, extra_slop=0) {
+    d = motor_shaft_hole_dia+extra_slop;
+    intersection() {
+        cylinder(d=d, h=h);
+        union() {
+            translate([0,-.5,h/2+4]) cube([d,d,h], center=true);
+            cylinder(d=d, h=4.5);
+        }
     }
 }
 
-module motor_plate(h=5) {
+//motor_shaft(extra_slop=0.0,$fn=30);
+
+module motor_plate(h=5, bolt_head_cones=false) {
     difference () {
         translate([0,0,h/2]) cube([motor_side_length,motor_side_length,h], center=true);
             
         translate([0,0,-.5]) cylinder(d=motor_center_hole, h=h+1);
+        if (h > 2) {
+            translate([0,0,2]) cylinder(d1=motor_center_hole, d2=motor_center_hole+(h-2)*2, h=h+0.1);
+        }
 
-        translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
-        translate([-motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
-        translate([motor_bolt_hole_distance/2,-motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
-        translate([-motor_bolt_hole_distance/2,-motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
+        for (i=[0:3]) {
+            rotate([0,0,i*(360/4)]) {
+                translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
+                if (bolt_head_cones) {
+                    translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,h-2]) cylinder(d1=bolt_hole_dia, d2=bolt_head_hole_dia, h=2, $fn=20);
+
+                }
+            }
+        }
     }
 }
 
@@ -349,6 +363,11 @@ module _bolt(d=8, h=20, h2=20, shaft=0, diameter=1, z_step=1.8, depth=0.5) {
 
 module cube_donut(d, h, angle=360, rotation=45) {
     rotate_extrude(angle=angle, convexity=10) translate([d/2,0,0]) rotate([0,0,rotation]) square([h,h], center=true);
+}
+
+module hexagon(inner_diameter, height=10) {
+    dia = sqrt(((inner_diameter/2)*(inner_diameter/2))/0.75) * 2;
+    cylinder(d=dia, h=height, $fn=6);
 }
 
 //translate([50,50]) nut();

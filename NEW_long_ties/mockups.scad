@@ -1,4 +1,7 @@
 
+include <globals.scad>;
+use <include.scad>;
+
 prox_sensor_dia = 18;
 prox_sensor_washer_dia = 30;
 
@@ -125,6 +128,30 @@ module mechanical_endstop() {
     translate([20-1.5,-4,1]) color("grey") cube([0.5, 4, 4]);
     
 }
+
+module mock_stepper_motor(geared=false) {
+    difference() {
+        union() {
+            intersection() {
+                translate([0,0,42/2]) cube([42,40,42], center=true);
+                translate([0,0,42/2]) rotate([0,45,0]) cube([54,40,54], center=true);
+            }
+            if (geared) {
+                translate([0,40/2,42/2]) rotate([-90,0,0]) cylinder(d=37.2, h=26.5);
+                translate([0,40/2+26.5,42/2]) rotate([-90,0,0]) motor_shaft(22, $fn=40);
+            } else {
+                translate([0,40/2,42/2]) rotate([-90,0,0]) cylinder(d=22, h=2);
+                translate([0,40/2+2,42/2]) rotate([-90,0,0]) motor_shaft(22, $fn=40);
+            }
+        }
+        translate([0,40/2,42/2]) rotate([90,0,0]) for (i=[0:3]) {
+            rotate([0,0,i*(360/4)]) translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, 6, $fn=20);
+        }
+    }
+}
+
+//mock_stepper_motor(false);
+//mock_stepper_motor(true);
 
 //mechanic_endstop();
 

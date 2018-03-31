@@ -57,7 +57,7 @@ module coupler2() {
     
     difference() {
         cylinder(d=10, h=15);
-        motor_shaft_hole(16);
+        motor_shaft(16);
         rotate([0,0,180]) translate([-0.5,0,0]) cube([1, 5, 15]);
     }
     
