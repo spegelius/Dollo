@@ -250,6 +250,8 @@ module view_proper() {
     %translate([29,-13.5,-120]) proximity_sensor(25.5,5);
     %translate([20,10.3,-76.2]) rotate([0,0,90]) extention();
     
+    %translate([-60,-25,-76.2-43.5]) rotate([0,0,0]) extention();
+
     translate([29,-13.5,-90]) prox_sensor_clamp();
     translate([1.5,28,-100]) rotate([-101,0,180]) fan_duct();
 }

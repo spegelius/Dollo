@@ -1,6 +1,9 @@
 include <globals.scad>;
 include <include.scad>;
 use <long_tie.scad>;
+use <motor_mount_small.scad>;
+use <extention.scad>;
+use <rack.scad>;
 
 tail_depth = 55;
 tail_depth_2 = -10;
@@ -32,3 +35,11 @@ rotate([90,0,0]) difference(){
 	y_mount_added();
 	y_mount_taken();
 }
+
+module debug() {
+    %translate([0,-26,-2]) rotate([0,0,180]) do_motor_mount();
+    %translate([0,-39.5,22.2]) rotate([-90,0,0]) do_rack(1, fast_render=true);
+    %translate([20,-73.5,7.2]) rotate([0,0,90]) extention(2);
+}
+
+debug();
