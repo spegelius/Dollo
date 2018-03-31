@@ -84,6 +84,7 @@ module xy_endstop_racktop() {
         }
         %translate([2.5+slop/2,12.9-3+slop/2,8.2]) rotate([180,0,0]) mechanical_endstop();
     }
+    %translate([14,-7,27]) rotate([0,-90,-90]) do_rack(1);
 }
 
 module z_endstop() {
@@ -101,7 +102,7 @@ module z_endstop() {
 module xy_endstop_rackend() {
     l = 21;
     difference() {
-        rounded_cube(30,l,12,3);
+        translate([0.5,0,0]) rounded_cube(29,l,12,3);
         translate([5,l-8.2,1.5]) cube([20+slop,6+3*slop, 12]);
         translate([6,l-7.2,0]) cube([18+slop,6+8*slop, 12]);
         
@@ -124,5 +125,5 @@ module xy_endstop_rackend() {
 //endstop_v1();
 //endstop_v2();
 //z_endstop();
-xy_endstop_racktop();
-//xy_endstop_rackend();
+//xy_endstop_racktop();
+xy_endstop_rackend();
