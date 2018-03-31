@@ -16,13 +16,6 @@ module wiggly(d, h, wiggles) {
     }
 }
 
-module hexagon(inner_diameter, height) {
-    $fn=6;
-    dia = sqrt(((inner_diameter/2)*(inner_diameter/2))/0.75) * 2;
-    echo (dia);
-    cylinder(d=dia, h=height);
-}
-
 module _rail(length, width) {
     rotate([-90,0,0]) hexagon(width, length);
 }
@@ -77,7 +70,7 @@ module rail_slide(width=width, height=10, wiggles=3) {
                 cylinder(d=spring_d, h=height);
                 translate([0,0,-0.1]) cylinder(d=spring_d-2*spring_width, h=height+1, wiggles=wiggles);
                 for (i=[1:wiggles]) {
-                    translate([0,0,i*z_step-1.5]) rotate([0,0,45]) long_cube();
+                    translate([0,0,i*z_step-1.5]) rotate([0,0,49]) long_cube();
                 }
             }
             translate([-width/2,-width/2+spring_d/4,height/2]) cube([width,width,height], center=true);
@@ -92,16 +85,16 @@ module rail_slide(width=width, height=10, wiggles=3) {
     }
     for (i = [1:6]) {
         angle = 360/6*i;
-        rotate([0,0,angle]) translate([0,width/2+spring_d/2-0.1,0]) rotate([0,0,45]) spring(wiggles);
+        rotate([0,0,angle]) translate([0,width/2+spring_d/2,0]) rotate([0,0,38]) spring(wiggles);
     }
 }
 
 
 
 //rail_center();
-translate([0,-length/2,width/2]) rail(length,width);
-//rotate([90,0,0]) rail(20,15);
-//rail_slide(15,10,3);
+//translate([0,-length/2,width/2]) rail(length,width);
+//rotate([90,0,0]) rail(length=20,width=15);
+rail_slide(width=15,height=10,wiggles=3);
 
 
 
