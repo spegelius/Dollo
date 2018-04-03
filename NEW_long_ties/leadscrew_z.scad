@@ -7,7 +7,7 @@ include <globals.scad>;
 include <include.scad>;
 
 use <extention.scad>;
-use <corner_stabilizer.scad>;
+use <leg.scad>;
 use <rail.scad>;
 use <stabilizer_center.scad>;
 
@@ -39,33 +39,6 @@ module motor_mount() {
     }
 }
 
-module plate(length=40, height=10) {
-    hull() {
-        translate([0,0,0]) cube([30,length,height/2]);
-        translate([7.5,0,height/2]) cube([15,length,height/2]);
-    }
-}
-
-module leg() {
-    
-    module _leg() {
-        translate([0,0,-19.5]) difference() {
-            extention_finished(units=3);
-            translate([-0.5,-30.5,-0.5]) cube([31,31,20]);
-        }
-    }
-    difference() {
-        union() {
-            translate([0, 20, 0]) plate(40+motor_side_length/2);
-            translate([20, 30, 0]) rotate([0,0,-90]) plate(40+motor_side_length/2);
-
-            translate([0,30]) _leg();
-        }
-        #translate([15,90,0]) rotate([90,0,0]) male_dovetail(90);
-        #translate([-5,15,0]) rotate([90,0,90]) male_dovetail(90);
-    }
-}
-
 module leg_with_motor() {
     module support() {
         linear_extrude(height=5, convexity=2)
@@ -73,7 +46,7 @@ module leg_with_motor() {
     }
     
     union() {
-        leg();
+        leg(40+motor_side_length/2);
         translate([-motor_side_length/2, 28.4+motor_side_length/2+5, 8]) rotate([180,0,0]) motor_mount();
         translate([-40,33.4,0]) rotate([90,0,0]) support();
         translate([-40,38.4+motor_side_length,0]) rotate([90,0,0]) support();
@@ -86,8 +59,6 @@ module leg_with_motor() {
         
     }
 }
-//leg_with_motor();
-
 
 module rod_guide_top() {
     difference() {
@@ -244,10 +215,21 @@ module rail_holder() {
             }
         }
     }
+
+    module frame_plate() {
+        difference() {
+            union() {
+                cube([30,80,7]);
+                translate([30,0,0]) cube([80,30,7]);
+            }
+            translate([15,0,0]) rotate([-90,180,0]) male_dovetail(80);
+            translate([0,15,0]) rotate([-90,180,-90]) male_dovetail(120);
+        }
+    }
     
     union() {
         difference() {
-            stabilizer(false);
+            frame_plate();
             translate([28.4+motor_side_length/2+5,0,motor_side_length/2]) rotate([-90,0,0]) cylinder(d=40, h=35);
             translate([30,30,0]) cube([100,100,10]);
             translate([-1,80,0]) cube([35,70,10]);
@@ -546,7 +528,7 @@ module view_proper() {
     translate([-180,-180,0]) rotate([90,0,0]) rail_holder();
     translate([-180,-180,540]) rotate([90,0,0]) mirror([0,1,0]) rail_holder();
 
-    //translate([-162.5,-181-motor_side_length/2,34]) rail_slide();
+    translate([-162.5,-181-motor_side_length/2,34]) rail_slide();
     //translate([-140,-181,74]) rotate([-90,0,90]) rail_slide_bolt();
     //translate([-94.5,-161-motor_side_length/2,44]) rotate([0,180,0]) slide_bed_adapter();
     
@@ -610,8 +592,8 @@ module view_parts(part=0) {
 // set this to false before rendering!
 FAST=true;
 
-//view_parts(16);
-view_proper();
+view_parts(1);
+//view_proper();
 
 //z_lifter_arm();
 //z_lifter();
