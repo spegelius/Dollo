@@ -85,3 +85,6 @@ hole_threaded_rod = lifter_rod_diam+2*slop;
 
 // for the extensions
 metal_rod_size = 9;
+
+// z screw
+z_screw_d = 25;
