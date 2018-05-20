@@ -140,9 +140,16 @@ module stagger_pins() {
 
 //////////////////      DOVE TAIL       //////////////////
 
-module male_dovetail(height) {
-	dovetail_3d(male_dove_max_width,male_dove_min_width,male_dove_depth,height);
+module male_dovetail(height, bridge_extra=0) {
+    union() {
+        dovetail_3d(male_dove_max_width,male_dove_min_width,male_dove_depth,height);
+        if (bridge_extra > 0) {
+            translate([-male_dove_max_width/2,male_dove_depth,0]) cube([male_dove_max_width,bridge_extra,height]);
+        }
+    }
 }
+
+//male_dovetail(5,bridge_extra=0.2);
 
 module dovetail_3d(max_width=11, min_width=5, depth=5, height=30) {
 	linear_extrude(height=height, convexity=2)
@@ -305,6 +312,7 @@ module chamfered_cube_side(x,y,z, chamfer, center=false) {
     }
 }
 
+// Thread generator. d is the outer diameter of the thread
 module _threads(d=8, h=10, z_step=1.8, depth=0.5, direction=0) {
     
     function get_twist(dir) = (direction == 0) ? -360 : 360;
@@ -373,6 +381,37 @@ module hexagon(inner_diameter, height=10) {
 //translate([50,50]) nut();
 //translate([50,50]) elongated_nut();
 //translate([50,47.2]) cube([5.6, 5.6, 2.4]);
+
+module pyramid(w, cap=0) {
+    h = w/2;
+    module _pyramid() {
+        hull() {
+            translate([0,0,0.01/2]) cube([w,w,0.01], center=true);
+            translate([0,0,h-0.01]) cube([0.01,0.01,0.01]);
+        }
+    }
+
+    if (cap > 0) {
+        intersection() {
+            _pyramid(w);
+            translate([0,0,(h-cap)/2]) cube([w,w,h-cap], center=true);
+        }
+    } else {
+        _pyramid();
+    }
+}
+
+module ridged_cylinder(d=10, h=15, r=1.5) {
+    steps = round(PI*d/r);
+    ridge = PI*d/steps/2;
+
+    union() {
+        cylinder(d=d-ridge/2,h=h);
+        for (i = [0:steps-1]) {
+            rotate([0,0,i*360/steps]) translate([d/2-ridge*0.45,0,h/2]) cube([ridge,ridge,h], center=true);
+        }
+    }
+}
 
 module frame_mockup(bed_angle=45, units_x=1, units_y=1, units_z=1) {
     corner_side = 60;
