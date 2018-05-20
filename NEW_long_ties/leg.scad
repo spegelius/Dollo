@@ -33,14 +33,8 @@ module leg(plate_len=45) {
         }
         dove_len = plate_len+30;
 
-        translate([15,plate_len+20,0]) rotate([90,0,0]) male_dovetail(dove_len);
-        translate([0,15,0]) rotate([90,0,90]) male_dovetail(dove_len);
-
-        // bit of room for bridging droop
-        br_depth = 0.2;
-        translate([15,dove_len/2,male_dove_depth+br_depth/2]) cube([male_dove_max_width,dove_len,br_depth], center=true);
-        translate([dove_len/2,15,male_dove_depth+br_depth/2]) cube([dove_len,male_dove_max_width,br_depth], center=true);
-
+        translate([15,plate_len+20,0]) rotate([90,0,0]) male_dovetail(dove_len, bridge_extra=0.2);
+        translate([0,15,0]) rotate([90,0,90]) male_dovetail(dove_len, bridge_extra=0.2);
     }
 }
 
