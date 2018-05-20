@@ -21,11 +21,7 @@ teeth_angle = 30;
 diameter = 2;
 
 module tie_taken(){
-    translate([-(unit_length*units+20)/2,0,tail_depth]) rotate([90,0,90]) male_dovetail(height=units*unit_length+20);
-
-    // bit of room for bridging droop
-    br_depth = 0.2;
-    translate([0,0,tail_depth+male_dove_depth+br_depth/2]) cube([units*unit_length+20,male_dove_max_width,br_depth], center=true);
+    translate([-(unit_length*units+20)/2,0,tail_depth]) rotate([90,0,90]) male_dovetail(height=units*unit_length+20, bridge_extra=0.2);
 
     translate([-(unit_length*units+20)/2,-9,9.4]) rotate([90,180,90]) male_dovetail(height=units*unit_length+20);
 }
