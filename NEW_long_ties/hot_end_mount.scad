@@ -9,7 +9,7 @@ use <rack.scad>;
 include <mockups.scad>;
 
 hotend_depth = 75;
-mounting_diamiter = 12+slop;
+mounting_diamiter = 12 + slop/2;
 top_diamiter = 17;
 arm_thickness = 5;
 snap_location = 47;
@@ -18,7 +18,7 @@ natch_height = 6;
 $fn=60;
 
 module motor_mount_small(height=15){
-    translate([-8+slop,0.95,snap_location-6.2]) rotate([-90,0,0]) scale([.98,1,0.99]) long_tie(.9*35);
+    translate([-8+slop,0.95,snap_location-6.2]) rotate([-90,0,0]) scale([.95,1,0.97]) long_tie(.9*35);
 }
 
 module y_mount_added(){
@@ -156,7 +156,7 @@ module fan_duct() {
             
             translate([0,0,-1]) duct(d=41, d2=10, x=nozzle_width-2, h=31.31);
             
-            translate([-25/2,-17.5,15.9]) rotate([-90+11,0,0]) rotate([0,90,0]) male_dovetail(27);
+            translate([-25/2,-17.19,15.9]) rotate([-90+11,0,0]) rotate([0,90,0]) male_dovetail(27);
         }
     }
 
@@ -232,7 +232,7 @@ module fan_duct() {
     }
     
     fan_base();
-    translate([0,10.7,31.2]) rotate([101,0,0]) nozzle();
+    translate([0,10.8,31.2]) rotate([101,0,0]) nozzle();
 
 }
 
@@ -253,10 +253,10 @@ module view_proper() {
     %translate([-60,-25,-76.2-43.5]) rotate([0,0,0]) extention();
 
     translate([29,-13.5,-90]) prox_sensor_clamp();
-    translate([1.5,28,-100]) rotate([-101,0,180]) fan_duct();
+    translate([1.5,28,-99.8]) rotate([-101,0,180]) fan_duct();
 }
 
-//do_mount();
+do_mount();
 //clamp();
 //rotate([0,-90,0])  prox_sensor_clamp();
 //intersection() {
@@ -265,4 +265,4 @@ module view_proper() {
 //}
 //fan_duct();
 
-view_proper();
+//view_proper();
