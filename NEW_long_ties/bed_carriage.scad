@@ -31,7 +31,7 @@ module bed_rail() {
 
 module bed_rail_short() {
     // 60 mm = 2x30mm from corners
-    // 2 mm = rail coopler thickness
+    // 2 mm = rail coupler thickness
     intersection() {
         translate([0,0,-60-2]) bed_rail();
         cylinder(d=rail_width*1.5, h=120);
@@ -276,21 +276,136 @@ module endstop_screw_mount() {
     }
 }
 
+module _screw_knob(h=10) {
+    h1 = h/5;
+    h2 = h-2*h1;
+    difference() {
+            union() {
+                cylinder(d1=15-2*h1, d2=15,h=h1, $fn=40);
+                translate([0,0,h1]) cylinder(d=15,h=h2, $fn=40);
+                translate([0,0,h-h1]) cylinder(d2=15-2*h1, d1=15,h=h1, $fn=40);
+            }
+            for (i=[0:11]) {
+                rotate([0,0,i*360/12]) translate([15/2,0,0]) cylinder(d=2,h=10,$fn=20);
+            }
+    }
+}
+
 module endstop_screw() {
     
     union() {
-        translate([0,0,10]) _threads(8-4*slop, 25);
+        translate([0,0,10]) _threads(8-3*slop, 28);
+        _screw_knob();
+    }
+}
+
+module endstop_screw_nut() {
+    difference() {
+        _screw_knob(h=7);
+        _threads(h=15);
+    }
+}
+
+module _bed_attach_body() {
+    difference() {
+        union() {
+            cube([70,30,15]);
+            translate([40,20,0]) cube([30,10,50]);
+        }
+        translate([70-15,30,0]) rotate([0,0,180]) male_dovetail(50);
+        translate([0,15,15]) rotate([-90,0,-90]) male_dovetail(30);
+
+        translate([70-30,0,15]) rotate([0,-45,0]) cube([50,50,50]);
+        translate([70/2,0,0]) rotate([45,0,0]) cube([70,10,10],center=true);
+        translate([70/2,30,0]) rotate([45,0,0]) cube([70,10,10],center=true);
+    }
+}
+
+module _spring() {
+    module spring_half() {
+        intersection() {
+            translate([-100/2+6,0,0]) difference() {
+                cylinder(d=100,h=15,$fn=100);
+                cylinder(d=100-3,h=15.1,$fn=100);
+            }
+            translate([0,-100,0]) cube([200,200,200]);
+        }
+    }
+
+    spring_half();
+    mirror([1,0,0]) spring_half();
+}
+
+//_spring();
+
+module bed_attachment_spring() {
+    %translate([0,0,3]) cube([200,213,3], center=true);
+    %view_bed_frame();
+
+    module triangle(h=15) {
+        intersection() {
+            linear_extrude(h) polygon(points=[[0,0],[0,4],[4,0]]);
+            cube([3,3,h]);
+        }
+    }
+
+    module clip() {
         difference() {
             union() {
-                cylinder(d1=11, d2=15,h=2, $fn=40);
-                translate([0,0,2]) cylinder(d=15,h=6, $fn=40);
-                translate([0,0,8]) cylinder(d2=11, d1=15,h=2, $fn=40);
+                _spring();
+                translate([6-1.5,-15/2,0]) cube([2, 15, 30]);
+                translate([6+.5,-15/2,0]) cube([3, 22, 30]);
+                translate([6+3.5,-2,18.5]) rotate([-90,0,0]) triangle();
+                translate([6+3.5,10,18.5]) rotate([0,0,0]) triangle(11.5);
+
+                translate([-22+6,-17/2,0]) cube([22-6-6+1.5,17, 15]);
+                translate([8,-50,0]) rotate([0,0,90])difference() {
+                    _bed_attach_body();
+                    translate([25,0,0]) cube([50,15,15]);
+                }
             }
-            for (i=[0:9]) {
-                rotate([0,0,i*360/10]) translate([15/2,0,0]) cylinder(d=2,h=10,$fn=20);
+            translate([-22+8,0,15/2]) rotate([0,90,0]) cylinder(d=8,h=40,$fn=40);
+
+            translate([-22+8,-12/2,0]) cube([7,12,16]);
+            translate([6-1.5,-15/2,15]) rotate([45,0,0]) cube([6,30,20]);
+        }
+    }
+
+    clip();
+    //translate([90,-125,-8]) rotate([0,-90,-90]) clip();
+    //translate([90,-125+15/2,5]) rotate([180,0,0]) bed_attachment_spring_screw(true);
+}
+
+module bed_attachment_spring_screw(render_threads=true) {
+    h = 21;
+    union() {
+        difference() {
+            _screw_knob(3);
+            cube([1.3, 5, 3], center=true);
+        }
+        translate([0,0,3]) {
+            if (render_threads) {
+                _threads(8-3*slop, h);
+            } else {
+                cylinder(d=8,h=h, $fn=40);
             }
         }
     }
+}
+
+module bed_attachment_spring_nut() {
+    difference() {
+        translate([0,0,6.8/2]) chamfered_cube(14.5,11.5,6.5,1, center=true);
+        _threads(h=15);
+    }
+}
+
+module view_bed_frame() {
+    translate([-95,95,0]) rotate([90,0,45]) bed_carriage_corner();
+    translate([-95,-95,0]) rotate([90,0,135]) bed_carriage_corner();
+    translate([95,95,0]) rotate([90,0,-45]) bed_carriage_corner();
+    translate([95,-95,0]) rotate([90,0,225]) bed_carriage_corner();
+    translate([-110,-60,-30]) rotate([-90,0,0]) extention_finished();
 }
 
 module view_proper() {
@@ -298,12 +413,8 @@ module view_proper() {
     bed_position = 160;
     
     frame_mockup(bed_angle=0, units_x=2, units_y=2, units_z=1);
-    translate([-95,95,bed_position+40]) rotate([90,0,45]) bed_carriage_corner();
-    translate([-95,-95,bed_position+40]) rotate([90,0,135]) bed_carriage_corner();
-    translate([95,95,bed_position+40]) rotate([90,0,-45]) bed_carriage_corner();
-    translate([95,-95,bed_position+40]) rotate([90,0,225]) bed_carriage_corner();
     
-    %translate([-110,-60,bed_position+10]) rotate([-90,0,0]) extention_finished();
+    translate([0,0,bed_position+40]) view_bed_frame();
 
     translate([-120-45,0,30-6.5]) rotate([-90,0,0]) bed_rail_frame_mount();
     translate([-120-45,0,210]) rotate([180,0,0]) bed_rail_frame_mount_top()
@@ -351,3 +462,8 @@ module view_proper() {
 //mirror([1,0,0]) bed_housing_coupler();
 //endstop_screw_mount();
 //endstop_screw();
+//endstop_screw_nut();
+//bed_attachment_spring();
+//mirror([1,0,0]) bed_attachment_spring();
+//bed_attachment_spring_screw();
+bed_attachment_spring_nut();
