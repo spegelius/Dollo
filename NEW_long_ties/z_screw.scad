@@ -387,7 +387,7 @@ module debug_gears() {
 
 
 // 120 mm screw
-//z_screw(40, steps=100);
+z_screw(40, steps=100);
 
 //z_screw_center();
 //z_screw_center_coupler();
