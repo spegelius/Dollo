@@ -131,7 +131,7 @@ module prox_sensor_clamp() {
 module fan_duct() {
 
     nozzle_offset = 1.5;
-    nozzle_width = 32;
+    nozzle_width = 34;
 
     module fan_base() {
         difference() {
@@ -143,7 +143,7 @@ module fan_duct() {
                 translate([-32.5/2,32.5/2,0]) cylinder(d=6, h=9);
                 
                 cylinder(d=43,h=2,$fn=60);
-                translate([0,0,1]) duct(d2=12, x=nozzle_width-2);
+                translate([0,0,1]) duct(d2=13, x=nozzle_width-2);
                 rotate([11,0,0]) translate([1.5,-13.25,16.6/2+4.3]) cube([23,15,16.5], center=true);
             }
             translate([0,0,-4]) cylinder(d=40,h=4,$fn=60);
@@ -154,7 +154,7 @@ module fan_duct() {
             
             translate([-26/2+4,-42/2-3,6/2-2]) rotate([0,90,0]) cylinder(d=bolt_hole_dia, h=30);
             
-            translate([0,0,-1]) duct(d=41, d2=10, x=nozzle_width-2, h=31.31);
+            translate([0,0,-1]) duct(d=41, d2=11, x=nozzle_width-2, h=31.31);
             
             translate([-25/2,-17.19,15.9]) rotate([-90+11,0,0]) rotate([0,90,0]) male_dovetail(27);
         }
@@ -167,10 +167,10 @@ module fan_duct() {
         }
     }
 
-    module duct(d=43, d2=10, x=nozzle_width, h=31.3) {
+    module duct(d=43, d2=11, x=nozzle_width, h=31.3) {
         hull() {
             cylinder(d=d,h=1);
-            translate([nozzle_offset,11,h]) rotate([0,-11,90]) capsule_3d(d=d2, x=x);
+            translate([nozzle_offset,14.2,h]) rotate([0,-11,90]) capsule_3d(d=d2, x=x);
         }
     }
 
@@ -204,8 +204,8 @@ module fan_duct() {
 
         module hollow_tube() {
             difference() {
-                tube(d=10, h=23);
-                tube(d=8, h=23);
+                tube(d=11, h=23);
+                tube(d=9, h=23);
             }
         }
 
@@ -215,7 +215,7 @@ module fan_duct() {
             
             
             rotate([-90,0,0]) difference() {
-                translate([nozzle_offset,0,1/2]) cube([28,12,1], center=true);
+                translate([nozzle_offset,0,1/2]) cube([28,13,1], center=true);
                 translate([-nozzle_width/2+nozzle_offset,0,-1]) cylinder(d=12,h=2);
                 translate([nozzle_width/2+nozzle_offset,0,-1]) cylinder(d=12,h=2);
             }
@@ -223,8 +223,8 @@ module fan_duct() {
 
         difference() {
             nozzle_main();
-            translate([nozzle_width/2+nozzle_offset-4,24/2+1,-4]) rotate([0,55,0]) cube([3.5, 24, 5], center=true);
-            translate([-nozzle_width/2+nozzle_offset+4,24/2+1,-4]) rotate([0,-55,0]) cube([3.5, 24, 5], center=true);
+            translate([nozzle_width/2+nozzle_offset-4,24/2+1,-5]) rotate([0,50,0]) cube([4, 24, 5], center=true);
+            translate([-nozzle_width/2+nozzle_offset+4,24/2+1,-5]) rotate([0,-50,0]) cube([3.5, 24, 5], center=true);
             
             translate([nozzle_offset,1,-4]) rotate([60,0,0]) cube([12,2.5,5], center=true);
         }
@@ -232,7 +232,7 @@ module fan_duct() {
     }
     
     fan_base();
-    translate([0,10.8,31.2]) rotate([101,0,0]) nozzle();
+    translate([0,14,31.2]) rotate([101,0,0]) nozzle();
 
 }
 
@@ -246,7 +246,7 @@ module view_proper() {
     rotate([0,-90,0]) mirror([0,0,1]) mount();
     %translate([0,1,-28.7]) rotate([-90,0,0]) do_motor_mount();
     %translate([0,25.3,-42.1]) do_rack(fast_render=true);
-    %translate([0,-13,-124]) rotate([0,0,180]) e3dv6();
+    %translate([0,-13,-127.7]) rotate([0,0,180]) e3dv6();
     %translate([29,-13.5,-120]) proximity_sensor(25.5,5);
     %translate([20,10.3,-76.2]) rotate([0,0,90]) extention();
     
@@ -256,13 +256,13 @@ module view_proper() {
     translate([1.5,28,-99.8]) rotate([-101,0,180]) fan_duct();
 }
 
-do_mount();
+//do_mount();
 //clamp();
 //rotate([0,-90,0])  prox_sensor_clamp();
 //intersection() {
 //    fan_duct();
 //    cube([100,100,36]);
 //}
-//fan_duct();
+fan_duct();
 
 //view_proper();

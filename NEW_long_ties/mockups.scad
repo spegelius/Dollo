@@ -46,13 +46,16 @@ module e3dv6() {
         }
     }
     
+    heatsink_step = 2.5;
+    heatsink_h = 12*heatsink_step;
+    
     module heatsink() {
         color("LightGrey") {
-            cylinder(d=10,h=28, $fn=50);
-            for (i = [0:9]) {
-                translate([0,0,i*2.5]) cylinder(r=11.2, h=1, $fn=50);
+            cylinder(d1=12,d2=10,h=heatsink_h, $fn=50);
+            for (i = [0:10]) {
+                translate([0,0,i*heatsink_step]) cylinder(r=11.2, h=1, $fn=50);
             }
-            translate([0,0,25]) cylinder(d=16,h=1, $fn=50);
+            translate([0,0,11*heatsink_step]) cylinder(d=16,h=1, $fn=50);
         }
     }
     
@@ -66,8 +69,8 @@ module e3dv6() {
     }
     nozzle();
     translate([0,0,5]) heater_block(); 
-    translate([0,0,18]) heatsink();
-    translate([0,0,62.3-16.7]) neck();
+    translate([0,0,19.6]) heatsink();
+    translate([0,0,19.6+heatsink_h]) neck();
 }
 
 module prometheus() {
