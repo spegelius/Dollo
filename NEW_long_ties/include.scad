@@ -369,6 +369,10 @@ module _bolt(d=8, h=20, h2=20, shaft=0, diameter=1, z_step=1.8, depth=0.5) {
     translate([0,-6,0]) rounded_cube(4,10,d*1.1,diameter,center=true);
 }
 
+module donut(d, h, angle=360) {
+    rotate_extrude(angle=angle, convexity=10) translate([d/2,0,0]) circle(h);
+}
+
 module cube_donut(d, h, angle=360, rotation=45) {
     rotate_extrude(angle=angle, convexity=10) translate([d/2,0,0]) rotate([0,0,rotation]) square([h,h], center=true);
 }
