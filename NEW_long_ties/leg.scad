@@ -86,10 +86,7 @@ module foot(dia=60) {
             translate([0,0,6]) cube([80,80,12], center=true);
         }
         cylinder(d=metal_rod_size,h=40, $fn=40);
-        translate([0,7,12]) rotate([-90,0,0])male_dovetail(height=30);
-        translate([0,-7-30,12]) rotate([-90,0,0])male_dovetail(height=30);
-        rotate([0,0,90]) translate([0,7,12]) rotate([-90,0,0])male_dovetail(height=30);
-        rotate([0,0,90]) translate([0,-7-30,12]) rotate([-90,0,0])male_dovetail(height=30);
+        translate([0,0,12]) rotate([-90,0,0]) tie_end(30);
 
         for(i=[0:3]) {
             rotate([0,0,i*360/4]) translate([hole_pos,0,-1]) cylinder(d=5, h=3, $fn=20);
@@ -104,7 +101,37 @@ module foot_small() {
     foot(dia=45);
 }
 
-leg();
+pitch = 3;
+dia_adjustable_inner = sqrt(30*30*2) + pitch+0.5;
+dia_adjustable_outer = dia_adjustable_inner + 2*slop;
+screw_steps = 100;
+
+module foot_adjustable_core() {
+    
+    difference() {
+        v_screw(h=15, screw_d=dia_adjustable_inner, pitch=pitch, direction=0, steps=screw_steps);
+        cylinder(d=metal_rod_size,h=40, $fn=40);
+        translate([0,0,15]) rotate([-90,0,0]) tie_end(30);
+        for(i=[0:3]) {
+            rotate([0,0,45+i*360/4]) translate([0,-15,0]) male_dovetail(30);
+        }
+    }
+    %translate([0,0,30]) rotate([90,0,45]) translate([-15,-15,-15]) extention(1);
+}
+
+module foot_adjustable() {
+    difference() {
+        intersection() {
+            translate([0,0,6]) sphere(d=dia_adjustable_outer+10);
+            translate([0,0,20/2]) cube([100,100,20],center=true);
+        }
+        translate([0,0,2]) v_screw(h=20, screw_d=dia_adjustable_outer, pitch=pitch, direction=0, steps=screw_steps);
+    }
+}
+
+//leg();
 //leg_motor_mount();
 //foot();
 //foot_small();
+foot_adjustable_core();
+//foot_adjustable();
