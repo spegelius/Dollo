@@ -241,6 +241,15 @@ module do_mount() {
     translate([0,-65,25/2-1]) mirror([0,1,0]) mount();
 }
 
+module gnd_fan_adapter() {
+    // do not use
+    union() {
+        rotate([-90,0,0]) long_tie_split(23);
+        translate([4,-1.5,0]) rotate([-90,0,180]) long_tie_split(23);
+        translate([-6/2,-1.51,0]) cube([10, 1.52, 23]);
+    }
+}
+
 module view_proper() {
     rotate([0,-90,0]) mount();
     rotate([0,-90,0]) mirror([0,0,1]) mount();
@@ -263,6 +272,8 @@ module view_proper() {
 //    fan_duct();
 //    cube([100,100,36]);
 //}
-fan_duct();
+//fan_duct();
 
 //view_proper();
+
+gnd_fan_adapter();
