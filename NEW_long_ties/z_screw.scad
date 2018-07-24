@@ -9,10 +9,6 @@ $fn = 50;
 
 z_step = 3;
 
-thread_length = PI*z_screw_d;
-rise_angle = asin(z_step/thread_length);
-echo("Rise angle:", rise_angle);
-
 function cube_w(z_step) = sqrt((z_step*z_step)/2);
 
 tooth_mm = 1.9;
@@ -59,55 +55,23 @@ module _roller_gear(h=10) {
     );
 }
 
-module _thread_slice(d, h, angle=360, rotation=45) {
-    cube_donut(d, h, angle=angle, rotation=rotation, $fn=2);
-}
-
-module _screw_thread(cube_side=4, thread_d=20, rise_angle=1, r=1,rounds=1, steps=100) {
-    angle_step = 360 / steps;
-    z_step = r / steps;
-    _rounds = 2 * steps - 1;
-    for (i=[0:_rounds]) {
-        rotate([0,0,i*angle_step]) translate([0,0,z_step*i]) rotate([rise_angle,0,0]) _thread_slice(thread_d, cube_side, angle_step*2);
-    }
-}
-
-module _screw(h=1, screw_d=20, z_step=4, direction=0, steps=100) {
-    height = h*z_step;
-    d = screw_d - z_step;
-    
-    // debug
-    //translate([0,0,5]) cylinder(d=screw_d, h=20);
-
-    for(i = [0:h-1]) {
-        
-        translate([0,0,i*z_step]) render() intersection() {
-            union() {
-                if (direction == 0) {
-                    translate([0,0,-z_step/2]) _screw_thread(cube_w(z_step), thread_d=d, rise_angle=rise_angle,r=z_step, rounds=1, steps=steps);
-                } else {
-                    mirror([1,0,0]) translate([0,0,-z_step/2]) _screw_thread(cube_w(z_step), thread_d=d, rise_angle=rise_angle,r=z_step, rounds=1, steps=steps);
-                }
-                cylinder(d=d, h=z_step, $fn=steps);
-            }
-            cylinder(d=screw_d-0.5, h=z_step);
-            union() {
-                cylinder(d=screw_d-5, h=z_step);
-                _screw_gear(h=z_step);
-            }
-        }
-    }
-}
-
-module z_screw(h=5, fast_render=false, steps=100) {
+module z_screw(h=10, fast_render=false, steps=100) {
     w = z_screw_d/2;
-    l = h*z_step;
-    union() {
-         minus_rail_center(l, z_screw_d) {
-            if (fast_render) {
-                cylinder(d=z_screw_d, h=l);
-            } else {
-                _screw(h=h, screw_d=z_screw_d, z_step=z_step, steps=steps);
+    rounds = h/z_step;
+    minus_rail_center(h, z_screw_d) {
+        union() {
+            for (i=[0:rounds-1]) {
+                translate([0,0,i*z_step]) render() intersection() {
+                    if (fast_render) {
+                        cylinder(d=z_screw_d, h=z_step);
+                    } else {
+                        v_screw(h=z_step, screw_d=z_screw_d, pitch=z_step, steps=steps);
+                    }
+                    union() {
+                        cylinder(d=z_screw_d-5, h=z_step);
+                        _screw_gear(h=z_step);
+                    }
+                }
             }
         }
     }
@@ -387,7 +351,10 @@ module debug_gears() {
 
 
 // 120 mm screw
-z_screw(40, steps=100);
+//z_screw(120, steps=100);
+
+// 10 mm screw
+z_screw(10, steps=100);
 
 //z_screw_center();
 //z_screw_center_coupler();

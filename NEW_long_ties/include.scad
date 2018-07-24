@@ -22,7 +22,6 @@ include <globals.scad>;
 		translate([30/(15/4),obj_leg*leg_length-10,30/(15/4)+15]) mirror_pin();
 	}
 
-
 //////////////////      OTHER STUFF       //////////////////
 
 	module holes() {
@@ -279,8 +278,12 @@ module rounded_cube(x,y,z,corner,center=false) {
 
 module rounded_cube_side(x,y,z,corner,center=false) {
     intersection() {
-        cube([x,y,z]);
-        translate([0,0,-corner]) rounded_cube(x,y,z+2*corner,corner,center);
+        cube([x,y,z], center=center);
+        if (!center) {
+            translate([0,0,-corner]) rounded_cube(x,y,z+2*corner,corner,center);
+        } else {
+            rounded_cube(x,y,z+2*corner,corner,center);
+        }
     }
 }
 
@@ -416,6 +419,52 @@ module ridged_cylinder(d=10, h=15, r=1.5) {
         }
     }
 }
+
+module _v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=100) {
+
+    module _v_thread_slice(d, h, angle=360, rotation=45) {
+        cube_donut(d, h, angle=angle, rotation=rotation, $fn=angle);
+    }
+
+    thread_length = PI*thread_d;
+    rise_angle = asin(pitch/thread_length);
+    echo("Rise angle:", rise_angle);
+
+    angle_step = 360 / steps;
+
+    z_step = pitch / steps;
+
+    cube_w = sqrt((pitch*pitch)/2);
+
+    function get_z_pos(i) = direction == 0 ? z_step*i : -z_step*i+pitch*rounds;
+    function get_rise_angle() = direction == 0 ? rise_angle : -rise_angle;
+
+    _rounds = rounds * steps - 1;
+    for (i=[0:_rounds]) {
+        rotate([0,0,i*angle_step]) translate([0,0,get_z_pos(i)]) rotate([get_rise_angle(),0,0]) _v_thread_slice(thread_d, cube_w, angle_step*2);
+    }
+}
+//_v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=100);
+
+module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100) {
+    rounds = h/pitch+1;
+    d = screw_d - pitch;
+
+    // debug
+    //translate([0,0,5]) cylinder(d=screw_d, h=20);
+
+    intersection() {
+        render(convexity = 2) {
+            union() {
+                translate([0,0,-pitch/2]) _v_thread(thread_d=d, pitch=pitch, rounds=rounds, direction=direction, steps=steps);
+                cylinder(d=d, h=h, $fn=steps);
+            }
+        }
+        cylinder(d=screw_d-0.5, h=h, $fn=steps);
+    }
+}
+
+//v_screw(h=10, screw_d=20, pitch=4, direction=1, steps=100);
 
 module frame_mockup(bed_angle=45, units_x=1, units_y=1, units_z=1) {
     corner_side = 60;
