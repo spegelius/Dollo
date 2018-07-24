@@ -15,6 +15,9 @@ arduino_thickness = 2;
 ramps_mount_w = arduino_width + 5;
 ramps_mount_l = arduino_length;
 
+ramps_w = 62;
+ramps_l = 123;
+
 module ear() {
     hull() {
         translate([0,0,0]) cube([5,15,0.1]);
@@ -64,7 +67,7 @@ module ramps_mount() {
     
     module bow_ear() {
         difference() {
-            cube([22,20,8]);
+            cube([22,15,8]);
             translate([15,22,0]) rotate([90,0,0]) male_dovetail(25);
         }
     }
@@ -86,10 +89,37 @@ module ramps_mount() {
         translate([-arduino_width/2,arduino_length/2-10,h]) notch();
         translate([-arduino_width/2,-arduino_length/2+10,h]) notch();
         
-        translate([ramps_mount_w/2,0,0]) bow_ear();
-        translate([-20/2,-ramps_mount_l/2,0]) rotate([0,0,-90]) bow_ear();
+        translate([ramps_mount_w/2,arduino_length/2-15,0]) bow_ear();
+        translate([ramps_mount_w/2,-arduino_length/2,0]) bow_ear();
+        translate([-15/2,-ramps_mount_l/2,0]) rotate([0,0,-90]) bow_ear();
     }
     
+}
+
+module fan_mount_60mm() {
+    // inspired by: https://www.thingiverse.com/thing:145946
+    h = 12;
+    l = 50;
+    wall = 3;
+    inner_w = ramps_w-3;
+    outer_w = inner_w + 2*wall;
+
+    difference() {
+        rounded_cube_side(outer_w,l,h,5, center=true);
+        translate([0,wall,1.5]) rounded_cube_side(inner_w,l,h+1, 4, center=true);
+        translate([0,wall+10,0]) cube([inner_w,l,h+1], center=true);
+        translate([0,l/2-3,0]) cube([ramps_w,2,20], center=true);
+
+        translate([0,l/2-10,20/2]) chamfered_cube(outer_w+20,l,20,7, center=true);
+
+        translate([0,0,60/2-h/2+4]) rotate([90,0,0]) {
+            cylinder(d=60,h=100,$fn=60);
+            translate([-25,-25,0]) cylinder(d=3,h=100,$fn=20);
+            translate([25,-25,0]) cylinder(d=3,h=100,$fn=20);
+        }
+
+        #mirror([1,0,0]) translate([outer_w/2-5,-l/2+10,-h/2]) rotate([0,0,180]) linear_extrude(0.6) text(align="center",size=8, "RAMPS 1.4");
+    }
 }
 
 module debug() {
@@ -97,8 +127,9 @@ module debug() {
     translate([120.65,-180,80.8]) rotate([90,0,0]) ramps_mount();
 }
 
-debug();
+//debug();
 
 //translate([95,127.5,0]) rotate([90,0,0]) body();
 //ramps_mount_adapter();
 //ramps_mount();
+fan_mount_60mm();
