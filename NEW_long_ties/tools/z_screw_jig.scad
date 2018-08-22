@@ -35,15 +35,15 @@ module jig_clip() {
     w = 20+2*4+2*slop;
     echo(w);
 
-    difference() {
-        translate([0,0,8/2]) union() {
-            rounded_cube(w,18,8,4, center=true);
+    rotate([90,0,0]) difference() {
+        union() {
+            translate([0,0,8/2]) rounded_cube(w,18,8,4, center=true);
             
-            translate([-w/2+2,0,4]) rounded_cube(4,18,10,4, center=true);
-            translate([w/2-2,0,4]) rounded_cube(4,18,10,4, center=true);
+            translate([-w/2,0,14/2]) rounded_cube(8,18,14,4, center=true);
+            translate([w/2,0,14/2]) rounded_cube(8,18,14,4, center=true);
         }
-        translate([w/2+15/2-2,0,0]) cylinder(d=15,h=15, $fn=50);
-        translate([-w/2-15/2+2,0,0]) cylinder(d=15,h=15, $fn=50);
+        translate([w/2+15/2+1,0,0]) cylinder(d=15,h=15, $fn=50);
+        translate([-w/2-15/2-1,0,0]) cylinder(d=15,h=15, $fn=50);
     }
 }
 
