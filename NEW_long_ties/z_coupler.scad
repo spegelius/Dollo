@@ -63,12 +63,17 @@ module motor_shaft_adapter() {
     }
 }
 
+flex_wall = 2.2;
+flex_thread_d = 10+2*flex_wall+2;
+
 // Fexible coupler tube. Print ith flexible filament or use silicon tube instead
 module flexible_coupler_tube(h=32) {
-    wall = 1.6;
     difference() {
-        cylinder(d=10+2*wall, h=h);
-        ridged_cylinder(d=10, h=h, r=3);
+        union() {
+            cylinder(d=10+2*flex_wall, h=h);
+            _threads(d=flex_thread_d, h=h, z_step=2, depth=0.7, direction=0);
+        }
+        ridged_cylinder(d=10, h=h+1, r=3);
     }
 }
 
@@ -101,8 +106,8 @@ module flexible_coupler_clamp() {
 
 // Nut for tightening the flexible coupler. Screw over the flexible tube
 module flexible_coupler_nut(hex=false) {
-    d = 20;
-    t_d = 13.2+0.7*4-0.2;
+    d = 21;
+    t_d = flex_thread_d+0.4;
     difference() {
         if (hex == false) {
             cylinder(d=d, h=8);
@@ -124,9 +129,21 @@ module flexible_coupler_nut(hex=false) {
     }
 }
 
+module debug() {
+    intersection() {
+        union() {
+            flexible_coupler_tube();
+            flexible_coupler_nut(hex=true);
+        }
+        cube([100,100,100]);
+    }
+}
+
+//debug();
 
 //rigid_leadscrew_coupler();
 //flexible_coupler_clamp();
 //motor_shaft_adapter();
 //flexible_coupler_tube();
-flexible_coupler_nut(hex=true);
+//flexible_coupler_nut(hex=true);
+flexible_coupler_nut(hex=false);
