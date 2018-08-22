@@ -6,6 +6,7 @@ use <long_bow_tie.scad>;
 use <motor_mount_small.scad>;
 use <extention.scad>;
 use <rack.scad>;
+use <cable_clip.scad>;
 include <mockups.scad>;
 
 hotend_depth = 75;
@@ -70,6 +71,16 @@ module mount(){
 	}
 }
 
+module _clamp_base(l=15) {
+    union(){
+        translate([-8,0,slop]) long_bow_tie_split(l);
+        translate([8,0,slop]) long_bow_tie_split(l);
+        translate([-11.75,-l,-3]) cube([23.5,l,3]);
+        translate([-11.75,-l,0]) cube([7.5,l,0.75]);
+        translate([4.25,-l,0]) cube([7.5,l,0.75]);
+    }
+}
+
 module clamp() {
     
     module cable_hole() {
@@ -89,12 +100,25 @@ module clamp() {
     }
     
     union(){
-        translate([-8,0,slop]) long_bow_tie_split(15);
-        translate([8,0,slop]) long_bow_tie_split(15);
-        translate([-11.75,-15,-3]) cube([23.5,15,3]);
-        translate([-11.75,-15,0]) cube([7.5,15,0.6]);
-        translate([4.25,-15,0]) cube([7.5,15,0.6]);
+        _clamp_base();
         translate([0,5,-3]) cable_hole();
+    }
+}
+
+module clamp_shroud_mount() {
+    intersection() {
+        difference() {
+            union(){
+                translate([0,0,15.5]) rotate([90,0,0]) _clamp_base(l=15.5);
+                translate([-18.5/2,0,0]) cube([18.5,4,20.3]);
+                translate([0,13,-1]) rotate([5,0,0]) _shroud_holder(h=22,d=13.5, edge_h=5);
+            }
+            translate([0,6,-1]) rotate([5,0,0]) hull() {
+                cylinder(d=4.3,h=50,$fn=40);
+                translate([0,4,0]) cylinder(d=4.3,h=50,$fn=40);
+            }
+        }
+        translate([0,0,50/2]) cube([30,42,50], center=true);
     }
 }
 
@@ -267,6 +291,7 @@ module view_proper() {
 
 //do_mount();
 //clamp();
+clamp_shroud_mount();
 //rotate([0,-90,0])  prox_sensor_clamp();
 //intersection() {
 //    fan_duct();
@@ -276,4 +301,4 @@ module view_proper() {
 
 //view_proper();
 
-gnd_fan_adapter();
+//gnd_fan_adapter();
