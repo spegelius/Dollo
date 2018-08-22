@@ -21,8 +21,6 @@ module _leg() {
 }
 
 module leg(plate_len=45) {
-    
-
     difference() {
         union() {
             translate([0, 20, 0]) _plate(plate_len);
@@ -75,11 +73,26 @@ module leg_motor_mount() {
     %translate([0,0,-16]) rotate([180,0,0]) z_screw_motor_flex_coupler(fast_render=true);
 }
 
+function bottom_hole_x_pos(dia) = dia/2-(dia/2/3);
+
+module _bottom_holes(dia=60, sphere_d=6) {
+
+    x_pos = bottom_hole_x_pos(dia);
+    union() {
+        for(i=[0:3]) {
+                rotate([0,0,i*360/4]) translate([x_pos,0,-1]) cylinder(d=sphere_d-1, h=3, $fn=20);
+                rotate([0,0,i*360/4]) translate([x_pos,0,2]) sphere(d=sphere_d, $fn=20);
+        }
+        difference() {
+            cylinder(d=x_pos*2+1,h=1.5,$fn=40);
+            cylinder(d=x_pos*2-1,h=1.6,$fn=40);
+        }
+    }
+}
+
 module foot(dia=60) {
+
     z = 20 - dia/2;
-
-    hole_pos = dia/2-(dia/2/3);
-
     difference() {
         intersection() {
             translate([0,0,z]) sphere(d=dia, $fn=90);
@@ -89,10 +102,9 @@ module foot(dia=60) {
         translate([0,0,12]) rotate([-90,0,0]) tie_end(30);
 
         for(i=[0:3]) {
-            rotate([0,0,i*360/4]) translate([hole_pos,0,-1]) cylinder(d=5, h=3, $fn=20);
-            rotate([0,0,i*360/4]) translate([hole_pos,0,2]) sphere(d=6, $fn=20);
             rotate([0,0,45+i*360/4]) translate([0,-15,0]) male_dovetail(30);
         }
+        _bottom_holes(dia);
         %translate([0,0,30]) rotate([90,0,45]) translate([-15,-15,-15]) extention(1);
     }
 }
@@ -103,11 +115,11 @@ module foot_small() {
 
 pitch = 3;
 dia_adjustable_inner = sqrt(30*30*2) + pitch+0.5;
-dia_adjustable_outer = dia_adjustable_inner + 2*slop;
+dia_adjustable_outer = dia_adjustable_inner + slop;
 screw_steps = 100;
 
 module foot_adjustable_core() {
-    
+
     difference() {
         v_screw(h=15, screw_d=dia_adjustable_inner, pitch=pitch, direction=0, steps=screw_steps);
         cylinder(d=metal_rod_size,h=40, $fn=40);
@@ -122,10 +134,29 @@ module foot_adjustable_core() {
 module foot_adjustable() {
     difference() {
         intersection() {
-            translate([0,0,6]) sphere(d=dia_adjustable_outer+10);
-            translate([0,0,20/2]) cube([100,100,20],center=true);
+            translate([0,0,6]) sphere(d=dia_adjustable_outer+12,$fn=60);
+            translate([0,0,22/2]) cube([100,100,22],center=true);
         }
-        translate([0,0,2]) v_screw(h=20, screw_d=dia_adjustable_outer, pitch=pitch, direction=0, steps=screw_steps);
+        translate([0,0,5]) v_screw(h=20, screw_d=dia_adjustable_outer, pitch=pitch, direction=0, steps=screw_steps);
+        cylinder(d=(dia_adjustable_outer+10)/2, h=10, $fn=60);
+
+        x_offset = (dia_adjustable_outer+10)/2 + 5;
+        _bottom_holes();
+    }
+}
+
+module foot_dampener(dia=60) {
+    x_pos = bottom_hole_x_pos(dia);
+
+    difference() {
+        union() {
+            _bottom_holes(dia, sphere_d=5.5);
+            translate([0,0,-1]) cylinder(d=dia*0.9,h=1,$fn=50);
+        }
+        translate([0,0,-1]) cylinder(d=x_pos*2-6,h=1,$fn=40);
+        for(i = [0:3]) {
+            rotate([0,0,i*360/4]) translate([x_pos,0,0]) cylinder(d=2, h=10, $fn=10);
+        }
     }
 }
 
@@ -133,5 +164,6 @@ module foot_adjustable() {
 //leg_motor_mount();
 //foot();
 //foot_small();
-foot_adjustable_core();
+//foot_adjustable_core();
 //foot_adjustable();
+foot_dampener();
