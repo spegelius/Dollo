@@ -13,6 +13,9 @@ function cube_w(z_step) = sqrt((z_step*z_step)/2);
 
 tooth_mm = 1.9;
 
+thread_length = PI*z_screw_d;
+rise_angle = asin(z_step/thread_length);
+
 module _screw_gear(h=10) {
     
     length = PI*(z_screw_d-1.35);
@@ -149,7 +152,7 @@ module screw_housing_bottom(frame_width=22, render_threads=true) {
         for(i = [0:side_rollers-1]) {
             rotate([0,0,i*side_roller_angle+45]) translate([side_roller_offset,0,z-3]) cylinder(d1=4,d2=5, h=3);
             if (render_threads) {
-                rotate([0,0,i*side_roller_angle-45]) translate([side_roller_offset+1,0,+1]) _threads(d=screw_housing_thread_d, h=screw_housing_height, z_step=1.8, depth=0.5, direction=0);
+                rotate([0,0,i*side_roller_angle-45]) translate([side_roller_offset+1,0,+1]) v_screw(screw_d=screw_housing_thread_d, h=screw_housing_height, pitch=1.8, direction=0, steps=30);
             } else {
                 rotate([0,0,i*side_roller_angle-45]) translate([side_roller_offset+1,0,+1]) cylinder(d=screw_housing_thread_d, h=screw_housing_height);
             }
@@ -181,7 +184,7 @@ module screw_housing_bolt() {
             cube([1.5,screw_housing_thread_d+4,3], center=true);
         }
         translate([0,0,2]) cylinder(d=screw_housing_thread_d-2*slop, h=screw_housing_height/2-3);
-        translate([0,0,screw_housing_height/2-1]) _threads(d=screw_housing_bolt_d, h=screw_housing_height/2-2, z_step=1.8, depth=0.5, direction=0);
+        translate([0,0,screw_housing_height/2-1]) v_screw(screw_d=screw_housing_bolt_d, h=screw_housing_height/2-2, pitch=1.8, steps=30, direction=0);
     }
     
 }
@@ -296,6 +299,23 @@ module test_motor_coupler() {
     }
 }
 
+// center part for salvaging badly joined screw parts. Drill 100m hole inside the
+// old center and use this
+module qnd_center_hotfix() {
+    h = 70;
+    module quide() {
+        hull() {
+            cylinder(d=4,h=h);
+            translate([6.5,0,0]) cylinder(d=0.5,h=h);
+            translate([-6,0,0]) cylinder(d=0.5,h=h);
+        }
+    }
+    union() {
+        cylinder(d=10,h=h,$fn=30);
+        quide();
+    }
+}
+
 // debug
 module debug_screw_housing() {
     z = screw_housing_height/2;
@@ -349,12 +369,13 @@ module debug_gears() {
 //debug_screw_center();
 //debug_gears();
 
+//qnd_center_hotfix();
 
 // 120 mm screw
 //z_screw(120, steps=100);
 
 // 10 mm screw
-z_screw(10, steps=100);
+//z_screw(10, steps=100);
 
 //z_screw_center();
 //z_screw_center_coupler();
@@ -363,7 +384,7 @@ z_screw(10, steps=100);
 //screw_housing_top();
 //side_roller_axle();
 //side_roller_axle_washer();
-//screw_housing_bolt();
+screw_housing_bolt();
 //screw_housing_bolt_side();
 
 //z_screw_motor_coupler(fast_render=true);
