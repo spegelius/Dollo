@@ -22,7 +22,8 @@ module _screw_gear(h=10) {
     teeth = round(length/tooth_mm);
     echo(teeth);
     
-    translate([0,0,h/2]) gear (
+    //scale([0.95,0.95,1]) 
+    scale([0.95,0.95,1]) translate([0,0,h/2]) gear (
         mm_per_tooth    = tooth_mm,
         number_of_teeth = teeth,
         thickness       = h,
@@ -46,7 +47,7 @@ module _roller_gear(h=10) {
     twist = (tan(rise_angle) * h)/one_degree;
     echo("twist: ", twist);
 
-    scale([0.95,0.95,1]) translate([0,0,h/2]) gear (
+    scale([1.06,1.06,1]) translate([0,0,h/2]) gear (
         mm_per_tooth    = tooth_mm,
         number_of_teeth = teeth,
         thickness       = h,
@@ -64,7 +65,7 @@ module z_screw(h=10, fast_render=false, steps=100) {
     minus_rail_center(h, z_screw_d) {
         union() {
             for (i=[0:rounds-1]) {
-                translate([0,0,i*z_step]) render() intersection() {
+                translate([0,0,i*z_step]) render(convexity=2) {
                     if (fast_render) {
                         cylinder(d=z_screw_d, h=z_step);
                     } else {
@@ -103,14 +104,22 @@ module side_roller() {
     
     steps = [2,1,0,1,2];
     
-    
     difference() {
-        union() {
-            for (i = [0:5]) {
-                hull() translate([0,0,i*z_step+z_step/2]) cube_donut(10+2*y_step(steps[i]), cube_w(z_step), angle=360, rotation=45, $fn=100);
-                //echo(2*y_step(steps[i]));
+        intersection() {
+            union() {
+                for (i = [0:4]) {
+                    intersection() {
+                        hull() translate([0,0,i*z_step+z_step/2]) cube_donut(side_roller_d+2*y_step(steps[i]), cube_w(z_step), angle=360, rotation=45, $fn=100);
+                        cylinder(d=z_step+side_roller_d+2*y_step(steps[i])-0.3,h=side_roller_height);
+                    }
+                    //echo(2*y_step(steps[i]));
+                }
+                cylinder(d=side_roller_d+0.3,h=side_roller_height,$fn=100);
             }
-            translate([0,0,z_step/2]) _roller_gear(side_roller_height-z_step);
+            union() {
+                _roller_gear(side_roller_height);
+                cylinder(d=side_roller_d,h=side_roller_height,$fn=100);
+            }
         }
         cylinder(d=side_roller_axle_d+slop/2, h=6*z_step+1, $fn=60);
     }
@@ -364,10 +373,21 @@ module debug_gears() {
     translate([side_roller_offset,0,0]) rotate([rise_angle,0,0]) _roller_gear();
 }
 
+module debug_screw_roller() {
+    intersection() {
+        union() {
+            z_screw(10, steps=100);
+            translate([side_roller_offset,0,-z_step/2]) rotate([rise_angle,0,0]) rotate([0,0,9]) side_roller();
+        }
+        translate([0,0,-5]) cube([100,100,27.5]);
+    }
+}
+
 //test_motor_coupler();
 //debug_screw_housing();
 //debug_screw_center();
 //debug_gears();
+//debug_screw_roller();
 
 //qnd_center_hotfix();
 
@@ -377,6 +397,9 @@ module debug_gears() {
 // 10 mm screw
 //z_screw(10, steps=100);
 
+// 40 mm screw
+z_screw(40, steps=100);
+
 //z_screw_center();
 //z_screw_center_coupler();
 //side_roller();
@@ -384,7 +407,7 @@ module debug_gears() {
 //screw_housing_top();
 //side_roller_axle();
 //side_roller_axle_washer();
-screw_housing_bolt();
+//screw_housing_bolt();
 //screw_housing_bolt_side();
 
 //z_screw_motor_coupler(fast_render=true);
