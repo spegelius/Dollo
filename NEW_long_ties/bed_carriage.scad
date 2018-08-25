@@ -139,20 +139,23 @@ module bed_rail_frame_mount_top() {
     }
 }
 
-module _slide_hull(width=rail_width, height=20) {
+module _slide_hull(width=rail_width, height=20, bewel=2.1) {
     hull() {
-        translate([0,0,2.1]) rail_slide(width=width, height=height-4.2, wiggles=1);
-        rail_slide(width=width-2.4, height=height, wiggles=1);
+        translate([0,0,bewel]) rail_slide(width=width, height=height-2*bewel, wiggles=0);
+        rail_slide(width=width-bewel, height=height, wiggles=0);
     }
 }
 
 module bed_rail_slide(beweled=false, slop=0) {
-    h = 40;
-    intersection() {
-        rail_slide(width=rail_width, height=h, wiggles=18,slop=slop);
-        if (beweled) {
-            _slide_hull(height=h);
+    h = 50;
+    difference() {
+        intersection() {
+            rail_slide(width=rail_width, height=h, wiggles=11,slop=slop);
+            if (beweled) {
+                _slide_hull(height=h);
+            }
         }
+        translate([0,0,12]) _slide_hull(width=rail_width-3.14, height=h-24, bewel=5);
     }
 }
 
