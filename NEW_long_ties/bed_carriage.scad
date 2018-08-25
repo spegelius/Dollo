@@ -205,8 +205,8 @@ module bed_screw_housing(render_threads=true) {
         difference() {
             union() {
                 translate([4.5,0,25/2]) cube([65,60,25], center=true);
-                translate([29,30,0]) cylinder(d=37,h=25, $fn=50);
-                translate([29,-30,0]) cylinder(d=37,h=25, $fn=50);
+                translate([29,30,0]) cylinder(d=37,h=30, $fn=50);
+                translate([29,-30,0]) cylinder(d=37,h=30, $fn=50);
             }
             translate([0,0,1.2]) intersection() {
                 difference() {
@@ -220,8 +220,8 @@ module bed_screw_housing(render_threads=true) {
             }
             translate([0,0,-30]) rotate([0,0,12]) cylinder(d=25+1,h=40, $fn=50);
 
-            translate([29,30,-5]) _slide_hull(width=rail_width, height=40);
-            translate([29,-30,-5]) _slide_hull(width=rail_width, height=40);
+            translate([29,30,-5]) _slide_hull(width=rail_width-0.5, height=40);
+            translate([29,-30,-5]) _slide_hull(width=rail_width-0.5, height=40);
 
             translate([-41,0,30/2-5]) cube([30,61,30],center=true);
             translate([-19,30,-0.01]) rotate([0,0,180]) male_dovetail(25-2);
@@ -236,8 +236,8 @@ module bed_screw_housing(render_threads=true) {
             translate([28,48.3,-2]) rotate([-45,0,0]) cube([40,10,20],center=true);
             translate([28,-48.3,-2]) rotate([45,0,0]) cube([40,10,20],center=true);
 
-            translate([28,48.3,27]) rotate([45,0,0]) cube([40,10,20],center=true);
-            translate([28,-48.3,27]) rotate([-45,0,0]) cube([40,10,20],center=true);
+            translate([28,48.3,32]) rotate([45,0,0]) cube([40,10,20],center=true);
+            translate([28,-48.3,32]) rotate([-45,0,0]) cube([40,10,20],center=true);
         }
     }
 }
@@ -475,10 +475,10 @@ module slide_test_parts() {
 //bed_rail_center();
 //bed_rail_frame_mount();
 //bed_rail_frame_mount_top();
-bed_rail_slide(true);
+//bed_rail_slide(true);
 //bed_screw_housing(render_threads=false);
 //bed_screw_housing(render_threads=true);
-//bed_screw_housing_top();
+bed_screw_housing_top();
 //translate([5,0,0])bed_housing_coupler();
 //mirror([1,0,0]) bed_housing_coupler();
 //endstop_screw_mount();
