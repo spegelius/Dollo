@@ -453,14 +453,15 @@ module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100) {
     // debug
     //translate([0,0,5]) cylinder(d=screw_d, h=20);
 
-    intersection() {
-        render(convexity = 2) {
+
+    render(convexity = 10) {
+        intersection() {
             union() {
                 translate([0,0,-pitch/2]) _v_thread(thread_d=d, pitch=pitch, rounds=rounds, direction=direction, steps=steps);
-                cylinder(d=d, h=h, $fn=steps);
+                cylinder(d=d+pitch/10, h=h, $fn=steps);
             }
+            cylinder(d=screw_d-pitch/10, h=h, $fn=steps);
         }
-        cylinder(d=screw_d-0.5, h=h, $fn=steps);
     }
 }
 
