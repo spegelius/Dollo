@@ -13,18 +13,6 @@ z_units = 4;
 
 rail_width = 15;
 
-module bed_carriage_corner() {
-    
-    module extention_rotated() {
-        intersection() {
-            rotate([0,45,0]) translate([-15,0,-25]) extention_finished(2);
-            translate([0,-35,0]) cube([100,40,100]);
-        }
-    }
-    extention_rotated();
-    mirror([1,0,0]) extention_rotated();
-}
-
 module bed_rail() {
     rail(rail_width, 120);
 }
@@ -405,11 +393,11 @@ module bed_attachment_spring_nut() {
 }
 
 module view_bed_frame() {
-    translate([-95,95,0]) rotate([90,0,45]) bed_carriage_corner();
-    translate([-95,-95,0]) rotate([90,0,135]) bed_carriage_corner();
-    translate([95,95,0]) rotate([90,0,-45]) bed_carriage_corner();
-    translate([95,-95,0]) rotate([90,0,225]) bed_carriage_corner();
-    translate([-110,-60,-30]) rotate([-90,0,0]) extention_finished();
+    translate([-95,95,0]) rotate([90,0,45]) extention_90_bend();
+    translate([-95,-95,0]) rotate([90,0,135]) extention_90_bend();
+    translate([95,95,0]) rotate([90,0,-45]) extention_90_bend();
+    translate([95,-95,0]) rotate([90,0,225]) extention_90_bend();
+    translate([-110,-60,-30]) rotate([-90,0,0]) extention_90_bend();
 }
 
 module view_proper() {
@@ -465,11 +453,10 @@ module slide_test_parts() {
 //    translate([10.5,-22,0])cube([50,50,50]);
 //}
 
-//view_proper();
+view_proper();
 
 //slide_test_parts();
 
-//bed_carriage_corner();
 //bed_rail();
 //bed_rail_short();
 //bed_rail_center();
