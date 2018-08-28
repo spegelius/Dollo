@@ -46,7 +46,7 @@ module _roller_gear(h=10) {
     twist = (tan(rise_angle) * h)/one_degree;
     echo("twist: ", twist);
 
-    scale([0.95,0.95,1]) translate([0,0,h/2]) gear (
+    scale([0.97,0.97,1]) translate([0,0,h/2]) gear (
         mm_per_tooth    = tooth_mm,
         number_of_teeth = teeth,
         thickness       = h,
@@ -72,7 +72,9 @@ module z_screw(h=10, fast_render=false, steps=100) {
                     }
                     union() {
                         cylinder(d=z_screw_d-5, h=z_step);
-                        _screw_gear(h=z_step);
+                        if (!fast_render) {
+                            _screw_gear(h=z_step);
+                        }
                     }
                 }
             }
@@ -106,11 +108,15 @@ module side_roller() {
     
     difference() {
         union() {
-            for (i = [0:5]) {
-                hull() translate([0,0,i*z_step+z_step/2]) cube_donut(10+2*y_step(steps[i]), cube_w(z_step), angle=360, rotation=45, $fn=100);
+            for (i = [0:4]) {
+                intersection() {
+                    hull() translate([0,0,i*z_step+z_step/2]) cube_donut(10+2*y_step(steps[i]), cube_w(z_step), angle=360, rotation=45, $fn=100);
+                    cylinder(d=z_step+side_roller_d+2*y_step(steps[i])-0.3,h=side_roller_height);
+                }
                 //echo(2*y_step(steps[i]));
             }
             translate([0,0,z_step/2]) _roller_gear(side_roller_height-z_step);
+            cylinder(d=side_roller_d+0.3,h=side_roller_height,$fn=100);
         }
         cylinder(d=side_roller_axle_d+slop/2, h=6*z_step+1, $fn=60);
     }
@@ -125,7 +131,7 @@ module _screw_housing(frame_width=22) {
         h = side_roller_height + 2.2 + 6;
         translate([0,0,-h/2]) union() {
             cylinder(d=side_roller_d+z_step+1, h=side_roller_height + 2.2);
-            translate([0,0,-3]) cylinder(d1=side_roller_axle_d-1,d2=side_roller_axle_d,h=3);
+            translate([0,0,-3]) rotate([0,0,-1]) _axle_end(side_roller_axle_d);
         }
     }
 
@@ -140,7 +146,6 @@ module _screw_housing(frame_width=22) {
                 translate([0,0,2+i*_z_step]) screw_hole();
             }
         }
-        translate([(z_screw_d+frame_width)/2,0,0]) rotate([0,0,45]) cube([1,1,50]);
     }
 }
 
@@ -157,6 +162,7 @@ module screw_housing_bottom(frame_width=22, render_threads=true) {
                 rotate([0,0,i*side_roller_angle-45]) translate([side_roller_offset+1,0,+1]) cylinder(d=screw_housing_thread_d, h=screw_housing_height);
             }
         }
+        translate([(z_screw_d+frame_width)/2,0,0]) rotate([0,0,45]) cube([1,1,50]);
     }
 }
 
@@ -171,6 +177,7 @@ module screw_housing_top(frame_width=22) {
                 cylinder(d1=screw_housing_thread_d+3,d2=screw_housing_thread_d, h=2);
             }
         }
+        rotate([0,0,-360/side_rollers]) translate([(z_screw_d+frame_width)/2,0,0]) rotate([0,0,45]) cube([1,1,50]);
     }
     for(i = [0:side_rollers-1]) {
         rotate([0,0,i*side_roller_angle-45]) translate([side_roller_offset,0,z]) cylinder(d1=5-slop,d2=4-slop, h=3);
@@ -190,7 +197,7 @@ module screw_housing_bolt() {
 }
 
 module screw_housing_bolt_side() {
-    
+    // printing sideways makes a stronger bolt
     module block() {
         difference() {
             translate([-4/2,0,0]) cube([4,50,1.8]);
@@ -209,14 +216,22 @@ module screw_housing_bolt_side() {
     translate([-4/2,2.1,0]) cube([4,21,1.6]);
 }
 
+module _axle_end(d) {
+    cube_d = sqrt((d*d)/2);
+    hull() {
+        translate([0,0,1/2]) cube([cube_d,cube_d,1],center=true);
+        translate([0,0,3]) cylinder(d=d,h=1);
+    }
+}
+
 module side_roller_axle() {
     $fn=100;
     d = side_roller_axle_d - 0.05;
-    h = side_roller_height + 2 - slop;
+    h = side_roller_height + 2;
     union() {
-        cylinder(d1=d-slop-1,d2=d,h=3);
+        _axle_end(d);
         translate([0,0,3]) cylinder(d=d,h=h);
-        translate([0,0,h+3]) cylinder(d1=d,d2=d-slop-1,h=3);
+        translate([0,0,3+h+3]) rotate([0,180,0]) _axle_end(d);
     }
 }
 
@@ -252,7 +267,7 @@ coupler_w = z_screw_d/2;
 module _coupler_screw(fast_render=false) {
     union() {
         intersection() {
-            translate([0,0,-2*coupler_h]) z_screw(coupler_steps*3, fast_render=fast_render);
+            translate([0,0,-2*coupler_h]) z_screw(coupler_h*3, fast_render=fast_render);
             cylinder(d=z_screw_d, h=coupler_h);
         }
         translate([0,0,-slop]) pyramid(z_screw_center_w, cap=1.5);
@@ -301,8 +316,7 @@ module test_motor_coupler() {
 
 // center part for salvaging badly joined screw parts. Drill 100m hole inside the
 // old center and use this
-module qnd_center_hotfix() {
-    h = 70;
+module qnd_center_hotfix(h=70) {
     module quide() {
         hull() {
             cylinder(d=4,h=h);
@@ -316,6 +330,17 @@ module qnd_center_hotfix() {
     }
 }
 
+module qnd_center_hotfix_joiner() {
+    union() {
+        intersection() {
+            z_screw_center();
+            cylinder(d=30,h=58.5);
+        }
+        translate([0,0,58.49]) rotate([0,0,45]) qnd_center_hotfix(35);
+    }
+}
+
+
 // debug
 module debug_screw_housing() {
     z = screw_housing_height/2;
@@ -328,13 +353,15 @@ module debug_screw_housing() {
             rotate([0,0,side_roller_angle]) translate([side_roller_offset,0,z]) rotate([rise_angle,0,0]) translate([0,0,-side_roller_height/2]) side_roller();
             rotate([0,0,side_roller_angle*2]) translate([side_roller_offset,0,z]) rotate([rise_angle,0,0]) translate([0,0,-side_roller_height/2+1]) side_roller();
             
-            translate([side_roller_offset,0,z]) rotate([rise_angle,0,0]) translate([0,0,-side_roller_height/2-2]) side_roller_axle_bearing();
-            translate([side_roller_offset,0,z]) rotate([rise_angle,0,0]) translate([0,0,side_roller_height/2-1]) side_roller_axle_bearing();
+            color("black") {
+                translate([side_roller_offset,0,z]) rotate([rise_angle,0,0]) translate([0,0,-side_roller_height/2-2]) side_roller_axle_washer();
+                translate([side_roller_offset,0,z]) rotate([rise_angle,0,0]) translate([0,0,side_roller_height/2-1]) side_roller_axle_washer();
+            }
             
-            translate([side_roller_offset,0,z]) rotate([rise_angle,0,0]) translate([0,0,-(side_roller_height+8-slop)/2-1]) scale([0.9,0.9,1])  side_roller_axle();
+            translate([side_roller_offset,0,z]) rotate([rise_angle,0,0]) translate([0,0,-(side_roller_height+8-slop)/2-1.1])  side_roller_axle();
 
         }
-        //translate([-1,-1,-50]) cube([30,30,100]);
+        translate([-1,-1,-50]) cube([30,30,100]);
         //rotate([0,0,1/3*360]) translate([-1,-1,-50]) cube([30,30,100]);
         //rotate([0,0,2/3*360]) translate([-1,-1,-50]) cube([30,30,100]);
     }
@@ -345,10 +372,10 @@ module debug_screw_center() {
     intersection() {
         union() {
             //z_screw_motor_coupler(fast_render=true);
-            translate([0,0,16]) z_screw_motor_flex_coupler(fast_render=true);
-            translate([0,0,85]) z_screw(40, fast_render=true);
-            translate([0,0,85+120]) z_screw(40, fast_render=true);
-            translate([0,0,85+120*2]) z_screw(40, fast_render=true);
+            translate([0,0,16]) z_screw_motor_flex_coupler(fast_render=false);
+            translate([0,0,85]) z_screw(120, fast_render=true);
+            translate([0,0,85+120]) z_screw(120, fast_render=true);
+            translate([0,0,85+120*2]) z_screw(120, fast_render=true);
 
             translate([0,0,33]) z_screw_center_coupler();
             translate([0,0,86+120/2]) z_screw_center();
@@ -364,12 +391,24 @@ module debug_gears() {
     translate([side_roller_offset,0,0]) rotate([rise_angle,0,0]) _roller_gear();
 }
 
+module debug_screw_roller() {
+    intersection() {
+        union() {
+            z_screw(10, steps=100);
+            translate([side_roller_offset,0,-z_step/2]) rotate([rise_angle,0,0]) rotate([0,0,9]) side_roller();
+        }
+        translate([0,0,-5]) cube([100,100,27.5]);
+    }
+}
+
 //test_motor_coupler();
 //debug_screw_housing();
 //debug_screw_center();
 //debug_gears();
+//debug_screw_roller();
 
 //qnd_center_hotfix();
+//qnd_center_hotfix_joiner() ;
 
 // 120 mm screw
 //z_screw(120, steps=100);
@@ -379,12 +418,12 @@ module debug_gears() {
 
 //z_screw_center();
 //z_screw_center_coupler();
-//side_roller();
+side_roller();
 //screw_housing_bottom();
 //screw_housing_top();
 //side_roller_axle();
 //side_roller_axle_washer();
-screw_housing_bolt();
+//screw_housing_bolt();
 //screw_housing_bolt_side();
 
 //z_screw_motor_coupler(fast_render=true);
