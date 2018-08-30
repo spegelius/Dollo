@@ -16,7 +16,9 @@ module extention_base(length){
 	module subtracted(){
         translate([15,0,15]) rotate([0,45,0]) tie_end();
         translate([15,length,15]) rotate([0,45,0]) rotate([0,0,180]) tie_end();
-        translate([15,15,15]) rotate([90,0,0]) cylinder(h=5000, d= metal_rod_size, center=true,$fn=15);
+        translate([15,-1,15]) rotate([-90,0,0]) cylinder(h=length+2, d=metal_rod_size,$fn=15);
+        translate([15,-0.01,15]) rotate([-90,0,0]) cylinder(d1=metal_rod_size+1,d2=metal_rod_size,h=0.5,$fn=15);
+        translate([15,length+0.01,15]) rotate([90,0,0]) cylinder(d1=metal_rod_size+1,d2=metal_rod_size,h=0.5,$fn=15);
 
         translate([15, -1, 15]){
             for (r = [0:4]) // two iterations, z = -1, z = 1
@@ -47,25 +49,57 @@ module extention(units=units, support=support){
     }
 }
 
-module extention_90_bend() {
+module extention_90_bend(extra_stiff=false) {
     
     module extention_rotated() {
         intersection() {
-            rotate([0,45,0]) translate([-15,0,-25]) extention(2);
+            rotate([0,45,0]) translate([-17,0,-23]) extention(2);
             translate([0,-35,0]) cube([100,40,100]);
         }
     }
-    extention_rotated();
-    mirror([1,0,0]) extention_rotated();
+    difference() {
+        union() {
+            extention_rotated();
+            mirror([1,0,0]) extention_rotated();
+            if (extra_stiff) {
+                translate([0,-30+7/2,28]) cube([20,7,10],center=true);
+                translate([0,0-7/2,28]) cube([20,7,10],center=true);
+            }
+        }
+        translate([13,0,-10]) rotate([0,45,180]) male_dovetail(20);
+        translate([-13,0,-10]) rotate([0,-45,180]) male_dovetail(20);
+
+        translate([-12.83,-30,-10]) rotate([0,45,0]) male_dovetail(20);
+        translate([12.83,-30,-10]) rotate([0,-45,0]) male_dovetail(20);
+
+        translate([12.83,-15,-10]) rotate([0,-45,0]) rotate([0,0,180]) cylinder(d=metal_rod_size,h=20,$fn=15);
+        translate([-12.83,-15,-10]) rotate([0,45,0]) cylinder(d=metal_rod_size,h=20,$fn=15);
+
+    }
 }
 
-// 120cm extention
-extention();
-
-// 150cm extention
-//extention(5);
+module extention_center() {
+    intersection() {
+        ridged_cylinder(d=metal_rod_size-0.1, h=80, r=2, $fn=15);
+        chamfered_cylinder(metal_rod_size,80,1,$fn=15);
+    }
+    hull() {
+        translate([0,0,80/2]) cube_donut(metal_rod_size,0.5,rotation=45,$fn=15);
+    }
+}
 
 // 90cm extention
 //extention(3);
 
-//extention_90_bend();
+// 120cm extention
+//extention();
+
+// 150cm extention
+//extention(5);
+
+// 180cm extention
+//extention(6);
+
+extention_90_bend(extra_stiff=false);
+//extention_90_bend(extra_stiff=true);
+//extention_center();
