@@ -148,7 +148,7 @@ module mock_stepper_motor(geared=false) {
             }
         }
         translate([0,40/2,42/2]) rotate([90,0,0]) for (i=[0:3]) {
-            rotate([0,0,i*(360/4)]) translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, 6, $fn=20);
+            rotate([0,0,i*(360/4)]) translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,-1]) cylinder(d=bolt_hole_dia, 7, $fn=20);
         }
     }
 }

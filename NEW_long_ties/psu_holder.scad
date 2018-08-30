@@ -20,6 +20,10 @@ thickness = 7;
 bolt_hole_down = 11.5;
 bolt_hole_up = 13;
 
+module mock_psu() {
+    cube([psu_width, 220, psu_height]);
+}
+
 module mock_atx_psu(holes=true, slop=0) {
     w = atx_psu_width;
     h = atx_psu_height;
@@ -153,7 +157,7 @@ module view_proper() {
     translate([psu_width/2+28+2*slop,-30-(thickness/2+(8-thickness)),psu_height/2-63.5]) back();
 
     frame_mockup(bed_angle=0, units_x=2, units_y=2, units_z=2);
-    %translate([28+2*slop, -60, -63.5 ]) cube([psu_width, 220, psu_height]);
+    %translate([28+2*slop, -60, -63.5 ]) mock_psu();
 }
 
 module view_proper_atx() {
