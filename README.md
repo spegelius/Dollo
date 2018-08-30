@@ -1,5 +1,5 @@
-# Dollo
-a fully printed 3D printer, that scales.
+# Dollo3D
+A (almost) fully printed 3D printer, that scales.
 
 # Goals in order of priority
 
@@ -9,7 +9,7 @@ a fully printed 3D printer, that scales.
 
 3) Make it easy to assemble
 
-4) Use no more than a single 1KG spool of plastic to make.
+4) Use no more than a single 1KG spool of plastic to make. (not happening)
 
 5) Make it as low cost as possible.
 
@@ -19,71 +19,101 @@ a fully printed 3D printer, that scales.
 
 8) hope people stop asking "what if you could 3D print a 3D printer" because of course you can and its not that unique of an idea
 
-# Part count and list for small Dollo
+# Part count and list for smallest viable Dollo, with around 21x21x12cm print volume. Smaller frame can be built, but the z-axis parts aren't tested in any way with that kind of setup
 
-(x=number of slots times 2) -- rack_x_units.stl
+* 25 -- extention.stl
+* 4 -- extention_90_bend.stl (or extention_90_bend_extra_stiff.stl)
+* 8 -- corner.stl (or corner_extra_stiff.stl)
+* 192+ -- bow_tie.stl but extra never hurts (or bow_tie_with_brim.stl)
+* 132+ —- long_tie.stl (or long_tie_split.stl, more forgiving on the tolerances)
+* 10+ -- long_tie_half.stl
+* 50+ -- long_bow_tie.stl (or long_bow_tie_split.stl, more forgiving on the tolerances)
+* 2 -- x_spacer.stl
+* 6 -- rack_5.stl
+* 6 -- rack_dove_pin.stl 
+* 1 -- bed_carriage_endstop_screw.stl
+* 1 -- bed_carriage_endstop_screw_mount.stl
+* 1 -- bed_carriage_endstop_screw_nut.stl
+* 4 -- bed_carriage_rail.stl
+* 4 -- bed_carriage_rail_short.stl
+* 4 -- bed_carriage_rail_center.stl
+* 2 -- bed_carriage_rail_frame_mount.stl
+* 2 -- bed_carriage_rail_frame_mount_top.stl
+* 4 -- bed_carriage_rail_slide.stl
+* 2 -- bed_screw_housing.stl
+* 2 -- bed_screw_housing_coupler.stl
+* 2 -- bed_screw_housing_top.stl
+* 10+ -- cable_clip_large.stl/cable_clip_small.stl
+* 1 -- cable_shroud_frame_mount.stl (if using cable shroud)
+* 1 -- hot_end_mount.stl
+* 1 -- hot_end_mount_clamp.stl (or hot_end_mount_clamp_shroud_mount.stl if using cable shroud)
+* 1 -- hot_end_mount_fan_duct.stl
+* 1 -- hot_end_mount_prox_sensor_clamp.stl (if using proximity sensor)
+* 4 -- leg.stl
+* 4 -- leg_foot.stl OR following 3 items.
+* 4 -- leg_foot_adjustable.stl
+* 4 -- leg_foot_adjustable_core.stl
+* 4 -- leg_foot_dampener.stl (print with flex material)
+* 3 -- motor_gear.stl (or motor_gear_slop_0.1.stl)
+* 6 -- motor_mount_small.stl
+* 1 -- psu_holder.stl OR following 3 parts if using ATX psu
+* 1 -- psu_holder_atx_psu_cover.stl
+* 1 -- psu_holder_back_atx.stl
+* 1 -- psu_holder_front_atx.stl
+* 1 -- psu_holder_clip_extension.stl
+* 2 -- xy_endstop_rackend.stl OR
+* 2 -- xy_endstop_racktop.stl (I prefer this, easier to adjust position)
+* 1 -- z_endstop.stl
+* 2 -- z_screw_120.stl
+* 2 -- z_screw_center_coupler.stl
+* 2 -- z_screw_motor_coupler_flex.stl
+* 2 -- z_coupler_flexible_coupler_nut_hex.stl
+* 2 -- z_coupler_flexible_coupler_tube.stl (print with flex material)
+* 2 -- z_coupler_motor_shaft_adapter.stl
+* 6 -- z_screw_housing_bolt_side.stl
+* 6 -- z_screw_side_roller.stl
+* 6 -- z_screw_side_roller_axle.stl
+* 6 -- z_screw_side_roller_axle_washer.stl
+* 1 -- ramps_mount.stl
+* 2 -- ramps_mount_fan_mount_60mm.stl
+* 3 -- ramps_mount_frame_clip.stl
+* 2 -- tools/rail_jig.stl
+* 2 -- tools/rail_jig_clip.stl
+* 1 -- tools/z_screw_jig.stl
+* 2 -- tools/z_screw_jig_clip.stl
 
-13 -- extention.stl
+# Metal parts we might get rid of in the future
 
-8 -- corner.stl
+* 9 -- M3x40  for the motor mounts
+* 8 -- M3x10  for the z motors
 
-156 -- bow_tie.stl but extra never hurts
+# Electronics and other
 
-96 —- long_ties.stl
+* 1 - main controller board. Frame mount parts for RAMPS are available. Also for Raspi3
+* 3 - end stop switches
+* 5 - motors steppers, no need for very beefy motors
+* 1 - hotend or whatever tool tip you want really. E3Dv6 is tested
+* 1 - hobbed thing, gear or bolt. Actually whole extruder. Buy or pick one to print from thingiverse. This is good: https://www.thingiverse.com/thing:2243325
+* 1 - heated bed (21x21cm)
+* 1 - glass/aluminum that fits on the bed (depends if the bed needs one)
+* 4 - springs and screw for leveling your bed.
+* some glue for joining the bed_carriage_rail and z_screw parts together
 
-2 -- x_spacer.stl
+# Options for a larger printer
 
-6 -- motor_mount.stl
+* the default expansion length in each direction is 12cm (default extention part length).
+* the frame can be extended in any direction, just print enough extention.stl parts and ties. If extending in z-direction, also print enough bed_carriage_rail, bed_carriage_rail_center, z_screw_120, z_screw_center
+* the default 12cm expansion length can be adjusted to suit ones need, just modify the scad files and export different length models (make sure all updated models are same length)
+* the frame will become somewhat wobbly after certain z-height (25+cm). There are stabilizer parts designed, but not for the current Dollo iteration. WIP currently
 
-8 -- twist_corner.stl
+# Print settings
+1. I use PLA for most of the parts, except PETG for rack_5, all _tie-parts and z_screw_side_roller. Flexible material (FilaFlex or similar) for few models (see BOM). Nylon for the part cooling (hotend) fan
+2. For most parts, 2x perimeter, 20% infill, 0.2mm layer height, outer perimeter first and no supports. Some models do need supports, but those should be easy to spot.
+3. Motor_gear: 4+ perimeters, 90% infill
+4. bed_carriage_rails, centers, z_screws: 3 perimeters, 25+% infill
+5. All _tie parts: print only after printing at least 1 extention. Print few of each _tie part and see how they fit. Most likely you'll need to use scaling in slicer sw to get them fit.
 
-4 -- large_gear.stl
-
-3 -- gear.stl
-
-4 -- middle_gear.stl
-
-1 -- gear_one.stl
-
-1 -- hot_end_mount.stl
-
-Metal parts we hope to get rid of in the future
-
-11 -- M3x40  for the motor mounts and bed gears
-
-5 -- M3x10  for the motor mounts and bed gears
-
-4 -- M3x20  for the z motor
-
-4 -- M3 lock nuts  for the bed gears
-
-Electronics and other
-
-1 - main controller board (we use RAMBo and also like the idea of printing the pcb and solding the components your self)
-
-3 - end stop switches   we are trying to come up with a clever way of doing with with printed conductive parts
-
-5 - motors
-
-1 - hotend or whatever tool tip you want really
-
-1 - hobbed thing, gear or bolt
-
-1 - bearing for extruder (might be able to print)
-
-1 - heated bed
-
-1 - glass/aluminum that fits on the bed
-
-4 - springs and screw for leveling your bed.
-
-Options for a larger printer
-
-8 - extention_3_units.stl  This will make it so your printer can fit a normal heated bed in the normal way and not limit the space at all
-
-4 - extention_x_units & more twist_corner.stl. You can add as many of whatever size you want pieces into the z axis, this print doesn't been anything extra for those to work
-
-# How to assemble
+# How to assemble (mostly old info, needs update)
 1) start with the basic frame, take a single corner and butt joint all 3 extension pieces to it with all 4 bow_tie slots. then on the end of each of those add corner pieces then extension pieces again until you have built out a full cube shape.
 
 2) put on the racks. first you need to decide what side you want to be up, this really doesn't matter since it should be the same on all sides. Once you have figured that out, you can start putting your slots on the top of your printer with more bow ties add racks on parallel sides and to the top of your remaining extension piece. each should have 3 racks on it.
