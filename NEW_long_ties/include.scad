@@ -315,6 +315,16 @@ module chamfered_cube_side(x,y,z, chamfer, center=false) {
     }
 }
 
+module chamfered_cylinder(d,h,chamfer) {
+    union() {
+        cylinder(d1=d-2*chamfer,d2=d,h=chamfer);
+        translate([0,0,chamfer]) cylinder(d=d,h=h-2*chamfer);
+        translate([0,0,h-chamfer]) cylinder(d1=d,d2=d-2*chamfer,h=chamfer);
+    }
+}
+
+//chamfered_cylinder(10,20,2,$fn=40);
+
 // Thread generator. d is the outer diameter of the thread
 module _threads(d=8, h=10, z_step=1.8, depth=0.5, direction=0) {
     
