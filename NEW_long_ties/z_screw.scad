@@ -314,33 +314,6 @@ module test_motor_coupler() {
     }
 }
 
-// center part for salvaging badly joined screw parts. Drill 100m hole inside the
-// old center and use this
-module qnd_center_hotfix(h=70) {
-    module quide() {
-        hull() {
-            cylinder(d=4,h=h);
-            translate([6.5,0,0]) cylinder(d=0.5,h=h);
-            translate([-6,0,0]) cylinder(d=0.5,h=h);
-        }
-    }
-    union() {
-        cylinder(d=10,h=h,$fn=30);
-        quide();
-    }
-}
-
-module qnd_center_hotfix_joiner() {
-    union() {
-        intersection() {
-            z_screw_center();
-            cylinder(d=30,h=58.5);
-        }
-        translate([0,0,58.49]) rotate([0,0,45]) qnd_center_hotfix(35);
-    }
-}
-
-
 // debug
 module debug_screw_housing() {
     z = screw_housing_height/2;
@@ -407,9 +380,6 @@ module debug_screw_roller() {
 //debug_gears();
 //debug_screw_roller();
 
-//qnd_center_hotfix();
-//qnd_center_hotfix_joiner() ;
-
 // 120 mm screw
 //z_screw(120, steps=100);
 
@@ -418,7 +388,7 @@ module debug_screw_roller() {
 
 //z_screw_center();
 //z_screw_center_coupler();
-side_roller();
+//side_roller();
 //screw_housing_bottom();
 //screw_housing_top();
 //side_roller_axle();
