@@ -53,15 +53,12 @@ module debug_bed_rail() {
 module bed_rail_frame_mount(bridge_extra=0) {
     
     h = 139;
-    hx_w = rail_width+slop;
+    hx_w = rail_width-slop;
     
     module rail_hole() {
-        difference() {
-            hull() {
-                hexagon(hx_w+9,0.01);
-                hexagon(hx_w+6,2);
-            }
-            hexagon(hx_w,2);
+        hull() {
+            hexagon(hx_w+9,0.01);
+            hexagon(hx_w+6,2);
         }
     }
     
@@ -75,55 +72,52 @@ module bed_rail_frame_mount(bridge_extra=0) {
         }
     }
 
-    union() {
+    difference() {
+        union() {
+            translate([0,3.5,0]) cube([30+7*2, 25+slop, h], center=true);
+            translate([0,-8.5,h/2-27]) hook();
+            translate([0,-8.5,-h/2+27]) mirror([0,0,1]) hook();
+            translate([0,-(15+2)/2-1,0]) cube([14,2,90], center=true);
+            translate([0,-(15+2)/2,30]) rotate([90,0,0]) rail_hole();
+            translate([0,-(15+2)/2,-30]) rotate([90,180,0]) rail_hole();
+        }
+        translate([0,6,0]) cube([30+slop, 25+slop, h+1], center=true);
+        translate([0,-6.5-slop/2,h/2-30]) rotate([0,0,180]) male_dovetail(30,bridge_extra=bridge_extra);
+        translate([0,-6.5-slop/2,-h/2]) rotate([0,0,180]) male_dovetail(30,bridge_extra=bridge_extra);
+
+        hull() {
+            translate([0,19,18]) rotate([45,0,0]) cube([45,30,30], center=true);
+            translate([0,19,-18]) rotate([45,0,0]) cube([45,30,30], center=true);
+        }
+        translate([34/2+25/2-1,10,0]) rotate([90,0,0]) cylinder(d=z_screw_d+slop, h=20, $fn=50);
+        translate([-34/2-25/2+1,10,0]) rotate([90,0,0]) cylinder(d=z_screw_d+slop, h=20, $fn=50);
+        translate([-16,-8,0]) cube([1,5,0.4], center=true);
+        translate([16,-8,0]) cube([1,5,0.4], center=true);
+
+        translate([0,-(15+slop)/2,30]) rotate([90,0,0]) hexagon(hx_w);
+        translate([0,-(15+slop)/2,-30]) rotate([90,0,0]) hexagon(hx_w);
+        translate([0,-(15+slop)/2,-23]) cube([1,10,20], center=true);
+        translate([0,-(15+slop)/2,23]) cube([1,10,20], center=true);
+
         difference() {
             union() {
-                translate([0,3.5,0]) cube([30+7*2, 25+slop, h], center=true);
-                translate([0,-8.5,h/2-27]) hook();
-                translate([0,-8.5,-h/2+27]) mirror([0,0,1]) hook();
-                translate([0,-(15+2)/2-1,0]) cube([14,2,90], center=true);
+                translate([15,8.5+slop/2,-h/2]) rotate([0,0,-90]) male_dovetail(h);
+                translate([-15,8.5+slop/2,-h/2]) rotate([0,0,90]) male_dovetail(h);
             }
-            translate([0,6,0]) cube([30+slop, 25+slop, h+1], center=true);
-            translate([0,-6.5-slop/2,h/2-30]) rotate([0,0,180]) male_dovetail(30,bridge_extra=bridge_extra);
-            translate([0,-6.5-slop/2,-h/2]) rotate([0,0,180]) male_dovetail(30,bridge_extra=bridge_extra);
-
             hull() {
-                translate([0,19,18]) rotate([45,0,0]) cube([45,30,30], center=true);
+                translate([0,19,18.5]) rotate([45,0,0]) cube([45,30,30], center=true);
                 translate([0,19,-18]) rotate([45,0,0]) cube([45,30,30], center=true);
             }
-            translate([34/2+25/2-1,10,0]) rotate([90,0,0]) cylinder(d=z_screw_d+slop, h=20, $fn=50);
-            translate([-34/2-25/2+1,10,0]) rotate([90,0,0]) cylinder(d=z_screw_d+slop, h=20, $fn=50);
-            translate([-16,-8,0]) cube([1,5,0.4], center=true);
-            translate([16,-8,0]) cube([1,5,0.4], center=true);
-
-            translate([0,-(15+slop)/2,30]) rotate([90,0,0]) hexagon(hx_w);
-            translate([0,-(15+slop)/2,-30]) rotate([90,0,0]) hexagon(hx_w);
-
-            difference() {
-                union() {
-                    translate([15,8.5+slop/2,-h/2]) rotate([0,0,-90]) male_dovetail(h);
-                    translate([-15,8.5+slop/2,-h/2]) rotate([0,0,90]) male_dovetail(h);
-                }
-                hull() {
-                    translate([0,19,18.5]) rotate([45,0,0]) cube([45,30,30], center=true);
-                    translate([0,19,-18]) rotate([45,0,0]) cube([45,30,30], center=true);
-                }
-
-            }
-            
         }
-        translate([0,-(15+2)/2,30]) rotate([90,0,0]) rail_hole();
-        translate([0,-(15+2)/2,-30]) rotate([90,180,0]) rail_hole();
-
     }
     
-    %translate([-15,-6.5,30]) rotate([-90,0,0]) extention();
+    %translate([-15,-6.5,30]) rotate([180,0,0]) extention();
 }
 
 module bed_rail_frame_mount_top() {
     translate([0,0,-(25+slop)/2+3.5+2.5]) rotate([-90,0,0]) intersection() {
-        bed_rail_frame_mount(bridge_extra=0.2);
-        cube([30,26,150], center=true);
+        bed_rail_frame_mount(bridge_extra=0.3);
+        #cube([30,27,150], center=true);
     }
 }
 
@@ -460,11 +454,11 @@ module slide_test_parts() {
 //bed_rail();
 //bed_rail_short();
 //bed_rail_center();
-//bed_rail_frame_mount();
+bed_rail_frame_mount();
 //bed_rail_frame_mount_top();
 //bed_rail_slide(true);
 //bed_screw_housing(render_threads=false);
-bed_screw_housing(render_threads=true);
+//bed_screw_housing(render_threads=true);
 //bed_screw_housing_top();
 //translate([5,0,0])bed_housing_coupler();
 //mirror([1,0,0]) bed_housing_coupler();
