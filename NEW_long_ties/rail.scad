@@ -70,7 +70,10 @@ module _rail_center(width, length) {
 module rail_center(width=width, length=length/2) {
     translate([0,0,-1]) intersection() {
         _rail_center(width, length);
-        translate([0,0,length/2+width/4-width/10]) cube([width*1.2,width*1.2,length+width/2-2], center=true);
+        translate([0,0,length/2+width/4-width/10]) difference() {
+            cube([width*1.2,width*1.2,length+width/2-2], center=true);
+            cylinder(d=0.5,h=length+width/2,center=true);
+        }
     }
 }
 
@@ -150,10 +153,10 @@ module rail_test_parts() {
 
 //rail_test_parts();
 
-//rail_center();
+rail_center();
 //translate([0,-length/2,width/2]) rail(length,width);
-rail(length=20,width=15);
-rail_slide(width=15,height=10,wiggles=3);
+//rail(length=20,width=15);
+//rail_slide(width=15,height=10,wiggles=3);
 
 
 
