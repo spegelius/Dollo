@@ -221,24 +221,29 @@ module motor_shaft(h=10, extra_slop=0) {
 
 //motor_shaft(extra_slop=0.0,$fn=30);
 
+module motor_plate_holes(h=5, bolt_head_cones=false) {
+    translate([0,0,-.5]) cylinder(d=motor_center_hole, h=h+1);
+    if (h > 2) {
+        translate([0,0,2]) cylinder(d1=motor_center_hole, d2=motor_center_hole+(h-2), h=h-2+0.1);
+    }
+
+    for (i=[0:3]) {
+        rotate([0,0,i*(360/4)]) {
+            translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,-0.01]) cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
+            if (bolt_head_cones) {
+                translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,h-2]) cylinder(d1=bolt_hole_dia, d2=bolt_head_hole_dia, h=2.01, $fn=20);
+
+            }
+        }
+    }
+}
+
 module motor_plate(h=5, bolt_head_cones=false) {
     difference () {
         translate([0,0,h/2]) cube([motor_side_length,motor_side_length,h], center=true);
             
-        translate([0,0,-.5]) cylinder(d=motor_center_hole, h=h+1);
-        if (h > 2) {
-            translate([0,0,2]) cylinder(d1=motor_center_hole, d2=motor_center_hole+(h-2)*2, h=h+0.1);
-        }
 
-        for (i=[0:3]) {
-            rotate([0,0,i*(360/4)]) {
-                translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,0]) cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
-                if (bolt_head_cones) {
-                    translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,h-2]) cylinder(d1=bolt_hole_dia, d2=bolt_head_hole_dia, h=2, $fn=20);
-
-                }
-            }
-        }
+        motor_plate_holes(h, bolt_head_cones);
     }
 }
 

@@ -7,6 +7,7 @@ use <rail.scad>;
 use <z_screw.scad>;
 use <long_tie.scad>;
 use <endstop.scad>;
+use <z_motor_mount.scad>;
 
 // 1 unit = 30mm
 z_units = 4; 
@@ -112,6 +113,7 @@ module bed_rail_frame_mount(bridge_extra=0) {
     }
     
     %translate([-15,-6.5,30]) rotate([180,0,0]) extention();
+    %translate([-28.5,28.7,66/2]) rotate([0,180,0]) z_motor_mount();
 }
 
 module bed_rail_frame_mount_top() {
