@@ -15,7 +15,7 @@ module _plate(length=40, height=10) {
 
 module _leg() {
     intersection() {
-        translate([0,30,-5]) extention_finished(units=3);
+        translate([0,30,-5]) extention(units=3);
         cube([31,31,90]);
     }
 }
@@ -34,43 +34,6 @@ module leg(plate_len=45) {
         translate([15,plate_len+20,0]) rotate([90,0,0]) male_dovetail(dove_len, bridge_extra=0.2);
         translate([0,15,0]) rotate([90,0,90]) male_dovetail(dove_len, bridge_extra=0.2);
     }
-}
-
-module leg_motor_mount() {
-    difference() {
-        union() {
-            difference() {
-                translate([-13.5,0,50/2]) cube([60,50,50], center=true);
-                translate([56,0,0]) rotate([0,-45,0]) cube([50,55,500], center=true);
-                translate([0,0,50/2]) cube([43,43,51], center=true);
-                translate([-38,0,50/2]) cube([30,15,51], center=true);
-                translate([-35.4,27,50/2]) rotate([0,0,25]) cube([30,15,51], center=true);
-                translate([-35.4,-27,50/2]) rotate([0,0,-25]) cube([30,15,51], center=true);
-            }
-            difference() {
-                translate([0,0,5]) rotate([0,180,0]) motor_plate(5, bolt_head_cones=true);
-                hull() {
-                    translate([20,0,5/2]) cube([40,motor_center_hole-1,5.01], center=true);
-                    translate([20,0,-1/2]) cube([40,motor_center_hole+3,1], center=true);
-                }
-            }
-            difference() {
-                translate([-30-z_screw_d/2-1,-15,0]) _leg();
-                difference() {
-                    cube([43,43,139], center=true);
-                    translate([-44,0,60]) rotate([0,45,0]) cube([30,60,80], center=true);
-                }
-            }
-            translate([-30/2-10/2-z_screw_d/2-1,-10/2,male_dove_depth]) cube([10,10,0.2]);
-        }
-        #translate([-30/2-z_screw_d/2-1,55/2,0]) rotate([90,0,0]) male_dovetail(55);
-    }
-
-    // debug
-    %translate([0,-42/2,40/2+5]) rotate([-90,0,0]) mock_stepper_motor();
-    %translate([-30-z_screw_d/2-1,-30,-30]) extention();
-    %translate([0,0,1]) rotate([180,0,0]) motor_shaft_adapter();
-    %translate([0,0,-16]) rotate([180,0,0]) z_screw_motor_flex_coupler(fast_render=true);
 }
 
 function bottom_hole_x_pos(dia) = dia/2-(dia/2/3);
@@ -160,10 +123,9 @@ module foot_dampener(dia=60) {
     }
 }
 
-//leg();
-//leg_motor_mount();
+leg();
 //foot();
 //foot_small();
 //foot_adjustable_core();
 //foot_adjustable();
-foot_dampener();
+//foot_dampener();
