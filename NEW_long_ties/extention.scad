@@ -66,8 +66,8 @@ module extention_90_bend(extra_stiff=false) {
                 translate([0,0-7/2,28]) cube([20,7,10],center=true);
             }
         }
-        translate([13,0,-10]) rotate([0,45,180]) male_dovetail(20);
-        translate([-13,0,-10]) rotate([0,-45,180]) male_dovetail(20);
+        translate([13,0.01,-10]) rotate([0,45,180]) male_dovetail(20);
+        translate([-13,0.01,-10]) rotate([0,-45,180]) male_dovetail(20);
 
         translate([-12.83,-30,-10]) rotate([0,45,0]) male_dovetail(20);
         translate([12.83,-30,-10]) rotate([0,-45,0]) male_dovetail(20);
@@ -76,30 +76,69 @@ module extention_90_bend(extra_stiff=false) {
         translate([-12.83,-15,-10]) rotate([0,45,0]) cylinder(d=metal_rod_size,h=20,$fn=15);
 
     }
+
+    // supports
+    cylinder(d=4,h=7);
+    union() {
+        translate([0,-15,0]) cylinder(d=4,h=7.2);
+        translate([0,-15,7.2]) sphere(d=4.3,$fn=20);
+    }
+    translate([0,-30,0]) cylinder(d=4,h=7);
 }
 
-module extention_center() {
-    intersection() {
-        ridged_cylinder(d=metal_rod_size-0.1, h=80, r=2, $fn=15);
-        chamfered_cylinder(metal_rod_size,80,1,$fn=15);
-    }
-    hull() {
-        translate([0,0,80/2]) cube_donut(metal_rod_size,0.5,rotation=45,$fn=15);
+module extention_center(length=120, stopper_position=60) {
+    // leave a bit of gap
+    l = length - 1;
+    sp = stopper_position - 0.5;
+    difference() {
+        union() {
+            intersection() {
+                ridged_cylinder(d=metal_rod_size-0.1, h=l, r=2, $fn=15);
+                chamfered_cylinder(metal_rod_size,l,1,$fn=15);
+            }
+            hull() {
+                translate([0,0,sp]) cube_donut(metal_rod_size,0.5,rotation=45,$fn=15);
+            }
+        }
+        cylinder(d=1,h=l,$fn=10);
     }
 }
+
+module debug_extention_90_bend() {
+    intersection() {
+        extention_90_bend();
+        translate([0,-31,0]) cube([60,40,50]);
+    }
+}
+
+//debug_extention_90_bend();
+
+// 60cm extention
+//extention(2);
+//extention_center(length=60,stopper_position=60/2);
 
 // 90cm extention
 //extention(3);
+//extention_center(length=90,stopper_position=90/2);
 
 // 120cm extention
 //extention();
+//extention_center();
 
 // 150cm extention
 //extention(5);
+//extention_center(length=150,stopper_position=150/2);
 
 // 180cm extention
 //extention(6);
+//extention_center(length=180,stopper_position=180/2);
 
-extention_90_bend(extra_stiff=false);
+//extention_90_bend(extra_stiff=false);
 //extention_90_bend(extra_stiff=true);
-//extention_center();
+
+// centers for corner
+//extention_center(length=90/2+30,stopper_position=30);
+//extention_center(length=120/2+30,stopper_position=30);
+//extention_center(length=150/2+30,stopper_position=30);
+extention_center(length=180/2+30,stopper_position=30);
+
