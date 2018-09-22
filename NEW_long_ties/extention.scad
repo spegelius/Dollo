@@ -7,7 +7,7 @@ support = true;
 //max is however large your printer can print
 units = 4;
 
-module extention_base(length){
+module extention_base(length, support=true){
 	
 	module added(){
 			translate([0,0,0]) cube([30,length,30]);
@@ -31,25 +31,26 @@ module extention_base(length){
 	difference(){
 		added();
 		subtracted();
-	}	
+	}
+    //support
+    if (support==true)
+    {
+        rotate([-90,0,0]) {
+            translate([0,0,5/2]) cylinder(h=5, d=6, center=true);
+            translate([30,0,5/2]) cylinder(h=5, d=6, center=true);
+            translate([0,-30,5/2]) cylinder(h=5, d=6, center=true);
+            translate([30,-30,5/2]) cylinder(h=5, d=6, center=true);
+        }
+    }
 } //module extention
 
 
 
 module extention(units=units, support=support){
-    rotate([90,0,0]) extention_base(units*30);
-
-    //support
-    if (support==true)
-    {
-        translate([0,0,5/2]) cylinder(h=5, d=6, center=true);
-        translate([30,0,5/2]) cylinder(h=5, d=6, center=true);
-        translate([0,-30,5/2]) cylinder(h=5, d=6, center=true);
-        translate([30,-30,5/2]) cylinder(h=5, d=6, center=true);
-    }
+    rotate([90,0,0]) extention_base(units*30, support=support);
 }
 
-module extention_90_bend(extra_stiff=false) {
+module extention_90_bend(extra_stiff=false, support=support) {
     
     module extention_rotated() {
         intersection() {
@@ -78,12 +79,15 @@ module extention_90_bend(extra_stiff=false) {
     }
 
     // supports
-    cylinder(d=4,h=7);
-    union() {
-        translate([0,-15,0]) cylinder(d=4,h=7.2);
-        translate([0,-15,7.2]) sphere(d=4.3,$fn=20);
+    if (support==true)
+    {
+        cylinder(d=4,h=7);
+        union() {
+            translate([0,-15,0]) cylinder(d=4,h=7.2);
+            translate([0,-15,7.2]) sphere(d=4.3,$fn=20);
+        }
+        translate([0,-30,0]) cylinder(d=4,h=7);
     }
-    translate([0,-30,0]) cylinder(d=4,h=7);
 }
 
 module extention_center(length=120, stopper_position=60) {
