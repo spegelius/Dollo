@@ -70,6 +70,7 @@ module long_bow_tie_half(length=length, scale_x=scale_x(), scale_z=scale_z()) {
     }
 }
 
-//long_bow_tie(length);
+long_bow_tie();
+//long_bow_tie(25);
 //long_bow_tie_half(length);
-long_bow_tie_split(length);
+//long_bow_tie_split(length);
