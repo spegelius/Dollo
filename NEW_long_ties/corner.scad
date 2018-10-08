@@ -68,7 +68,7 @@ module basic_corner() {
 	rotate([45,0,0]) corner();
 };
 
-module full_corner(){
+module full_corner(support=support, extra_stiff=extra_stiff){
 	module support_pillars(){
 		
 		translate([48-slot_translate/2,3,0]) cylinder(h=11,d=4);
@@ -101,4 +101,4 @@ module full_corner(){
 }
 
 //basic_corner();
-full_corner();
+full_corner(support=support, extra_stiff=extra_stiff);
