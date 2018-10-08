@@ -320,6 +320,13 @@ module chamfered_cube_side(x,y,z, chamfer, center=false) {
     }
 }
 
+module rounded_cylinder(d, h, corner) {
+    hull() {
+        translate([0,0,corner/2]) donut(d-corner,corner);
+        translate([0,0,h-corner/2]) donut(d-corner,corner);
+    }
+}
+
 module chamfered_cylinder(d,h,chamfer) {
     union() {
         cylinder(d1=d-2*chamfer,d2=d,h=chamfer);
@@ -372,7 +379,7 @@ module _bolt_shaft(d, h, shaft=0, z_step=1.8, depth=0.5, direction=0) {
     if (shaft == 0) {
         _do_shaft(h);
     } else {
-        translate([0,shaft,0]) _do_shaft(h-shaft);
+        translate([0,shaft-0.01,0]) _do_shaft(h-shaft);
         intersection() {
             rotate([-90,0,0]) cylinder(d=d, h=shaft);
             translate([0,shaft/2,d*0.1]) cube([d,shaft,d], center=true);
