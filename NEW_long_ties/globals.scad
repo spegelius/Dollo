@@ -88,3 +88,10 @@ metal_rod_size = 9;
 
 // z screw
 z_screw_d = 25;
+
+// stabilizer
+pin_bolt_dia = 12-2*slop;
+pin_bolt_dia_minus = 12+2*slop;
+
+clip_bolt_dia = 10-2*slop;
+clip_bolt_dia_minus = 10+2*slop;

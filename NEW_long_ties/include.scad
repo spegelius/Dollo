@@ -343,6 +343,7 @@ module _threads(d=8, h=10, z_step=1.8, depth=0.5, direction=0) {
     function get_twist(dir) = (direction == 0) ? -360 : 360;
 
     multiple = h/z_step+1;
+    echo(h);
     
     intersection() {
         for (i = [0:multiple]) {
@@ -388,10 +389,18 @@ module _bolt_shaft(d, h, shaft=0, z_step=1.8, depth=0.5, direction=0) {
 }
 
 module _bolt(d=8, h=20, h2=20, shaft=0, diameter=1, z_step=1.8, depth=0.5) {
-  
-    _bolt_shaft(d=d, h=h, shaft=shaft, z_step=z_step, depth=depth);
-    translate([0,-1.4,0]) rounded_cube(d*1.1,3,d*1.1,diameter,center=true);
-    translate([0,-6,0]) rounded_cube(4,10,d*1.1,diameter,center=true);
+    l = h + shaft;
+    difference() {
+        union() {
+            _bolt_shaft(d=d, h=h, shaft=shaft, z_step=z_step, depth=depth);
+            translate([0,-1.499,0]) rounded_cube(d*1.1,3,d*1.1,diameter,center=true);
+            translate([0,-6,0]) rounded_cube(4,10,d*1.1,diameter,center=true);
+        }
+        // hidden infill
+        translate([1.5,-10,-1.5]) rotate([-90,0,0]) cylinder(d=0.1,h=l);
+        translate([0,-10,1.5]) rotate([-90,0,0]) cylinder(d=0.1,h=l);
+        translate([-1.5,-10,-1.5]) rotate([-90,0,0]) cylinder(d=0.1,h=l);
+    }
 }
 
 module donut(d, h, angle=360) {

@@ -3,16 +3,13 @@ $fn=100;
 include <globals.scad>;
 include <include.scad>;
 use <long_bow_tie.scad>;
+use <long_tie.scad>;
 use <extention.scad>;
 use <corner.scad>;
 
-pin_bolt_dia = 12-2*slop;
-pin_bolt_dia_minus = 12+2*slop;
-
-clip_bolt_dia = 10-2*slop;
-clip_bolt_dia_minus = 10+2*slop;
-
 module center() {
+    
+    function even(x) = x%2;
     
     module _arm() {
         hull() {
@@ -39,21 +36,37 @@ module center() {
 
             // hidden infill
             rotate([0,0,360/4*i+45]) {
-                translate([0,65/2,2/2-4]) cube([0.1,65,2],center=true);
-                translate([0,65/2,2/2-1]) cube([0.1,65,2],center=true);
-                translate([0,65/2,2/2+2]) cube([0.1,65,2],center=true);
+                translate([0,65/2,2/2+0.5+even(i)*0.5]) cube([0.1,65,2],center=true);
+                translate([0,65/2,2/2+3.5+even(i)*0.5]) cube([0.1,65,2],center=true);
+                translate([0,65/2,2/2+6.5+even(i)*0.5]) cube([0.1,65,2],center=true);
             }
         }
-
     }
 }
 
-module clip_bolt() {
-    _bolt(d=clip_bolt_dia, h=40, h2=20, diameter=1, shaft=30);
+module clip_bolt(length) {
+    _bolt(d=clip_bolt_dia, h=length, diameter=1, shaft=length-10);
 }
 
 module clip_nut() {
-    _nut(d=clip_bolt_dia, d2=18, h=6, indents=23);
+    _nut(d=clip_bolt_dia, d2=16, h=6, indents=23);
+}
+
+module pin_nut() {
+    _nut(d=pin_bolt_dia, d2=18, h=7, z_step=3, depth=1, indents=24);
+}
+
+module pin_bolt(length) {
+    l = length + 0.02;
+    difference() {
+        union() {
+            translate([0,-0.01,0]) _bolt_shaft(d=pin_bolt_dia, h=20, shaft=l/2-20, z_step=3, depth=1);
+            rotate([0,0,180]) translate([0,-0.01,0]) _bolt_shaft(d=pin_bolt_dia, h=20, shaft=l/2-20, z_step=3, depth=1);
+        }
+        translate([1.5,0,-1.5]) rotate([-90,0,0]) cylinder(d=0.1,h=l, center=true);
+        translate([0,0,1.5]) rotate([-90,0,0]) cylinder(d=0.1,h=l, center=true);
+        translate([-1.5,0,-1.5]) rotate([-90,0,0]) cylinder(d=0.1,h=l, center=true);
+    }
 }
 
 module corner_bolt(direction) {
@@ -65,6 +78,8 @@ module corner_bolt(direction) {
         } else {
             translate([0,-9.9]) rotate([0,0,180]) difference() {
                 _bolt_shaft(d=pin_bolt_dia, h=length, shaft=5, z_step=3, depth=1, direction=direction);
+                
+                // hidden infill
                 translate([1.5,0,-1.5]) rotate([-90,0,0]) cylinder(d=0.1,h=length*2);
                 translate([0,0,1.5]) rotate([-90,0,0]) cylinder(d=0.1,h=length*2);
                 translate([-1.5,0,-1.5]) rotate([-90,0,0]) cylinder(d=0.1,h=length*2);
@@ -102,10 +117,10 @@ module beam(length) {
             mirror([0,1,0]) translate([0,length/2-7,0]) _hook();
         }
         // hidden infill
-        translate([0,0,3/2-9]) cube([0.1,length-25,3],center=true);
-        translate([0,0,3/2-4]) cube([0.1,length-25,3],center=true);
-        translate([0,0,3/2+1]) cube([0.1,length-25,3],center=true);
-        translate([0,0,3/2+6]) cube([0.1,length-25,3],center=true);
+        translate([0,0,3/2-9]) cube([0.1,length-22,3],center=true);
+        translate([0,0,3/2-4]) cube([0.1,length-22,3],center=true);
+        translate([0,0,3/2+1]) cube([0.1,length-22,3],center=true);
+        translate([0,0,3/2+6]) cube([0.1,length-22,3],center=true);
     }
 }
 
@@ -273,23 +288,66 @@ module frame_center_clip() {
     translate([-50/2,4.5,0]) rotate([0,0,90]) long_bow_tie_half(50);
 }
 
+module frame_angle_clamp() {
+    
+    difference() {
+        union() {
+            translate([0,-7,0]) chamfered_cube(46,32,30,3,center=true);
+            translate([0,-24,0]) intersection() {
+                translate([0,0,-10]) rotate([45,00,0]) chamfered_cube_side(35,42,35,3,center=true);
+                cube([40,50,30],center=true);
+            }
+        }
+        cube([30,30,60],center=true);
+        translate([0,-15,-30]) rotate([0,0,180]) male_dovetail();
+        translate([-15,0,-30]) rotate([0,0,90]) male_dovetail();
+        translate([15,0,-30]) rotate([0,0,-90]) male_dovetail();
+        
+        translate([0,-23/2-15-8,-30/2-1/2]) hull() {
+            cube([25,23,1], center=true);
+            translate([0,23/2-1/2,23]) cube([25,1,1],center=true);
+        }
+        translate([0,-37,-5]) rotate([45,0,0]) hull() {
+            cylinder(d=pin_bolt_dia_minus,h=10,center=true,$fn=30);
+            translate([0,-20,0]) cylinder(d=pin_bolt_dia_minus,h=10,center=true,$fn=30);
+        }
+    }
+}
+
+module frame_angle_clamp_slim() {
+    difference() {
+        union() {
+            intersection() {
+                frame_angle_clamp();
+                translate([0,-25]) cube([35,50,100],center=true);
+            }
+            translate([15,-6,-30/2]) cube([2.5,6,30]);
+            translate([-15-2.5,-6,-30/2]) cube([2.5,6,30]);
+            
+            translate([15.01,0,-30/2+30]) rotate([90,0,0]) long_tie_half(30);
+            translate([-15.01,0,-30/2]) rotate([-90,0,180]) long_tie_half(30);
+        }
+        cube([27,10,80],center=true);
+    }
+}
+
 module view_proper() {
     frame_mockup(0, 2, 2, 3);
     //translate([165,-170,15]) rotate([0,-55,-45]) full_corner(support=false, extra_stiff=false);
     
-    angle = 60.9;
-    translate([120+60-20,0,(3*120+120)/2]) rotate([0,90,0]) center();
+    angle = 61.5;
+    translate([120+60-20,0,(3*120+120)/2+4.5]) rotate([0,90,0]) center();
     translate([165,-120,60]) rotate([0,-135,90]) frame_clip_corner_small();
     translate([165,120,60]) rotate([0,135,90]) frame_clip_corner_small();
     translate([165,120,3*120+60]) rotate([0,45,90]) frame_clip_corner_small();
     translate([165,-120,3*120+60]) rotate([0,-45,90]) frame_clip_corner_small();
     
-    beam_l = 156;
+    beam_l = 160;
     translate([165,-126,54]) rotate([angle,0,0]) translate([0,beam_l/2,0]) rotate([0,90,0]) beam(beam_l);
     translate([165,126,54]) rotate([180-angle,0,0]) translate([0,beam_l/2,0]) rotate([0,90,0]) beam(beam_l);
     
     translate([165,126,3*120+66]) rotate([angle,0,0]) translate([0,-7,0]) rotate([0,90,0]) corner_bolt();
-    translate([165,50,1.5*120+110]) rotate([180+angle,0,0]) translate([0,-7,0]) rotate([0,90,0]) corner_bolt();
+    #translate([165,50,1.5*120+114.6]) rotate([180+angle,0,0]) translate([0,-7,0]) rotate([0,90,0]) corner_bolt();
     
     translate([120+60-15,89,360]) rotate([angle,0,0]) long_nut();
     
@@ -305,20 +363,29 @@ FAST=true;
 //FAST=false;
 
 //view_proper();
-
-//center();
+intersection() {
+    //center();
+    //cube([50,50,5]);
+}
 
 //frame_clip();
 //frame_clip_corner_large();
 //frame_clip_corner_large2();
-frame_clip_corner_small();
+//frame_clip_corner_small();
 //frame_clip_corner_small2();
 //frame_clip_middle();
 //frame_clip_middle_2x();
 //frame_center_clip();
 
-//clip_bolt();
-//clip_nut();
+//frame_angle_clamp();
+//frame_angle_clamp_slim();
+
+//clip_bolt(30);
+clip_nut();
+
+//pin_bolt(50);
+//pin_bolt(140);
+//pin_nut();
 
 // right hand thread
 //corner_bolt(0);
@@ -327,5 +394,4 @@ frame_clip_corner_small();
 
 //long_nut();
 
-
-
+//beam(160);
