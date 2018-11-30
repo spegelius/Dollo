@@ -50,46 +50,6 @@ module extention(units=units, support=support){
     rotate([90,0,0]) extention_base(units*30, support=support);
 }
 
-module extention_90_bend(extra_stiff=false, support=support) {
-    
-    module extention_rotated() {
-        intersection() {
-            rotate([0,45,0]) translate([-17,0,-23]) extention(2);
-            translate([0,-35,0]) cube([100,40,100]);
-        }
-    }
-    difference() {
-        union() {
-            extention_rotated();
-            mirror([1,0,0]) extention_rotated();
-            if (extra_stiff) {
-                translate([0,-30+7/2,28]) cube([20,7,10],center=true);
-                translate([0,0-7/2,28]) cube([20,7,10],center=true);
-            }
-        }
-        translate([13,0.01,-10]) rotate([0,45,180]) male_dovetail(20);
-        translate([-13,0.01,-10]) rotate([0,-45,180]) male_dovetail(20);
-
-        translate([-12.83,-30,-10]) rotate([0,45,0]) male_dovetail(20);
-        translate([12.83,-30,-10]) rotate([0,-45,0]) male_dovetail(20);
-
-        translate([12.83,-15,-10]) rotate([0,-45,0]) rotate([0,0,180]) cylinder(d=metal_rod_size,h=20,$fn=15);
-        translate([-12.83,-15,-10]) rotate([0,45,0]) cylinder(d=metal_rod_size,h=20,$fn=15);
-
-    }
-
-    // supports
-    if (support==true)
-    {
-        cylinder(d=4,h=7);
-        union() {
-            translate([0,-15,0]) cylinder(d=4,h=7.2);
-            translate([0,-15,7.2]) sphere(d=4.3,$fn=20);
-        }
-        translate([0,-30,0]) cylinder(d=4,h=7);
-    }
-}
-
 module extention_center(length=120, stopper_position=60) {
     // leave a bit of gap
     l = length - 1;
@@ -107,15 +67,6 @@ module extention_center(length=120, stopper_position=60) {
         cylinder(d=1,h=l,$fn=10);
     }
 }
-
-module debug_extention_90_bend() {
-    intersection() {
-        extention_90_bend();
-        translate([0,-31,0]) cube([60,40,50]);
-    }
-}
-
-//debug_extention_90_bend();
 
 // 60cm extention
 //extention(2);
@@ -137,12 +88,9 @@ module debug_extention_90_bend() {
 //extention(6);
 //extention_center(length=180,stopper_position=180/2);
 
-//extention_90_bend(extra_stiff=false);
-//extention_90_bend(extra_stiff=true);
-
 // centers for corner
 //extention_center(length=90/2+30,stopper_position=30);
 //extention_center(length=120/2+30,stopper_position=30);
 //extention_center(length=150/2+30,stopper_position=30);
-extention_center(length=180/2+30,stopper_position=30);
+//extention_center(length=180/2+30,stopper_position=30);
 

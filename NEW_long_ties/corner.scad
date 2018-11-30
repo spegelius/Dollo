@@ -1,6 +1,8 @@
 include <include.scad>;
 include <globals.scad>;
 
+use <extention.scad>;
+
 //if you can do pretty far over hangs, like an SLA printer or something then take this off by setting it to false.
 support = true;
 slot_translate = .5;
@@ -100,5 +102,69 @@ module full_corner(support=support, extra_stiff=extra_stiff){
 	}
 }
 
-//basic_corner();
-full_corner(support=support, extra_stiff=extra_stiff);
+module corner_90(corner_len=30, extra_stiff=false, support=support) {
+
+    l = corner_len + 40;    
+
+    module extention_rotated() {
+        parts = ceil(l/30);
+        diff = l%30;
+        
+        function get_diff(diff) = diff > 0 ? 30-diff : 0;
+        
+        intersection() {
+            rotate([0,45,0]) translate([-17,0,-23-get_diff(diff)]) extention(parts);
+            translate([0,-35,0]) cube([100,40,100]);
+        }
+    }
+    difference() {
+        union() {
+            extention_rotated();
+            mirror([1,0,0]) extention_rotated();
+            if (extra_stiff) {
+                h = sqrt((corner_len*corner_len)/2);
+                echo(h);
+                translate([0,-30+7/2,h+15]) cube([2*h-7,7,10],center=true);
+                translate([0,0-7/2,h+15]) cube([2*h-7,7,10],center=true);
+            }
+        }
+        
+        translate([0,-30/2,0]) rotate([0,45,0]) translate([-2,0,0]) cylinder(d=21,h=34,$fn=30,center=true);
+        translate([0,-30/2,0]) rotate([0,-45,0]) translate([2,0,0]) cylinder(d=21,h=34,$fn=30,center=true);
+        
+        translate([13,0.01,-10]) rotate([0,45,180]) male_dovetail(20);
+        translate([-13,0.01,-10]) rotate([0,-45,180]) male_dovetail(20);
+
+        translate([-12.83,-30,-10]) rotate([0,45,0]) male_dovetail(20);
+        translate([12.83,-30,-10]) rotate([0,-45,0]) male_dovetail(20);
+
+        translate([12.83,-15,-10]) rotate([0,-45,0]) rotate([0,0,180]) cylinder(d=metal_rod_size,h=20,$fn=15);
+        translate([-12.83,-15,-10]) rotate([0,45,0]) cylinder(d=metal_rod_size,h=20,$fn=15);
+
+    }
+
+    // supports
+    if (support==true)
+    {
+        cylinder(d=4,h=7);
+        translate([0,-30,0]) cylinder(d=4,h=7);
+    }
+    %translate([0,-30/2,0]) rotate([0,45,0]) translate([-2,0,11.8]) M8_nut(cone=false);
+    %translate([0,-30/2,0]) rotate([0,-45,0]) translate([2,0,11.8]) M8_nut(cone=false);
+}
+
+module debug_90() {
+    intersection() {
+        corner_90();
+        translate([0,-31,0]) cube([60,40,50]);
+    }
+}
+
+
+//full_corner(support=support, extra_stiff=extra_stiff);
+
+//corner_90(extra_stiff=false);
+//corner_90(extra_stiff=true);
+
+//corner_90(corner_len=20, extra_stiff=false);
+corner_90(corner_len=20, extra_stiff=true);

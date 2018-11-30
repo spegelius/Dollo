@@ -3,6 +3,7 @@ include <globals.scad>;
 include <include.scad>;
 
 use <extention.scad>;
+use <corner.scad>;
 use <rail.scad>;
 use <z_screw.scad>;
 use <long_tie.scad>;
@@ -389,11 +390,10 @@ module bed_attachment_spring_nut() {
 }
 
 module view_bed_frame() {
-    translate([-95,95,0]) rotate([90,0,45]) extention_90_bend();
-    translate([-95,-95,0]) rotate([90,0,135]) extention_90_bend();
-    translate([95,95,0]) rotate([90,0,-45]) extention_90_bend();
-    translate([95,-95,0]) rotate([90,0,225]) extention_90_bend();
-    translate([-110,-60,-30]) rotate([-90,0,0]) extention_90_bend();
+    translate([-95,95,0]) rotate([90,0,45]) corner_90(corner_len=20, support=false, extra_stiff=true);
+    translate([-95,-95,0]) rotate([90,0,135]) corner_90(corner_len=20, support=false, extra_stiff=true);
+    translate([95,95,0]) rotate([90,0,-45]) corner_90(corner_len=20, support=false, extra_stiff=true);
+    translate([95,-95,0]) rotate([90,0,225]) corner_90(corner_len=20, support=false, extra_stiff=true);
 }
 
 module view_proper() {
@@ -449,14 +449,14 @@ module slide_test_parts() {
 //    translate([10.5,-22,0])cube([50,50,50]);
 //}
 
-//view_proper();
+view_proper();
 
 //slide_test_parts();
 
 //bed_rail();
 //bed_rail_short();
 //bed_rail_center();
-bed_rail_frame_mount();
+//bed_rail_frame_mount();
 //bed_rail_frame_mount_top();
 //bed_rail_slide(true);
 //bed_screw_housing(render_threads=false);

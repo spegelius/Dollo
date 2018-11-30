@@ -196,7 +196,25 @@ module nut(h=2.4, cone=true) {
     hull() {
         cylinder(d = 6.5, h=h, $fn=6);
         if (cone) {
-            translate([0,0,2.4]) cylinder(d=3.2, h=1.2, $fn=20);
+            translate([0,0,h-0.01]) cylinder(d=3.2, h=1.2, $fn=20);
+        }
+    }
+}
+
+module M4_nut(h=3.2, cone=true) {
+    hull() {
+        cylinder(d = 7.85, h=h, $fn=6);
+        if (cone) {
+            translate([0,0,h-0.01]) cylinder(d=4.2, h=2.2, $fn=20);
+        }
+    }
+}
+
+module M8_nut(h=5.3, cone=true) {
+    hull() {
+        cylinder(d = 15, h=h, $fn=6);
+        if (cone) {
+            translate([0,0,h-0.01]) cylinder(d=8.2, h=3.4, $fn=20);
         }
     }
 }
