@@ -117,20 +117,34 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
             translate([0,-35,0]) cube([100,40,100]);
         }
     }
+    
+    module stiffener(length) {
+        difference() {
+            cube([length,7,10],center=true);
+            translate([0,0,2]) cube([length,0.1,0.4],center=true);
+            cube([length,0.1,0.4],center=true);
+            translate([0,0,-2]) cube([length,0.1,0.4],center=true);
+        }
+    }
+
     difference() {
         union() {
             extention_rotated();
             mirror([1,0,0]) extention_rotated();
             if (extra_stiff) {
                 h = sqrt((corner_len*corner_len)/2);
-                echo(h);
-                translate([0,-30+7/2,h+15]) cube([2*h-7,7,10],center=true);
-                translate([0,0-7/2,h+15]) cube([2*h-7,7,10],center=true);
+                translate([0,-30+7/2,h+15]) stiffener(2*h-7);
+                translate([0,-7/2,h+15]) stiffener(2*h-7);
+                if (h > 30) {
+                    h2 = h-10;
+                    translate([0,-30+7/2,22+h2/2]) cube([10,7,h2],center=true);
+                    translate([0,-7/2,22+h2/2]) cube([10,7,h2],center=true);
+                }
             }
         }
         
-        translate([0,-30/2,0]) rotate([0,45,0]) translate([-2,0,0]) cylinder(d=21,h=34,$fn=30,center=true);
-        translate([0,-30/2,0]) rotate([0,-45,0]) translate([2,0,0]) cylinder(d=21,h=34,$fn=30,center=true);
+        translate([0,-30/2,0]) rotate([0,45,0]) translate([-2,0,0]) cylinder(d=23,h=34,$fn=30,center=true);
+        translate([0,-30/2,0]) rotate([0,-45,0]) translate([2,0,0]) cylinder(d=23,h=34,$fn=30,center=true);
         
         translate([13,0.01,-10]) rotate([0,45,180]) male_dovetail(20);
         translate([-13,0.01,-10]) rotate([0,-45,180]) male_dovetail(20);
@@ -140,7 +154,11 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
 
         translate([12.83,-15,-10]) rotate([0,-45,0]) rotate([0,0,180]) cylinder(d=metal_rod_size,h=20,$fn=15);
         translate([-12.83,-15,-10]) rotate([0,45,0]) cylinder(d=metal_rod_size,h=20,$fn=15);
-
+        
+        translate([0,-30/2,16]) hull() {
+            translate([0,0,5]) cube([6,6,0.1],center=true);
+            cube([5,13,0.1],center=true);
+        }
     }
 
     // supports
@@ -166,5 +184,6 @@ module debug_90() {
 //corner_90(extra_stiff=false);
 //corner_90(extra_stiff=true);
 
+// for bed carriage
 //corner_90(corner_len=20, extra_stiff=false);
 corner_90(corner_len=20, extra_stiff=true);
