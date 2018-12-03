@@ -119,28 +119,34 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
     }
     
     module stiffener(length) {
-        difference() {
-            cube([length,7,10],center=true);
-            translate([0,0,2]) cube([length,0.1,0.4],center=true);
-            cube([length,0.1,0.4],center=true);
-            translate([0,0,-2]) cube([length,0.1,0.4],center=true);
-        }
+        cube([length,7,10],center=true);
     }
 
     difference() {
+        s_h = sqrt((corner_len*corner_len)/2);
+        s_l = 2*s_h-7;
         union() {
             extention_rotated();
             mirror([1,0,0]) extention_rotated();
             if (extra_stiff) {
-                h = sqrt((corner_len*corner_len)/2);
-                translate([0,-30+7/2,h+15]) stiffener(2*h-7);
-                translate([0,-7/2,h+15]) stiffener(2*h-7);
-                if (h > 30) {
-                    h2 = h-10;
+                translate([0,-30+7/2,s_h+15]) stiffener(s_l);
+                translate([0,-7/2,s_h+15]) stiffener(s_l);
+                if (s_h > 30) {
+                    h2 = s_h-10;
                     translate([0,-30+7/2,22+h2/2]) cube([10,7,h2],center=true);
                     translate([0,-7/2,22+h2/2]) cube([10,7,h2],center=true);
                 }
             }
+        }
+        
+        if (extra_stiff) {
+            translate([0,-30+7/2,s_h+15+2]) cube([s_l+10,0.1,0.4],center=true);
+            translate([0,-30+7/2,s_h+15]) cube([s_l+12,0.1,0.4],center=true);
+            translate([0,-30+7/2,s_h+15-2]) cube([s_l+20,0.1,0.4],center=true);
+            
+            translate([0,-7/2,s_h+15+2]) cube([s_l+10,0.1,0.4],center=true);
+            translate([0,-7/2,s_h+15]) cube([s_l+12,0.1,0.4],center=true);
+            translate([0,-7/2,s_h+15-2]) cube([s_l+20,0.1,0.4],center=true);
         }
         
         translate([0,-30/2,0]) rotate([0,45,0]) translate([-2,0,0]) cylinder(d=23,h=34,$fn=30,center=true);
@@ -164,8 +170,8 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
     // supports
     if (support==true)
     {
-        cylinder(d=4,h=7);
-        translate([0,-30,0]) cylinder(d=4,h=7);
+        cylinder(d=4,h=7.5);
+        translate([0,-30,0]) cylinder(d=4,h=7.5);
     }
     %translate([0,-30/2,0]) rotate([0,45,0]) translate([-2,0,11.8]) M8_nut(cone=false);
     %translate([0,-30/2,0]) rotate([0,-45,0]) translate([2,0,11.8]) M8_nut(cone=false);
