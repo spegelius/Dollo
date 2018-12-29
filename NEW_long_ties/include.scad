@@ -239,9 +239,9 @@ module motor_shaft(h=10, extra_slop=0) {
 
 //motor_shaft(extra_slop=0.0,$fn=30);
 
-module motor_plate_holes(h=5, bolt_head_cones=false) {
+module motor_plate_holes(h=5, bolt_head_cones=false, center_chamfer=true) {
     translate([0,0,-.5]) cylinder(d=motor_center_hole, h=h+1);
-    if (h > 2) {
+    if (h > 2 && center_chamfer) {
         translate([0,0,2]) cylinder(d1=motor_center_hole, d2=motor_center_hole+(h-2), h=h-2+0.1);
     }
 
@@ -345,11 +345,19 @@ module rounded_cylinder(d, h, corner) {
     }
 }
 
-module chamfered_cylinder(d,h,chamfer) {
-    union() {
-        cylinder(d1=d-2*chamfer,d2=d,h=chamfer);
-        translate([0,0,chamfer]) cylinder(d=d,h=h-2*chamfer);
-        translate([0,0,h-chamfer]) cylinder(d1=d,d2=d-2*chamfer,h=chamfer);
+module chamfered_cylinder(d,h,chamfer,center=false) {
+    module _chamfered_cylinder() {
+        union() {
+            cylinder(d1=d-2*chamfer,d2=d,h=chamfer);
+            translate([0,0,chamfer]) cylinder(d=d,h=h-2*chamfer);
+            translate([0,0,h-chamfer]) cylinder(d1=d,d2=d-2*chamfer,h=chamfer);
+        }
+    }
+    
+    if (center) {
+        translate([0,0,-h/2]) _chamfered_cylinder();
+    } else {
+        _chamfered_cylinder();
     }
 }
 
