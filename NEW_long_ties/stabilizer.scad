@@ -6,6 +6,7 @@ use <long_bow_tie.scad>;
 use <long_tie.scad>;
 use <extention.scad>;
 use <corner.scad>;
+use <bed_carriage.scad>;
 
 module center() {
     
@@ -88,18 +89,18 @@ module corner_bolt(direction) {
     }
 }
 
-module _hook(direction=0) {
-    height = 20;
+module _hook(gap=10) {
+    height = 10 + gap;
     hole_pos = 7;
     difference() {
         union() {
             difference() {
                 hull() {
-                    chamfered_cube(20,18,20,2,center=true);
-                    translate([0,hole_pos,-20/2]) chamfered_cylinder(20,20,2);
-                    translate([0,-12,0]) chamfered_cube(8,5,10,2,center=true);;
+                    chamfered_cube(18,18,height,2,center=true);
+                    translate([0,hole_pos,-height/2]) chamfered_cylinder(18,height,2);
+                    translate([0,-12,0]) chamfered_cube(8,5,10,2,center=true);
                 }
-                translate([0,hole_pos,0]) cube([30,20,10+2*slop],center=true);
+                translate([0,hole_pos,0]) cube([30,20,gap+2*slop],center=true);
                 translate([0,hole_pos,-height/2]) cylinder(d=clip_bolt_dia_minus,h=25);
             }
         }
@@ -109,12 +110,13 @@ module _hook(direction=0) {
     }
 }
 
-module beam(length) {
+module beam(length, gap=10) {
+    height = 10 + gap;
     difference() {
         union() {
-            translate([0,length/2-7,0]) _hook();
-            chamfered_cube(8,length-24,20,2,center=true);
-            mirror([0,1,0]) translate([0,length/2-7,0]) _hook();
+            translate([0,length/2-7,0]) _hook(gap=gap);
+            chamfered_cube(8,length-24,height,2,center=true);
+            mirror([0,1,0]) translate([0,length/2-7,0]) _hook(gap=gap);
         }
         // hidden infill
         translate([0,0,3/2-9]) cube([0.1,length-22,3],center=true);
@@ -335,7 +337,7 @@ module view_proper() {
     frame_mockup(0, 2, 2, 3);
     //translate([165,-170,15]) rotate([0,-55,-45]) full_corner(support=false, extra_stiff=false);
     
-    angle = 61.5;
+    angle = 60;
     translate([120+60-20,0,(3*120+120)/2+4.5]) rotate([0,90,0]) center();
     translate([165,-120,60]) rotate([0,-135,90]) frame_clip_corner_small();
     translate([165,120,60]) rotate([0,135,90]) frame_clip_corner_small();
@@ -349,7 +351,7 @@ module view_proper() {
     translate([165,126,3*120+66]) rotate([angle,0,0]) translate([0,-7,0]) rotate([0,90,0]) corner_bolt();
     #translate([165,50,1.5*120+114.6]) rotate([180+angle,0,0]) translate([0,-7,0]) rotate([0,90,0]) corner_bolt();
     
-    translate([120+60-15,89,360]) rotate([angle,0,0]) long_nut();
+    translate([120+60-15,88,360]) rotate([angle,0,0]) long_nut();
     
     //translate([120+60-32.5,-100,60]) rotate([90,-45,90]) frame_clip_slim();
     
@@ -357,12 +359,19 @@ module view_proper() {
     //translate([120+60-15,-105,93]) rotate([angle,0,0]) long_bolt();
     //translate([120+60-15,-58,185]) rotate([angle,0,0]) long_bolt();
     
+    translate([0,-165,24]) rotate([-90,0,-90]) bed_rail_frame_mount();
+    translate([120,-165,3*120+60]) rotate([0,45,0]) frame_clip_corner_small();
+    translate([61.5,-165,42]) rotate([80.5,0,-90]) translate([0,250/2,0]) rotate([0,90,0]) beam(250, gap=14);
+    
+    translate([124.6,-165,3*120+59.7]) rotate([0,-80.5,0]) translate([0,-7,0]) rotate([0,90,-90]) corner_bolt();
+    translate([113,-175,350]) rotate([-80.5,0,90]) long_nut();
+    
 }
 
 FAST=true;
 //FAST=false;
 
-//view_proper();
+view_proper();
 intersection() {
     //center();
     //cube([50,50,5]);
@@ -381,7 +390,7 @@ intersection() {
 //frame_angle_clamp_slim();
 
 //clip_bolt(30);
-clip_nut();
+//clip_nut();
 
 //pin_bolt(50);
 //pin_bolt(140);
