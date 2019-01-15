@@ -21,7 +21,7 @@ A (almost) fully printed 3D printer, that scales.
 
 # Part count and list for smallest viable Dollo, with around 21x21x12cm print volume. Smaller frame can be built, but the z-axis parts aren't tested in any way with that kind of setup
 
-* 25 -- extention.stl
+* 26 -- extention.stl
 * 4 -- extention_90_bend.stl (or extention_90_bend_extra_stiff.stl)
 * 8 -- corner.stl (or corner_extra_stiff.stl)
 * 192+ -- bow_tie.stl but extra never hurts (or bow_tie_with_brim.stl)
@@ -91,7 +91,7 @@ A (almost) fully printed 3D printer, that scales.
 
 * 1 - main controller board. Frame mount parts for RAMPS are available. Also for Raspi3
 * 3 - end stop switches
-* 5 - motors steppers, no need for very beefy motors
+* 5 - steppermotors , no need for very beefy motors
 * 1 - hotend or whatever tool tip you want really. E3Dv6 is tested
 * 1 - hobbed thing, gear or bolt. Actually whole extruder. Buy or pick one to print from thingiverse. This is good: https://www.thingiverse.com/thing:2243325
 * 1 - heated bed (21x21cm)
