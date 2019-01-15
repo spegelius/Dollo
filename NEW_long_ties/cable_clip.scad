@@ -18,6 +18,10 @@ module _clip(d=12) {
     }
 }
 
+module clip_verylarge() {
+    _clip(d=15);
+}
+
 module clip_large() {
     _clip(d=12);
 }
@@ -25,9 +29,6 @@ module clip_large() {
 module clip_small() {
     _clip(d=7);
 }
-
-//clip_large();
-//clip_small();
 
 module _shroud_holder(h=25,d=13.5,edge_h=1) {
     outer_d = d + 5;
@@ -57,4 +58,7 @@ module cable_shroud_frame_mount() {
     }
 }
 
-cable_shroud_frame_mount();
+clip_verylarge();
+//clip_large();
+//clip_small();
+//cable_shroud_frame_mount();
