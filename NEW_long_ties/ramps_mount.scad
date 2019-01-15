@@ -145,6 +145,7 @@ module raspberry_pi_3b_mount() {
     translate([raspi_mount_w/2-0.01,-raspi_mount_l/2+5,-h/2]) rotate([0,0,180]) long_tie_half(20);
 
     translate([-20/2,-raspi_mount_l/2+0.01,-h/2]) rotate([0,0,90,0]) long_tie_half(20);
+    translate([20/2,raspi_mount_l/2-0.01,-h/2]) rotate([0,0,-90,0]) long_tie_half(20);
 }
 
 module atx_connector_mount() {
@@ -251,8 +252,8 @@ module debug() {
 //translate([95,127.5,0]) rotate([90,0,0]) body();
 //ramps_mount_adapter();
 //ramps_mount();
-//raspberry_pi_3b_mount();
-atx_connector_mount();
+raspberry_pi_3b_mount();
+//atx_connector_mount();
 //fan_mount_60mm();
 //frame_clip();
 //joint_clip();
