@@ -2,6 +2,7 @@ include <globals.scad>;
 include <include.scad>;
 
 use <long_bow_tie.scad>;
+use <mockups.scad>;
 
 psu_height = 50;
 psu_width = 114;
@@ -190,12 +191,12 @@ module clip_extension() {
     }
 }
 
-//view_proper();
+view_proper();
 //view_proper_atx();
 //psu_clips();
 //clip();
  //psu_clips_atx();
-rotate([90,0,0]) atx_psu_cover();
+//rotate([90,0,0]) atx_psu_cover();
 //rotate([90,0,0]) front_atx();
 //rotate([90,0,0]) back_atx();
 //clip_extension();

@@ -2,6 +2,7 @@ include <globals.scad>;
 include <include.scad>;
 use <long_tie.scad>;
 use <long_bow_tie.scad>;
+use <mockups.scad>;
 
 box_width = 83;
 box_length = 123;
@@ -247,12 +248,12 @@ module debug() {
     translate([120.65,-180,80.8]) rotate([90,0,0]) ramps_mount();
 }
 
-//debug();
+debug();
 
 //translate([95,127.5,0]) rotate([90,0,0]) body();
 //ramps_mount_adapter();
 //ramps_mount();
-raspberry_pi_3b_mount();
+//raspberry_pi_3b_mount();
 //atx_connector_mount();
 //fan_mount_60mm();
 //frame_clip();
