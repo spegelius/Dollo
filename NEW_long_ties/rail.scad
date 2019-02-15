@@ -79,13 +79,6 @@ module rail_center(width=width, length=length/2) {
 
 module rail_slide(width=width, height=10, wiggles=3, slop=0) {
     
-    module long_cube() {
-        hull() {
-            translate([0,-1/2,0]) rotate([45,0,0]) cube([10,1.5,1.5], center=true);
-            translate([0,1/2,0]) rotate([45,0,0]) cube([10,1.5,1.5], center=true);
-        }
-    }
-    
     spring_d = 10;
 
     module spring(wiggles) {
