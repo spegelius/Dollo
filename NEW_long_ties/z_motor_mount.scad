@@ -59,17 +59,18 @@ module z_motor_mount() {
         }
         translate([-16,0,0]) rotate([0,0,45]) cube([80,80,100],center=true);
         
-        // debug
-        %translate([0,42/2,-40/2]) rotate([90,0,0]) mock_stepper_motor();
-        %translate([0,0,6]) motor_shaft_adapter();
-        %translate([0,0,23]) z_screw_motor_flex_coupler(fast_render=true);
     }
     // supports
     translate([-43.5,-16.5,0]) cylinder(d=4,h=4.2);
     translate([-44.5,-22.5,0]) cylinder(d=4,h=8);
     translate([-13,-22.5,0]) cylinder(d=4,h=8);
-
-
 }
 
-z_motor_mount();
+module debug() {
+    z_motor_mount();
+    %translate([0,40/2,12]) rotate([0,0,180]) mock_stepper_motor();
+    %translate([0,-6,12+42/2]) rotate([90,0,0]) motor_shaft_adapter();
+    %translate([0,-23,42/2+12]) rotate([90,0,0]) z_screw_motor_flex_coupler(fast_render=true);
+}
+debug();
+//z_motor_mount();
