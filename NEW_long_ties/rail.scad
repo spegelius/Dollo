@@ -86,7 +86,7 @@ module rail_slide(width=width, height=10, wiggles=3, slop=0) {
         }
     }
     
-    spring_d = width*0.6;
+    spring_d = 10;
 
     module spring(wiggles) {
         $fn=40;
@@ -112,19 +112,19 @@ module rail_slide(width=width, height=10, wiggles=3, slop=0) {
                 }
                 translate([0,0,-0.1]) cylinder(d=spring_d-3*spring_width, h=height+1);
             }
-            translate([spring_d/2-1,3,height/2]) cube([spring_d,spring_d/2,height], center=true);
+            translate([spring_d/2-1.2,4,height/2]) cube([spring_d,5,height], center=true);
         }
     }
     // debug
     //translate([0,30,0]) spring(1);
 
     difference() {
-        _rail(height, width+spring_d);
-        translate([0,0,-0.1]) _rail(height+1, width+spring_d-5);
+        _rail(height, width+9);
+        translate([0,0,-0.1]) _rail(height+1, width+9-5);
     }
     for (i = [1:6]) {
         angle = 360/6*i;
-        rotate([0,0,angle]) translate([0,-width/2-spring_d/2-slop,0]) spring(wiggles);
+        rotate([0,0,angle]) translate([0,-(width+9)/2-0.5-slop,0]) spring(wiggles);
     }
 }
 
@@ -153,10 +153,10 @@ module rail_test_parts() {
 
 //rail_test_parts();
 
-rail_center();
+//rail_center();
 //translate([0,-length/2,width/2]) rail(length,width);
-//rail(length=20,width=15);
-//rail_slide(width=15,height=10,wiggles=3);
+rail(length=20,width=15);
+rail_slide(width=15,height=10,wiggles=3);
 
 
 
