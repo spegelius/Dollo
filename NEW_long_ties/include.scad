@@ -434,12 +434,17 @@ module donut(d, h, angle=360) {
 }
 
 module cube_donut(d, h, angle=360, rotation=45) {
-    rotate_extrude(angle=angle, convexity=10) translate([d/2,0,0]) rotate([0,0,rotation]) square([h,h], center=true);
+    rotate([0,0,-angle/2])
+    rotate_extrude(angle=angle, convexity=10)
+    translate([d/2,0,0])
+    rotate([0,0,rotation])
+    square([h,h], center=true);
 }
 
+function hexagon_dia_to_cylinder(hex_dia) = (hex_dia/2) / sin(60) * 2;
+
 module hexagon(inner_diameter, height=10) {
-    dia = sqrt(((inner_diameter/2)*(inner_diameter/2))/0.75) * 2;
-    cylinder(d=dia, h=height, $fn=6);
+    cylinder(d=hexagon_dia_to_cylinder(inner_diameter), h=height, $fn=6);
 }
 
 //translate([50,50]) nut();
@@ -497,11 +502,13 @@ module _v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=100) {
     function get_rise_angle() = direction == 0 ? rise_angle : -rise_angle;
 
     _rounds = rounds * steps - 1;
-    for (i=[0:_rounds]) {
-        rotate([0,0,i*angle_step]) translate([0,0,get_z_pos(i)]) rotate([get_rise_angle(),0,0]) _v_thread_slice(thread_d, cube_w, angle_step*2);
+    union() {
+        for (i=[0:_rounds]) {
+            rotate([0,0,i*angle_step]) translate([0,0,get_z_pos(i)]) rotate([get_rise_angle(),0,0]) _v_thread_slice(thread_d, cube_w, angle_step*1.01);
+        }
     }
 }
-//_v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=100);
+//_v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=50);
 
 module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100) {
     rounds = h/pitch+1;
