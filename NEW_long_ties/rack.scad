@@ -9,7 +9,7 @@ use <long_bow_tie.scad>;
 //globals
 
 obj_height = 20;
-units = 4; //only even numbers
+units = 5; //only even numbers
 unit_length = 30;
 tail_depth = -4;
 
@@ -21,33 +21,33 @@ teeth_angle = 30;
 diameter = 2;
 
 module tie_taken(){
-    translate([-(unit_length*units+20)/2,0,tail_depth]) rotate([90,0,90]) male_dovetail(height=units*unit_length+20, bridge_extra=0.2);
+    translate([-(unit_length*units+20)/2,0,tail_depth-0.01]) rotate([90,0,90]) male_dovetail(height=units*unit_length+20, bridge_extra=0.2);
 
     translate([-(unit_length*units+20)/2,-9,9.4]) rotate([90,180,90]) male_dovetail(height=units*unit_length+20);
 }
 
 //herring bone style rack made from inkscape and OpenScad
 module rackObject(units=units, fast_render=false) {
+    union() {
+        if (!fast_render) {
+            intersection() {
+                translate([0,6,6]) rotate([90,0,0]) herringbone_rack(l=units*unit_length+10, h=12, w=10, tooth_size=5, CA=teeth_angle);
+                translate([0,5.9,3]) rotate([0,90,0]) scale([1.4,1,1]) cylinder(d=11.9, h=units*unit_length+10, center=true,$fn=30);
+            }
+        }
+        
+        difference(){
+            union() {
+                translate([0,0,-0.5]) cube([unit_length*units+20,36,7], center=true);
 
-    if (!fast_render) {
-        intersection() {
-            translate([0,6,6]) rotate([90,0,0]) herringbone_rack(l=units*unit_length+10, h=12, w=10, tooth_size=5, CA=teeth_angle);
-            translate([0,6,3]) rotate([0,90,0]) cylinder(d=13, h=units*unit_length+10, center=true);
+                translate([0,-9,4]) rounded_cube(unit_length*units+15,18,6,diameter,center=true,$fn=20);
+            }
+            // side indents
+            translate([2,-25.8,0]) rotate([45,0,0]) cube([unit_length*units+5,15,15], center=true);
+            translate([2,25.8,0]) rotate([45,0,0]) cube([unit_length*units+5,15,15], center=true);
+
         }
     }
-    
-    difference(){
-        union() {
-            translate([0,0,-0.5]) cube([unit_length*units+20,36,7], center=true);
-
-            translate([0,-9,4]) rounded_cube(unit_length*units+15,18,6,diameter,center=true,$fn=20);
-        }
-        // side indents
-        translate([2,-25.8,0]) rotate([45,0,0]) cube([unit_length*units+5,15,15], center=true);
-        translate([2,25.8,0]) rotate([45,0,0]) cube([unit_length*units+5,15,15], center=true);
-
-    }
-
 }
 
 //translate([0,30,0]) rackHalf();
