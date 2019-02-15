@@ -445,9 +445,10 @@ module bed_screw_housing(render_threads=true) {
 
 module bed_screw_housing_top() {
     intersection() {
-        rotate([0,0,-3+1/3*360])
-        screw_housing_top(frame_width=27.5);
-
+        union() {
+            rotate([0,0,-3+1/3*360]) screw_housing_top(frame_width=27.5);
+            cylinder(d=26.6,h=6,$fn=80);
+        }
         difference() {
             translate([3,0,0])
             cube([25+25.5, 25+20.5, 100],center=true);
@@ -461,6 +462,8 @@ module bed_screw_housing_top() {
             // endstop screw indent
             translate([-18.5,23.5,-1])
             cylinder(d=8,h=40,$fn=30);
+
+            rotate([90,0,0]) lifter_threading(0.3);
         }
     }
 }
@@ -930,8 +933,43 @@ module slide_test_parts() {
 //bed_attachment_spring_nut();
 
 
-union() {
-    hull()
-    rail(rail_width, 2);
-    rail_center(length=6, width=rail_width/2);
-}
+// DELETE!!!
+//include <../snappy-reprap/config.scad>
+//use <../snappy-reprap/GDMUtils.scad>
+//use <../snappy-reprap/joiners.scad>
+//use <../snappy-reprap/acme_screw.scad>
+//
+//lifter_block_size = 30;
+//offcenter = 0;
+//
+//z_lifter_hole = 10 + 2*slop;
+//z_lifter_arm = 10;
+//
+//
+//
+//module lifter_threading(extra_slop=0) {
+//    // Lifter threading
+//    
+//        yspread(printer_slop*1.5) {
+//            xrot(90) zrot(90) {
+//                acme_threaded_rod(
+//                    d=lifter_rod_diam+2*printer_slop+extra_slop,
+//                    l=lifter_block_size+2*lifter_rod_pitch+0.5,
+//                    pitch=lifter_rod_pitch,
+//                    thread_depth=lifter_rod_pitch/3,
+//                    $fn=32
+//                );
+//            }
+//        }
+//        fwd(lifter_block_size/2-2/2) {
+//            xrot(90) cylinder(h=2.05, d1=lifter_rod_diam-2*lifter_rod_pitch/3, d2=lifter_rod_diam+2, center=true);
+//        }
+//        back(lifter_block_size/2-2/2) {
+//            xrot(90) cylinder(h=2.05, d1=lifter_rod_diam+2, d2=lifter_rod_diam-2*lifter_rod_pitch/3, center=true);
+//        }
+//}
+
+//difference() {
+//    cylinder(d=16,h=10,$fn=6);
+//    rotate([90,0,0]) lifter_threading(extra_slop=0.3);
+//}
