@@ -185,13 +185,16 @@ module screw_housing_top(frame_width=22) {
 }
 
 module screw_housing_bolt() {
-    union() {
-        difference () {
-            cylinder(d1=screw_housing_thread_d+3-slop,d2=screw_housing_thread_d-2*slop, h=2);
-            cube([1.5,screw_housing_thread_d+4,3], center=true);
+    difference() {
+        union() {
+            difference () {
+                cylinder(d1=screw_housing_thread_d+3-slop,d2=screw_housing_thread_d-2*slop, h=2);
+                cube([1.5,screw_housing_thread_d+4,3], center=true);
+            }
+            translate([0,0,2]) cylinder(d=screw_housing_thread_d-2*slop, h=screw_housing_height/2-3);
+            translate([0,0,screw_housing_height/2-1]) v_screw(screw_d=screw_housing_bolt_d, h=screw_housing_height/2-2, pitch=1.8, steps=40, direction=0);
         }
-        translate([0,0,2]) cylinder(d=screw_housing_thread_d-2*slop, h=screw_housing_height/2-3);
-        translate([0,0,screw_housing_height/2-1]) v_screw(screw_d=screw_housing_bolt_d, h=screw_housing_height/2-2, pitch=1.8, steps=30, direction=0);
+        cylinder(d=0.1,h=screw_housing_height);
     }
     
 }
@@ -394,7 +397,7 @@ module debug_screw_roller() {
 //side_roller_axle();
 //side_roller_axle_washer();
 //screw_housing_bolt();
-//screw_housing_bolt_side();
+screw_housing_bolt_side();
 
 //z_screw_motor_coupler(fast_render=true);
 //z_screw_motor_coupler(fast_render=false);
