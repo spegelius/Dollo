@@ -230,6 +230,21 @@ module bed_mk2(bed_angle=0) {
     }
 }
 
+module mks_sbase_mockup() {
+    w = 95;
+    l = 146.5;
+    h = 1.6;
+    difference() {
+        union() {
+            rounded_cube_side(w, l, h, 2);
+        }
+        translate([4,4,0]) cylinder(d=3.6,h=5,center=true,$fn=20);
+        translate([w-4,4,0]) cylinder(d=3.6,h=5,center=true,$fn=20);
+        translate([w-4,l-4,0]) cylinder(d=3.6,h=5,center=true,$fn=20);
+        translate([4,l-4,0]) cylinder(d=3.6,h=5,center=true,$fn=20);
+    }
+}
+
 //mock_stepper_motor(false);
 //mock_stepper_motor(true);
 
@@ -241,3 +256,4 @@ module bed_mk2(bed_angle=0) {
 //prometheus();
 //frame_mockup(0, 2, 3, 4);
 //bed_mk2();
+//mks_sbase_mockup();
