@@ -162,35 +162,34 @@ module dovetail_2d(max_width=11, min_width=5, depth=5) {
 }
 
 //bow tie
-	module tie_end(height){
-				rotate([0,0,0]) translate([0,-0.01,((obj_leg/2)/2)]) male_dovetail(height);
-				rotate([0,90,0]) translate([0,-0.01,((obj_leg/2)/2)]) male_dovetail(height);
-				rotate([0,180,0]) translate([0,-0.01,((obj_leg/2)/2)]) male_dovetail(height);
-				rotate([0,-90,0]) translate([0,-0.01,((obj_leg/2)/2)]) male_dovetail(height);
-	}
+module tie_end(height){
+	rotate([0,0,0]) translate([0,-0.01,((obj_leg/2)/2)]) male_dovetail(height);
+	rotate([0,90,0]) translate([0,-0.01,((obj_leg/2)/2)]) male_dovetail(height);
+	rotate([0,180,0]) translate([0,-0.01,((obj_leg/2)/2)]) male_dovetail(height);
+	rotate([0,-90,0]) translate([0,-0.01,((obj_leg/2)/2)]) male_dovetail(height);
+}
 
 module bow_support(){
 	difference(){
 		intersection(){
 			translate([-15,0,-15]) cube([30,9,30]);
-			scale([1.05,1.05,1.05]) rotate([0,45,0]) tie_end();
+			scale([0.95,0.97,0.95]) rotate([0,45,0]) tie_end();
 		}
 		cube([29.2,29.2,29.2], center=true);
 	}
 }
 
-	module wrap(units){
+module wrap(units){
 	for (y = [-1:units-2]) // two iterations, z = -1, z = 1
 	{
-			translate([15, (y*30)+15, 15]){
+		translate([15, (y*30)+15, 15]) {
 			for (r = [0:4]) // two iterations, z = -1, z = 1
 			{
 				rotate([0,r*90,0]) translate([0,15,15]) rotate([-90,0,0])male_dovetail(height=30);
 			}
 		}
 	}
-	}
-
+}
 
 module nut(h=2.4, cone=true) {
     hull() {
@@ -530,3 +529,10 @@ module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100) {
 }
 
 //v_screw(h=10, screw_d=20, pitch=4, direction=1, steps=100);
+
+module tube(d=10,h=10,wall=1,center=false) {
+    difference() {
+        cylinder(d=d,h=h,center=center);
+        translate([0,0,-1/2]) cylinder(d=d-2*wall,h=h+2,center=center);
+    }
+}
