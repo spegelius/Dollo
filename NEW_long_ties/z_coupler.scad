@@ -80,23 +80,25 @@ module flexible_coupler_tube(h=32) {
 // Clamp for flexible coupler. Uses m3 bolts and nuts to tighten
 module flexible_coupler_clamp() {
     
+    h = 11;
+    
     // clamp
     module clamp() {
         difference() {
-            cylinder(d=25, h=10);
-            cylinder(d=13, h=10);
+            cylinder(d=25, h=h);
+            cylinder(d=13, h=h);
 
             // bolt holes
-            translate([-height/2,8.8,5]) rotate([0,90,0]) cylinder(d=bolt_hole_dia, h=height);
-            translate([-height/2,-8.8,5]) rotate([0,90,0]) cylinder(d=bolt_hole_dia, h=height);
+            translate([-height/2,8.3,h/2]) rotate([0,90,0]) cylinder(d=bolt_hole_dia, h=height);
+            translate([-height/2,-8.3,h/2]) rotate([0,90,0]) cylinder(d=bolt_hole_dia, h=height);
     
             // bolt head holes
-            translate([-4,8.8,5]) rotate([0,-90,0]) cylinder(d=bolt_head_hole_dia, h=9);
-            translate([-4,-8.8,5]) rotate([0,-90,0]) cylinder(d=bolt_head_hole_dia, h=9);
+            translate([-4.2,8.3,h/2]) rotate([0,-90,0]) cylinder(d=bolt_head_hole_dia, h=9);
+            translate([-4.2,-8.3,h/2]) rotate([0,-90,0]) cylinder(d=bolt_head_hole_dia, h=9);
         
             // nut holes
-            translate([4,8.8,5]) rotate([0,90,0]) nut(8);
-            translate([4,-8.8,5]) rotate([0,90,0]) nut(8);
+            translate([4,8.3,h/2]) rotate([0,90,0]) nut(8);
+            translate([4,-8.3,h/2]) rotate([0,90,0]) nut(8);
         
             translate([-1.5/2,-height/2,0]) cube([1.5, height, height/2]);
         }
@@ -139,11 +141,19 @@ module debug() {
     }
 }
 
+module debug_flexible_coupler_clamp() {
+    intersection() {
+        flexible_coupler_clamp();
+        translate([-30,-15,0]) cube([30,30,5]);
+    }
+}
+
 //debug();
+//debug_flexible_coupler_clamp();
 
 //rigid_leadscrew_coupler();
-//flexible_coupler_clamp();
+flexible_coupler_clamp();
 //motor_shaft_adapter();
 //flexible_coupler_tube();
 //flexible_coupler_nut(hex=true);
-flexible_coupler_nut(hex=false);
+//flexible_coupler_nut(hex=false);
