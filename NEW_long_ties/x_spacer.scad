@@ -9,37 +9,47 @@ tail_depth = 55;
 tail_depth_2 = -10;
 thickness = 21;
 module y_mount_added(){
-	translate([0,-15+6-3.5,51/2]) cube([30,thickness,51], center=true);
-    
-    translate([-8,-12.5+thickness/2,-55+tail_depth]) rotate([-90,0,0]) long_tie(15);
-	translate([8,-12.5+thickness/2,-55+tail_depth]) rotate([-90,0,0]) long_tie(15);
+    union() {
+        translate([0,-51/2+15,thickness/2]) cube([30,51,thickness],center=true);
+        translate([-8,15,thickness]) long_tie(15);
+        translate([8,15,thickness]) long_tie(15);
+    }
 }
 
 module y_mount_taken(){
-	translate([0,-thickness/2-12.5,15]) rotate([0,45,0]) tie_end();
+	translate([0,0,0]) rotate([90,0,45]) tie_end();
     
-	rotate([180,0,0]) translate([-8,12.5-thickness/2,-53+tail_depth_2]) male_dovetail(height=30);
-	rotate([180,0,0]) translate([8,12.5-thickness/2,-53+tail_depth_2]) male_dovetail(height=30);
-    translate([-15,-92,0]) wrap(3);
+	translate([-8,-53,thickness]) rotate([-90,0,0]) male_dovetail(height=30);
+	translate([8,-53,thickness]) rotate([-90,0,0]) male_dovetail(height=30);
     
-    translate([0,-8-30/2,30+30/2]) cube([40,30,30],center=true);
+    translate([-15,15,-8.99]) rotate([90,0,0]) wrap(1);
+    
+    translate([0,-30/2-14.99,-30/2+21-6]) cube([40,30,30],center=true);
+    
+    cylinder(d=15,h=9);
 }
 
-rotate([90,0,0]) difference(){
-	translate([0,-thickness/2-12.5,15]) bow_support();
-	translate([0,-thickness/2-12.5,25]) cube([50,10,20], center=true);
-	translate([0,-thickness/2-12.5,0]) cube([31,10,20], center=true);
-}
 
-rotate([90,0,0]) difference(){
-	y_mount_added();
-	y_mount_taken();
+module x_spacer() {
+    union() {
+        rotate([90,0,0]) bow_support();
+        difference(){
+            y_mount_added();
+            y_mount_taken();
+        }
+    }
 }
 
 module debug() {
-    %translate([0,-26,-2]) rotate([0,0,180]) do_motor_mount();
-    %translate([0,-39.5,22.2]) rotate([-90,0,0]) do_rack(1, fast_render=true);
-    %translate([20,-73.5,7.2]) rotate([0,0,90]) extention(2);
+    intersection() {
+        x_spacer();
+        translate([8,-90/2,0]) cube([30,90,30]);
+    }
+    %translate([0,-11,thickness]) rotate([0,0,180]) do_motor_mount();
+    %translate([0,-24.5,thickness+24.1]) rotate([-90,0,0]) do_rack(1, fast_render=true);
+    %translate([-30,-28.5,60.1]) rotate([0,90,0]) extention(2, support=false);
 }
 
-debug();
+//debug();
+
+x_spacer();
