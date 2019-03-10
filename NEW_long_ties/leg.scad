@@ -13,26 +13,27 @@ module _plate(length=40, height=10) {
     }
 }
 
-module _leg() {
+module _leg(units) {
+    
     intersection() {
-        translate([0,30,-5]) extention(units=3);
+        translate([0,30,-30]) extention(units=units+1);
         cube([31,31,90]);
     }
 }
 
-module leg(plate_len=45) {
+module leg(plate_len=50, units=3) {
     difference() {
         union() {
             translate([0, 20, 0]) _plate(plate_len);
             translate([20, 30, 0]) rotate([0,0,-90]) _plate(plate_len);
-            _leg();
+            _leg(units);
             // hole bridge
             translate([10,10,male_dove_depth+0.2]) cube([10,10,0.2]);
         }
         dove_len = plate_len+30;
 
-        translate([15,plate_len+20,0]) rotate([90,0,0]) male_dovetail(dove_len, bridge_extra=0.2);
-        translate([0,15,0]) rotate([90,0,90]) male_dovetail(dove_len, bridge_extra=0.2);
+        translate([15,plate_len+20,-0.01]) rotate([90,0,0]) male_dovetail(dove_len, bridge_extra=0.2);
+        translate([0,15,-0.01]) rotate([90,0,90]) male_dovetail(dove_len, bridge_extra=0.2);
     }
 }
 
@@ -91,7 +92,7 @@ module foot_adjustable_core() {
             rotate([0,0,45+i*360/4]) translate([0,-15,0]) male_dovetail(30);
         }
     }
-    %translate([0,0,30]) rotate([90,0,45]) translate([-15,-15,-15]) extention(1);
+    %translate([0,0,30]) rotate([0,0,45]) translate([-15,15,0]) extention(1);
 }
 
 module foot_adjustable() {
@@ -123,9 +124,9 @@ module foot_dampener(dia=60) {
     }
 }
 
-leg();
+//leg();
 //foot();
 //foot_small();
-//foot_adjustable_core();
+foot_adjustable_core();
 //foot_adjustable();
 //foot_dampener();
