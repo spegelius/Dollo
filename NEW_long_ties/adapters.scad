@@ -44,6 +44,15 @@ module adapter_dove_m3_28() {
     }
 }
 
+module adapter_dove_m3_15() {
+    difference() {
+        translate([0,15/2,0]) long_tie(15);
+        translate([0,0,5/2+0.6]) cube([2.5,16,5],center=true);
+        cylinder(d=2.8,h=5,$fn=20);
+    }
+}
+
+
 module adapter_shy_rockabilly() {
 
     // adapter for this extruder: https://www.thingiverse.com/thing:1223730
@@ -116,5 +125,6 @@ module adapter_airtrippers_bowden_extruder(pin_distance=61, pin_size=6.4) {
 
 //adapter_mks_sbase_box();
 //adapter_dove_m3_28();
+adapter_dove_m3_15();
 //adapter_shy_rockabilly();
-adapter_airtrippers_bowden_extruder();
+//adapter_airtrippers_bowden_extruder();
