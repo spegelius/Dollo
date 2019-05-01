@@ -40,9 +40,9 @@ module y_mount_added(){
         }
     }
     
-    translate([-27.25,slide_pos_y,-4.65]) slide();
-    translate([0,slide_pos_y,-4.65]) slide();
-    translate([27.25,slide_pos_y,-4.65]) slide();
+    translate([-27.25,slide_pos_y,-4.55]) slide();
+    translate([0,slide_pos_y,-4.55]) slide();
+    translate([27.25,slide_pos_y,-4.55]) slide();
     
     translate([0,slide_pos_y-7.25,0.6]) rounded_cube(z=5, x=frame_width+35+1, y=22, corner=diameter,center=true);
     
@@ -121,8 +121,14 @@ module y_mount_taken(){
 		translate([5.65-21,5.65+31-21,-3]) bolt_head_hole();
 		translate([5.65+31-21,5.65+31-21,0.5]) tapered_bolt_head_hole();
 
-		translate([-70,-30,-5]) cube([50,70,50]);
-		translate([-30,-70,-5]) cube([70,50,50]);
+        difference() {
+            translate([-70,-30,-5]) cube([50,70,50]);
+            translate([-19,-7,0]) rotate([0,0,45]) rounded_cube(12,12,100,3,center=true);
+        }
+        difference() {
+            translate([-30,-70,-5]) cube([70,50,50]);
+            translate([-7,-19,0]) rotate([0,0,45]) rounded_cube(12,12,100,3,center=true);
+        }
 
 		translate([0,0,-5]) cylinder(d=motor_center_hole, h=20);
         translate([hole_length,hole_length,-5]) cylinder(d=motor_center_hole, h=20);
