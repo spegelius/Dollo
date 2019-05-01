@@ -478,6 +478,46 @@ module bed_attachment(brim=false, wall=false) {
     }
 }
 
+module bed_attachment_inner() {
+    // for MK2 bed with 2x extension carriage
+    difference() {
+        union() {
+            difference() {
+                union() {
+                    intersection() {
+                        translate([0,0,30/2]) cube([120,20,30], center=true);
+                        translate([0,0,-28.3]) rotate([0,45,0]) cube([120,30,120], center=true);
+                    }
+                }
+                translate([0,0,90/2+20]) rotate([90,0,0]) cylinder(d=90,h=30,$fn=50,center=true);
+                
+                translate([0,250/2+10,0]) rotate([10,0,0]) cylinder(d=250,h=60,$fn=100);
+                translate([0,-250/2-10,0]) rotate([-10,0,0]) cylinder(d=250,h=60,$fn=100);
+            }
+            hull() {
+                translate([0,0,6.35]) rotate([-90,0,0]) cylinder(d=10,h=20,center=true,$fn=30);
+                translate([0,0,1/2]) cube([10,16,1],center=true);
+            }
+        }
+
+        translate([0,0,6.35]) rotate([-90,0,0]) cylinder(d1=3.4,d2=4.2,h=21,center=true,$fn=30);
+        translate([0,-10,6.35]) rotate([90,0,0]) cylinder(d1=8, d2=11,h=2,center=true,$fn=30);
+        translate([0,10,6.35]) rotate([90,0,0]) cylinder(d1=10,d2=7,h=2,center=true,$fn=30);
+        
+        translate([0,0,-28.25])
+        rotate([0,-45,0])
+        translate([120/2,0,-100/2])
+        rotate([0,0,90]) male_dovetail(100);
+        
+        translate([0,0,-28.25])
+        rotate([0,45,0])
+        translate([-120/2,0,-100/2])
+        rotate([0,0,-90]) male_dovetail(100);
+        
+        translate([30,-10+0.49,1]) rotate([90,0,0]) linear_extrude(0.5) text("TOP", size=6);
+    }
+}
+
 module bed_adjustment_nut() {
     nubs = 14;
     difference() {
@@ -496,25 +536,44 @@ module bed_adjustment_nut() {
     }
 }
 
-module view_bed_frame() {
-    translate([-97,97,0]) rotate([90,0,45]) corner_90(corner_len=20, support=false, extra_stiff=true);
-    translate([-97,-97,0]) rotate([90,0,135]) corner_90(corner_len=20, support=false, extra_stiff=true);
-    translate([97,97,0]) rotate([90,0,-45]) corner_90(corner_len=20, support=false, extra_stiff=true);
-    translate([97,-97,0]) rotate([90,0,225]) corner_90(corner_len=20, support=false, extra_stiff=true);
+module view_bed_frame(extensions_x=1, extensions_y=1) {
+    offset_x = extensions_x * 120 / 2;
+    offset_y = extensions_y * 120 / 2;
+    
+    c_offset_x = offset_x + 37;
+    c_offset_y = offset_y + 37;
+    
+    translate([-c_offset_x,c_offset_y,0]) rotate([90,0,45]) corner_90(corner_len=20, support=false, extra_stiff=true);
+    translate([-c_offset_x,-c_offset_y,0]) rotate([90,0,135]) corner_90(corner_len=20, support=false, extra_stiff=true);
+    translate([c_offset_x,c_offset_y,0]) rotate([90,0,-45]) corner_90(corner_len=20, support=false, extra_stiff=true);
+    translate([c_offset_x,-c_offset_y,0]) rotate([90,0,225]) corner_90(corner_len=20, support=false, extra_stiff=true);
 
-    translate([-60,110,0]) rotate([0,90,0]) extention(support=false);
-    translate([-60,-80,0]) rotate([0,90,0]) extention(support=false);
-    translate([80,60,0]) rotate([90,0,0]) extention(support=false);
-    translate([-110,60,0]) rotate([90,0,0]) extention(support=false);
+    for (i = [0:extensions_x-1]) {
+        translate([-offset_x+i*120,-offset_y-20,0]) rotate([0,90,0]) extention(support=false);
+        translate([-offset_x+i*120,offset_y+50,0]) rotate([0,90,0]) extention(support=false);
+
+    }
+
+    for (i = [0:extensions_y-1]) {
+        translate([-offset_x-50,offset_y-i*120,0]) rotate([90,0,0]) extention(support=false);
+        translate([offset_x+20,offset_y-i*120,0]) rotate([90,0,0]) extention(support=false);
+
+    }
 
     color("white") {
-        translate([40,-120]) rotate([-90,0,0]) bed_attachment();
-        mirror([1,0,0]) translate([40,-120]) rotate([-90,0,0]) bed_attachment();
-        translate([-40,120]) rotate([-90,0,180]) bed_attachment();
-        mirror([1,0,0]) translate([-40,120]) rotate([-90,0,180]) bed_attachment();
+        translate([offset_x-20,-offset_y-60]) rotate([-90,0,0]) bed_attachment();
+        mirror([1,0,0]) translate([offset_x-20,-offset_y-60]) rotate([-90,0,0]) bed_attachment();
+        translate([-offset_x+20,offset_y+60]) rotate([-90,0,180]) bed_attachment();
+        mirror([1,0,0]) translate([-offset_x+20,offset_y+60]) rotate([-90,0,180]) bed_attachment();
+    }
+    
+    
+    color("grey") {
+        translate([-offset_x+20,offset_y-20, -15]) rotate([-90,0,45]) bed_attachment_inner();
     }
 
     %translate([0,0,10]) bed_mk2();
+    translate([-offset_x+15.5,offset_y-15.5, -35]) bed_adjustment_nut();
 }
 
 module view_proper() {
@@ -569,6 +628,7 @@ module slide_test_parts() {
 
 //view_proper();
 //view_bed_frame();
+view_bed_frame(2, 2);
 
 //slide_test_parts();
 
@@ -589,7 +649,7 @@ module slide_test_parts() {
 //translate([5,0,0]) bed_housing_coupler();
 //mirror([1,0,0]) bed_housing_coupler();
 
-endstop_screw_mount();
+//endstop_screw_mount();
 //endstop_screw();
 //endstop_screw_nut();
 
@@ -600,6 +660,8 @@ endstop_screw_mount();
 //mirror([1,0,0]) bed_attachment();
 //bed_attachment(brim=true, wall=true);
 //mirror([1,0,0]) bed_attachment(brim=true, wall=true);
+
+//bed_attachment_inner();
 
 //bed_adjustment_nut();
 
