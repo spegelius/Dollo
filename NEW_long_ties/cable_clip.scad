@@ -38,7 +38,8 @@ module _shroud_holder(h=25,d=13.5,edge_h=1) {
             translate([-outer_d/2,-outer_d/2,0]) cube([outer_d,1,h]);
         }
         cylinder(d=d-2, h=h+1, $fn=30);
-        translate([0,0,edge_h]) cylinder(d=d, h=h+1, $fn=30);
+        translate([0,0,edge_h]) cylinder(d1=d-2, d2=d, h=0.7, $fn=30);
+        translate([0,0,edge_h+0.7]) cylinder(d=d, h=h, $fn=30);
         translate([-9/2,0,0]) cube([9,outer_d,h+1]);
     }
 }
@@ -58,7 +59,7 @@ module cable_shroud_frame_mount() {
     }
 }
 
-clip_verylarge();
+//clip_verylarge();
 //clip_large();
 //clip_small();
-//cable_shroud_frame_mount();
+cable_shroud_frame_mount();
