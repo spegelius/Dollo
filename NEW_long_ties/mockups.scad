@@ -245,10 +245,37 @@ module mks_sbase_mockup() {
     }
 }
 
+module mock_PSU_360W() {
+    w = 114;
+    h = 215;
+    d = 50;
+    
+    color("silver") difference() {
+        cube([w,h,d]);
+        translate([1.4,-1,19]) cube([w-2*1.4,20,d]);
+        translate([1.4,-1,5]) cube([12,20,d]);
+        
+        translate([w+1,32,11]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        translate([w+1,32,11+25]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        
+        translate([w+1,32+150,11]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        translate([w+1,32+150,11+25]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        
+        translate([9,32,11]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        translate([9,32+150,11]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        
+        translate([31.5,32,-0.1]) cylinder(d=3,h=10,$fn=20);
+        translate([w-31.5,32,-0.1]) cylinder(d=3,h=10,$fn=20);
+        
+        translate([31.5,32+150,-0.1]) cylinder(d=3,h=10,$fn=20);
+        translate([w-31.5,32+150,-0.1]) cylinder(d=3,h=10,$fn=20);
+    }
+}
+
 //mock_stepper_motor(false);
 //mock_stepper_motor(true);
 
-//mechanic_endstop();
+//mechanical_endstop();
 
 //proximity_sensor();
 
@@ -257,3 +284,4 @@ module mks_sbase_mockup() {
 //frame_mockup(0, 2, 3, 4);
 //bed_mk2();
 //mks_sbase_mockup();
+//mock_PSU_360W();
