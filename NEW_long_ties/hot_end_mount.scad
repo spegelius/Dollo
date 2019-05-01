@@ -7,6 +7,7 @@ use <motor_mount_small.scad>;
 use <extention.scad>;
 use <rack.scad>;
 use <cable_clip.scad>;
+use <endstop.scad>;
 include <mockups.scad>;
 
 hotend_depth = 75;
@@ -18,17 +19,18 @@ natch_height = 6;
 
 $fn=60;
 
-module motor_mount_small(height=15){
+module motor_mount_tie(height=15){
     translate([-8+slop,0.95,snap_location-6.2]) rotate([-90,0,0]) scale([.95,1,0.97]) long_tie(.9*35);
 }
 
 module y_mount_added(){
     difference() {
         union() {
-            motor_mount_small();
+            motor_mount_tie();
+            translate([0,-29.99,69]) rotate([90,90,0]) long_tie(11.5);
             translate([1,-4+((10-arm_thickness)/2),hotend_depth/2]) cube([25,arm_thickness,hotend_depth], center=true);
             translate([1,-15,hotend_depth-(natch_height)]) cube([25,30,natch_height*2],center=true);
-            translate([-4,-15,hotend_depth-17]) rotate([-45,0,0]) cube([15,33.2,natch_height*2],center=true);
+            translate([-4,-14.8,hotend_depth-17.75]) rotate([-45,0,0]) cube([15,32.0,11],center=true);
             translate([-4,-5,hotend_depth-27]) cube([15,5,natch_height*2],center=true);
             translate([1,1,0]) cube([25,8,5],center=true);
             translate([-11.5,1,65]) cube([26,8,28]);
@@ -55,11 +57,12 @@ module y_mount_taken(){
 		translate([0,-2,hotend_depth-natch_height+3]) rotate([0,-90,0]) cylinder(h=30, d=bolt_hole_dia, $fn=20);
         dove_end();
 }
+
 module mount(){
 	difference(){
 		rotate([0,-90,0]){
 			intersection(){
-				translate([-15,-30,0]) cube([15,100,100]);
+				translate([-15,-35,0]) cube([15,100,100]);
 				difference(){
 						y_mount_added();
 						y_mount_taken();
@@ -106,19 +109,23 @@ module clamp() {
 }
 
 module clamp_shroud_mount() {
-    intersection() {
-        difference() {
-            union(){
-                translate([0,0,15.5]) rotate([90,0,0]) _clamp_base(l=15.5);
-                translate([-18.5/2,0,0]) cube([18.5,4,20.3]);
-                translate([0,13,-1]) rotate([5,0,0]) _shroud_holder(h=22,d=13.5, edge_h=5);
+    union() {
+        intersection() {
+            difference() {
+                union(){
+                    translate([0,0,21]) rotate([90,0,0]) _clamp_base(l=21);
+                    translate([-18.5/2,0,0]) cube([18.5,4,21]);
+                    translate([0,13,-1]) rotate([5,0,0]) _shroud_holder(h=24,d=13.5, edge_h=5);
+                }
+                translate([0,6,-1]) rotate([5,0,0]) hull() {
+                    cylinder(d=4.3,h=50,$fn=40);
+                    translate([0,4,0]) cylinder(d=4.3,h=50,$fn=40);
+                }
+                translate([0,0,-3/2]) rotate([5,0,0]) cube([40,50,3],center=true);
             }
-            translate([0,6,-1]) rotate([5,0,0]) hull() {
-                cylinder(d=4.3,h=50,$fn=40);
-                translate([0,4,0]) cylinder(d=4.3,h=50,$fn=40);
-            }
+            translate([0,0,21/2]) cube([30,42,21], center=true);
         }
-        translate([0,0,50/2]) cube([30,42,50], center=true);
+        translate([22,0,21]) rotate([0,180,90]) cable_pcb_mount();
     }
 }
 
@@ -152,10 +159,29 @@ module prox_sensor_clamp() {
         
 }
 
+module leveling_switch_clamp() {
+    length = 60;
+    
+    difference() {
+        union() {
+            cube([20,14,10]);
+            cube([20,length,3]);
+            translate([20/2-3/2,11,0]) hull() {
+                cube([3,1,10]);
+                translate([0,length-15]) cube([3,1,1]);
+            }
+            translate([22.5,length+5,0]) rotate([0,0,180]) _endstop_body(25, 11, holes=true);
+        }
+        translate([-1,14/2,10.01]) rotate([-90,0,-90]) male_dovetail(30);
+    }
+    %translate([-0.2,length-5.5,3]) mechanical_endstop();
+    
+}
+
 module fan_duct() {
 
     nozzle_offset = 1.5;
-    nozzle_width = 34;
+    nozzle_width = 38;
 
     module fan_base() {
         difference() {
@@ -239,7 +265,7 @@ module fan_duct() {
             
             
             rotate([-90,0,0]) difference() {
-                translate([nozzle_offset,0,1/2]) cube([28,13,1], center=true);
+                translate([nozzle_offset,0,1/2]) cube([nozzle_width-1,13,1], center=true);
                 translate([-nozzle_width/2+nozzle_offset,0,-1]) cylinder(d=12,h=2);
                 translate([nozzle_width/2+nozzle_offset,0,-1]) cylinder(d=12,h=2);
             }
@@ -261,7 +287,7 @@ module fan_duct() {
 }
 
 module do_mount() {
-    translate([0,0,25/2-1]) mount();
+    translate([0,10,25/2-1]) mount();
     translate([0,-65,25/2-1]) mirror([0,1,0]) mount();
 }
 
@@ -274,31 +300,88 @@ module gnd_fan_adapter() {
     }
 }
 
+module cable_pcb_mount() {
+    w = 40;
+    l = 44;
+    difference() {
+        union() {
+            cube([w,l,3]);
+            translate([w-15,-9.99,0]) cube([15,10,3]);
+        }
+        translate([9,0,3]) rotate([0,-15,0]) cube([12,24,25]);
+        translate([-0.1,2,5.2]) cube([2.1,18.1,22]);
+        
+        translate([0,2+5,5.2+9]) rotate([0,90,0]) cylinder(d=3.3,h=5,$fn=20);
+        translate([0,2+18-5,5.2+9]) rotate([0,90,0]) cylinder(d=3.3,h=5,$fn=20);
+        
+        translate([13,9,-0.1]) cube([21,26,4]);
+        translate([12,8,1.5]) cube([23,28,4]);
+        
+        translate([23.5,4,-0.1]) cylinder(d=3.3,h=5,$fn=20);
+        translate([23.5,l-4,-0.1]) cylinder(d=3.3,h=5,$fn=20);
+        
+        translate([w-15/2,-10,10]) rotate([-90,0,0]) cylinder(d=15,h=20,$fn=50);
+        
+        translate([w-17.3,-5,0]) rotate([0,35,0]) cylinder(d=4,h=15,$fn=30);
+        translate([w+2.3,-5,0]) rotate([0,-35,0]) cylinder(d=4,h=15,$fn=30);
+    }
+}
+
+module cable_pcb_mount_clamp() {
+    l = 44;
+    translate([42,0,0]) difference() {
+        union() {
+            hull() {
+                translate([26/2,4,0]) cylinder(d=7,h=2,$fn=20);
+                translate([0,6,0]) cube([26,l-12,2]);
+                translate([26/2,l-4,0]) cylinder(d=7,h=2,$fn=20);
+            }
+            translate([26/2,4]) cylinder(d=8,h=5,$fn=20);
+            translate([26/2,l-4]) cylinder(d=8,h=5,$fn=20);
+
+        }
+        translate([3,(l-25)/2,-0.1]) cube([20,25,14]);
+        translate([26/2,4]) cylinder(d=3.3,h=5,$fn=20);
+        translate([26/2,l-4]) cylinder(d=3.3,h=5,$fn=20);
+        
+        translate([26/2,4,3]) nut();
+        translate([26/2,l-4,3]) nut();
+    }
+}
+
 module view_proper() {
     rotate([0,-90,0]) mount();
     rotate([0,-90,0]) mirror([0,0,1]) mount();
     %translate([0,1,-28.7]) rotate([-90,0,0]) do_motor_mount();
-    %translate([0,25.3,-42.1]) do_rack(fast_render=true);
+    %translate([0,49.2,-28.7]) rotate([-90,0,180]) do_motor_mount();
+    %translate([0,25.1,-42.2]) do_rack(fast_render=true);
     %translate([0,-13,-127.7]) rotate([0,0,180]) e3dv6();
-    %translate([29,-13.5,-120]) proximity_sensor(25.5,5);
-    %translate([20,10.3,-76.2]) rotate([0,0,90]) extention();
-    
-    %translate([-60,-25,-76.2-43.5]) rotate([0,0,0]) extention();
 
-    translate([29,-13.5,-90]) prox_sensor_clamp();
+    //%translate([29,-13.5,-120]) proximity_sensor(25.5,5);
+    //translate([29,-13.5,-90]) prox_sensor_clamp();
+    
+    %translate([50,40.1,-76.2]) rotate([0,-90,0]) extention(support=false);
+    %translate([-60,-25,-76.2-43.5]) rotate([-90,0,0]) extention(support=false);
+
     translate([1.5,28,-99.8]) rotate([-101,0,180]) fan_duct();
+    
+    translate([0,-4,-17.5]) rotate([0,0,180]) clamp_shroud_mount();
+    
+    translate([-10,-40,-62]) rotate([-90,0,0]) leveling_switch_clamp();
 }
 
-//do_mount();
+//view_proper();
+
+do_mount();
 //clamp();
-clamp_shroud_mount();
+//rotate([0,180,0]) clamp_shroud_mount();
 //rotate([0,-90,0])  prox_sensor_clamp();
+//leveling_switch_clamp();
 //intersection() {
 //    fan_duct();
 //    cube([100,100,36]);
 //}
 //fan_duct();
-
-//view_proper();
+//cable_pcb_mount_clamp();
 
 //gnd_fan_adapter();
