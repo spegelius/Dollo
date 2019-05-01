@@ -153,6 +153,81 @@ module atx_psu_cover() {
     }
 }
 
+module side_clip1() {
+    difference() {
+        union() {
+            cube([14,8,25]);
+            cube([20,5,15]);
+            translate([14-5,0,0]) cube([5,58.5,15]);
+            translate([14-5,55.5,0]) cube([10,3,15]);
+            hull() {
+                cube([14,4,2]);
+                translate([14-5,57,0]) cube([5,1,2]);
+            }
+        }
+        translate([7,0,-0.001]) male_dovetail(26);
+    }
+}
+
+module side_clip2() {
+    difference() {
+        union() {
+            hull() {
+                cube([114,15,5]);
+                translate([114-25,25,0]) cube([25,14,5]);
+            }
+            translate([114-25,39,0]) cube([25,14,8]);
+            translate([-14,-10,0]) cube([14,25,8]);
+            //translate([-3,0,0]) cube([3,15,20]);
+            //translate([114,0,0]) cube([3,15,20]);
+        }
+        translate([-7,15,-0.001]) rotate([90,0,0]) male_dovetail(26, bridge_extra=0.3);
+        translate([114-25.1,39+7,-0.001]) rotate([90,0,90]) male_dovetail(26, bridge_extra=0.3);
+        //translate([0,15/2,11+5]) rotate([0,90,0]) cylinder(d=4.3,h=15,center=true,$fn=30);
+        //translate([114,15/2,11+5]) rotate([0,90,0]) cylinder(d=4.3,h=15,center=true,$fn=30);
+        translate([31.5,9/2,-0.2]) {
+            translate([0,0,2.2]) cylinder(d=4.3,h=15,$fn=30);
+            cylinder(d=7.5,h=2,$fn=30);
+        }
+        translate([114-31.5,9/2,-0.2]) {
+            translate([0,0,2.2]) cylinder(d=4.3,h=15,$fn=30);
+            cylinder(d=7.5,h=2,$fn=30);
+        }
+
+        translate([10,9,0]) {
+            hull() {
+                cube([0.1,0.1,11],center=true);
+                translate([94,26/2,0]) cube([0.1,26,11],center=true);
+            }
+        }
+    }
+}
+
+module psu_clips() {
+    translate([0,psu_cover_height,0]) rotate([90,0,0]) front(psu_cover_width, psu_cover_height);
+    translate([0,-psu_height/2-17,0]) rotate([90,0,0]) back(psu_width,psu_height);
+}
+
+module psu_clips_atx() {
+    translate([0,psu_cover_height,0]) rotate([90,0,0]) front_atx();
+    translate([0,-psu_height/2-17,0]) rotate([90,0,0]) back_atx();
+}
+
+module psu_clips_new() {
+    
+}
+
+module clip_extension() {
+    rotate([0,10,0]) difference() {
+        intersection() {
+            rotate([0,-10,0]) cube([46,25,15]);
+            cube([42,30,25]);
+        }
+        translate([0,25-15,0]) rotate([0,0,-90]) male_dovetail(25);
+        translate([42,25-15,0]) rotate([0,0,90]) male_dovetail(25);
+    }
+}
+
 module view_proper() {
     translate([psu_width/2+28+2*slop,300/2-(thickness/2+(8-thickness)),psu_cover_height/2-66.5]) front();
     translate([psu_width/2+28+2*slop,-30-(thickness/2+(8-thickness)),psu_height/2-63.5]) back();
@@ -170,33 +245,27 @@ module view_proper_atx() {
     translate([-8+atx_psu_width/2, 183, -89.5 ]) rotate([0,0,180]) atx_psu_cover();
 }
 
-module psu_clips() {
-    translate([0,psu_cover_height,0]) rotate([90,0,0]) front(psu_cover_width, psu_cover_height);
-    translate([0,-psu_height/2-17,0]) rotate([90,0,0]) back(psu_width,psu_height);
+module view_proper_side_mount() {
+    %translate([0,-24.5,5]) mock_PSU_360W();
+    translate([-14,25,0]) rotate([90,0,0]) side_clip1();
+    translate([0,153,0]) side_clip2();
 }
 
-module psu_clips_atx() {
-    translate([0,psu_cover_height,0]) rotate([90,0,0]) front_atx();
-    translate([0,-psu_height/2-17,0]) rotate([90,0,0]) back_atx();
-}
-
-module clip_extension() {
-    rotate([0,10,0]) difference() {
-        intersection() {
-            rotate([0,-10,0]) cube([46,25,15]);
-            cube([42,30,25]);
-        }
-        translate([0,25-15,0]) rotate([0,0,-90]) male_dovetail(25);
-        translate([42,25-15,0]) rotate([0,0,90]) male_dovetail(25);
-    }
-}
-
-view_proper();
+//view_proper();
 //view_proper_atx();
+//view_proper_side_mount();
+
+// old vers
 //psu_clips();
 //clip();
- //psu_clips_atx();
+
+// ATX
+//psu_clips_atx();
 //rotate([90,0,0]) atx_psu_cover();
 //rotate([90,0,0]) front_atx();
 //rotate([90,0,0]) back_atx();
 //clip_extension();
+
+// new
+//side_clip1();
+side_clip2();
