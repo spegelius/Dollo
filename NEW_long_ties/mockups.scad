@@ -245,6 +245,36 @@ module mks_sbase_mockup() {
     }
 }
 
+//S-240-12
+module mock_PSU_240W() {
+    w = 111;
+    h = 199;
+    d = 50;
+    
+    color("silver") difference() {
+        cube([w,h,d]);
+        translate([-1.4,-1,24]) cube([w,12,d]);
+        translate([-1,-1,8.3]) cube([13,12,d]);
+        translate([w-1.4-9.3,-1,1.4]) cube([9.3,12,d]);
+        
+        translate([7,5]) cylinder(d=3.2,h=10,$fn=30);
+        translate([w-6,5]) cylinder(d=4.2,h=10,$fn=30);
+        
+        translate([w+1,19.5,d/2]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        translate([w+1,19.5+150.7,12]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        translate([w+1,19.5+150.7,d-13]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        
+        translate([10,61,-0.1]) cylinder(d=3,h=10,$fn=20);
+        translate([w-15,61,-0.1]) cylinder(d=3,h=10,$fn=20);
+        
+        translate([10,61+126,-0.1]) cylinder(d=3,h=10,$fn=20);
+        translate([w-15,61+126,-0.1]) cylinder(d=3,h=10,$fn=20);
+        
+        translate([w,6,d-6]) rotate([0,90,0]) cylinder(d=4,h=5,center=true,$fn=30);
+        translate([w,6,d-16]) rotate([0,90,0]) cylinder(d=4,h=5,center=true,$fn=30);
+    }
+}
+
 module mock_PSU_360W() {
     w = 114;
     h = 215;
@@ -272,6 +302,35 @@ module mock_PSU_360W() {
     }
 }
 
+// S-600-24
+module mock_PSU_600W() {
+    w = 114;
+    h = 215;
+    d = 50;
+    
+    color("silver") difference() {
+        cube([w,h,d]);
+        translate([1.4,-1,24]) cube([w-2*1.4,21,d]);
+        translate([1.4,-1,7.5]) cube([18,21,d]);
+        translate([w-1.4-5,-1,7.5]) cube([5,21,d]);
+        
+        translate([w+1,32.5,11]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        translate([w+1,32.5,11+25]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        
+        translate([w+1,32.5+150,11]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        translate([w+1,32.5+150,11+25]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        
+        translate([9,32.5,11]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        translate([9,32.5+150,11]) rotate([0,-90,0]) cylinder(d=3,h=10,$fn=20);
+        
+        translate([32,32.5,-0.1]) cylinder(d=3,h=10,$fn=20);
+        translate([w-32,32.5,-0.1]) cylinder(d=3,h=10,$fn=20);
+        
+        translate([32,32.5+150,-0.1]) cylinder(d=3,h=10,$fn=20);
+        translate([w-32,32.5+150,-0.1]) cylinder(d=3,h=10,$fn=20);
+    }
+}
+
 //mock_stepper_motor(false);
 //mock_stepper_motor(true);
 
@@ -284,4 +343,6 @@ module mock_PSU_360W() {
 //frame_mockup(0, 2, 3, 4);
 //bed_mk2();
 //mks_sbase_mockup();
+//mock_PSU_240W();
 //mock_PSU_360W();
+//mock_PSU_600W();
