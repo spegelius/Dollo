@@ -113,8 +113,8 @@ module clip() {
     c_len = 20;
     rotate([-90,0,0]) difference() {
         union() { 
-            translate([0,0,-scaled_male_dove_depth()]) long_bow_tie_split(c_len);
-            translate([11,0,-5-scaled_male_dove_depth()]) long_bow_tie_split(c_len);
+            translate([0,-c_len/2,-scaled_male_dove_depth()]) long_bow_tie_split(c_len);
+            translate([11,-c_len/2,-5-scaled_male_dove_depth()]) long_bow_tie_split(c_len);
             translate([-2.5,-c_len,-scaled_male_dove_depth()]) cube([16,c_len,scaled_male_dove_depth()]);
             translate([8.9,-c_len,-scaled_male_dove_depth()-5]) cube([3,c_len,scaled_male_dove_depth()]);
         }
@@ -257,7 +257,7 @@ module view_proper_side_mount() {
 
 // old vers
 //psu_clips();
-//clip();
+clip();
 
 // ATX
 //psu_clips_atx();
@@ -268,4 +268,4 @@ module view_proper_side_mount() {
 
 // new
 //side_clip1();
-side_clip2();
+//side_clip2();

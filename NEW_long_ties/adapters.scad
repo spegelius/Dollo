@@ -36,7 +36,7 @@ module adapter_mks_sbase_box() {
 
 module adapter_dove_m3_28() {
     difference() {
-        translate([0,34/2,0]) long_tie(34);
+        translate([0,0,0]) long_tie(34);
         translate([0,0,5/2+0.6]) cube([2.5,35,5],center=true);
         translate([0,28/2,0]) cylinder(d=2.8,h=5,$fn=20);
         translate([0,-28/2,0]) cylinder(d=2.8,h=5,$fn=20);
@@ -46,7 +46,7 @@ module adapter_dove_m3_28() {
 
 module adapter_dove_m3_15() {
     difference() {
-        translate([0,15/2,0]) long_tie(15);
+        translate([0,0,0]) long_tie(15);
         translate([0,0,5/2+0.6]) cube([2.5,16,5],center=true);
         cylinder(d=2.8,h=5,$fn=20);
     }

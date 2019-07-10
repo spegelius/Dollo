@@ -14,13 +14,14 @@ hotend_depth = 75;
 mounting_diamiter = 12 + slop/2;
 top_diamiter = 17;
 arm_thickness = 5;
-snap_location = 47;
+long_tie_len = .9*35;
+snap_location = 47-6.3+long_tie_len/2;
 natch_height = 6;
 
 $fn=60;
 
 module motor_mount_tie(height=15){
-    translate([-8+slop,0.95,snap_location-6.2]) rotate([-90,0,0]) scale([.95,1,0.97]) long_tie(.9*35);
+    translate([-8+slop,0.95,snap_location]) rotate([-90,0,0]) scale([.95,1,0.97]) long_tie(long_tie_len);
 }
 
 module y_mount_added(){
@@ -76,8 +77,8 @@ module mount(){
 
 module _clamp_base(l=15) {
     union(){
-        translate([-8,0,slop]) long_bow_tie_split(l);
-        translate([8,0,slop]) long_bow_tie_split(l);
+        translate([-8,-l/2,slop]) long_bow_tie_split(l);
+        translate([8,-l/2,slop]) long_bow_tie_split(l);
         translate([-11.75,-l,-3]) cube([23.5,l,3]);
         translate([-11.75,-l,0]) cube([7.5,l,0.75]);
         translate([4.25,-l,0]) cube([7.5,l,0.75]);
@@ -294,8 +295,8 @@ module do_mount() {
 module gnd_fan_adapter() {
     // do not use
     union() {
-        rotate([-90,0,0]) long_tie_split(23);
-        translate([4,-1.5,0]) rotate([-90,0,180]) long_tie_split(23);
+        translate([0,0,23/2]) rotate([-90,0,0]) long_tie_split(23);
+        translate([4,-1.5,23/2]) rotate([-90,0,180]) long_tie_split(23);
         translate([-6/2,-1.51,0]) cube([10, 1.52, 23]);
     }
 }
@@ -372,7 +373,7 @@ module view_proper() {
 
 //view_proper();
 
-do_mount();
+//do_mount();
 //clamp();
 //rotate([0,180,0]) clamp_shroud_mount();
 //rotate([0,-90,0])  prox_sensor_clamp();
@@ -384,4 +385,4 @@ do_mount();
 //fan_duct();
 //cable_pcb_mount_clamp();
 
-//gnd_fan_adapter();
+gnd_fan_adapter();

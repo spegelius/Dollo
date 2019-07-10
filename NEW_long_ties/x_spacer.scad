@@ -11,8 +11,8 @@ thickness = 21;
 module y_mount_added(){
     union() {
         translate([0,-51/2+15,thickness/2]) cube([30,51,thickness],center=true);
-        translate([-8,15,thickness]) long_tie(15);
-        translate([8,15,thickness]) long_tie(15);
+        translate([-8,15/2,thickness]) long_tie(15);
+        translate([8,15/2,thickness]) long_tie(15);
     }
 }
 

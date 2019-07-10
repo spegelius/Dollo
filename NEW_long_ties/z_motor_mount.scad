@@ -17,7 +17,7 @@ module z_motor_mount() {
                     translate([56,0,5]) rotate([0,-45,0]) cube([50,80,500], center=true);
                 }
                 translate([-30/2-z_screw_d/2-1,0,-3.99]) intersection() {
-                    translate([0,-(l+10)/2,0]) rotate([180,0,0]) long_tie(l+10);
+                    translate([0,0,0]) rotate([180,0,0]) long_tie(l+10);
                     cube([10,l,10],center=true);
                 }
             }

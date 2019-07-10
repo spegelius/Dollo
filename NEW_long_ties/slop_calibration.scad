@@ -10,8 +10,8 @@ slop = 0.15;
 $fn=30;
 
 translate([-5, 30, 0]) bow_tie();
-translate([-15, 20, 0]) long_bow_tie(20); 
-translate([-5, 20, 0]) long_bow_tie_split(20);
+translate([-15, 10, 0]) long_bow_tie(20); 
+translate([-5, 10, 0]) long_bow_tie_split(20);
 
 // half block
 translate([22,0,0]) difference() {

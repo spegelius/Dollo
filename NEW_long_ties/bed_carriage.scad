@@ -212,6 +212,7 @@ module bed_rail_slide_arm_2() {
 module bed_screw_housing(render_threads=true) {
     
     slide_holder_d = hexagon_dia_to_cylinder(rail_width + 9) + 6;
+    echo("Slice_holder_d:", slide_holder_d);
     
     union() {
         difference() {
@@ -320,7 +321,7 @@ module endstop_screw_mount() {
             translate([-5,-0.01,0]) cube([10,3,23]);
             translate([-5,0,0]) cube([10,14,8]);
             translate([0,14.5,0]) cylinder(d=12,h=8, $fn=40);
-            rotate([-90,0,180]) long_tie(23);
+            rotate([-90,0,180]) translate([0,-23/2,0]) long_tie(23);
         }
         translate([0,14.5,0]) _threads(h=15);
     }
@@ -584,8 +585,8 @@ module view_proper() {
     
     //translate([0,0,bed_position+40]) view_bed_frame();
 
-    translate([-120-45,0,30-6.5]) rotate([-90,0,0]) bed_rail_frame_mount();
-    translate([-120-45,0,210]) rotate([180,0,0]) bed_rail_frame_mount_top()
+    translate([-120-45,0,30]) rotate([0,0,180]) bed_rail_frame_mount();
+    translate([-120-45,0,210]) rotate([180,0,180]) bed_rail_frame_mount_top()
 
     translate([-120-45,-30,32]) bed_rail_short();
     translate([-120-45,30,32]) bed_rail_short();
@@ -628,7 +629,7 @@ module slide_test_parts() {
 
 //view_proper();
 //view_bed_frame();
-view_bed_frame(2, 2);
+//view_bed_frame(2, 2);
 
 //slide_test_parts();
 
@@ -649,7 +650,7 @@ view_bed_frame(2, 2);
 //translate([5,0,0]) bed_housing_coupler();
 //mirror([1,0,0]) bed_housing_coupler();
 
-//endstop_screw_mount();
+endstop_screw_mount();
 //endstop_screw();
 //endstop_screw_nut();
 

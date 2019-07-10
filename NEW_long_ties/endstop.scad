@@ -106,7 +106,7 @@ module xy_endstop_racktop() {
 module z_endstop() {
     union() {
         translate([0,0,12]) rotate([-90,0,0]) _endstop_body(29,12,12,3, holes=true);
-        rotate([0,0,90]) long_tie_half(29);
+        rotate([0,0,90]) translate([0,-29/2,0]) long_tie_half(29);
         translate([0,-0.1,0]) cube([29,2,2.5]);
     }
     %translate([4.5+slop,10+slop,1.5]) rotate([90,0,0]) mechanical_endstop();
@@ -127,6 +127,6 @@ module xy_endstop_rackend() {
 
 //endstop_v1();
 //endstop_v2();
-//z_endstop();
+z_endstop();
 //xy_endstop_racktop();
-xy_endstop_rackend();
+//xy_endstop_rackend();

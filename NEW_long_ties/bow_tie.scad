@@ -18,7 +18,7 @@ module bow_tie_master() {
 		intersection(){
             translate([0,0,0]) rotate([0,45,0]) cube([side,side,side],center=true);
             union() {
-                rotate([-90,0,0]) translate([0,0,-scale_z*male_dove_depth]) long_bow_tie_split(length, scale_x=scale_x, scale_z=scale_z);
+                rotate([-90,0,0]) translate([0,-length/2,0]) long_bow_tie_split(length, scale_x=scale_x, scale_z=scale_z,middle=true);
                 translate([0,0,13-3.8]) rotate([90,0,90]) cylinder(d=4.5, h=4, center=true);
             }
             cube([20,20,22.5],center=true);

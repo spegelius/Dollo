@@ -106,13 +106,14 @@ module ramps_mount() {
         translate([-arduino_width/2,arduino_length/2-10,h-1.4]) _notch();
         translate([-arduino_width/2,-arduino_length/2+10,h-1.4]) _notch();
 
-        translate([ramps_mount_w/2-0.01,arduino_length/2-25,0]) rotate([0,0,180,0]) long_tie_half(20);
-        translate([ramps_mount_w/2-0.01,-arduino_length/2+5,0]) rotate([0,0,180,0]) long_tie_half(20);
-        translate([-20/2,-ramps_mount_l/2+0.01,0]) rotate([0,0,90,0]) long_tie_half(20);
+        translate([ramps_mount_w/2-0.01,arduino_length/2-15,0]) rotate([0,0,180]) long_tie_half(20);
+        translate([ramps_mount_w/2-0.01,-arduino_length/2+15,0]) rotate([0,0,180]) long_tie_half(20);
+        translate([0,-ramps_mount_l/2+0.01,0]) rotate([0,0,90]) long_tie_half(20);
 
-        translate([-ramps_mount_w/2+0.01,arduino_length/2-5,0]) long_tie_half(20);
-        translate([-ramps_mount_w/2+0.01,-arduino_length/2+25,0])  long_tie_half(20);
-        translate([-20/2,-ramps_mount_l/2+0.01,0]) rotate([0,0,90,0]) long_tie_half(20);
+        translate([-ramps_mount_w/2+0.01,arduino_length/2-15,0]) long_tie_half(20);
+        translate([-ramps_mount_w/2+0.01,-arduino_length/2+15,0])  long_tie_half(20);
+        
+        translate([0,ramps_mount_l/2-0.01,0]) rotate([0,0,-90]) long_tie_half(20);
     }
 }
 
@@ -139,14 +140,14 @@ module raspberry_pi_3b_mount() {
     translate([-raspberry_pi_3b_w/2, raspi_mount_l/2-3.5,h/2-1]) _notch(w=1.5,l=7);
     translate([-raspberry_pi_3b_w/2, -raspi_mount_l/2+22,h/2-1]) _notch(w=1.5,l=10);
 
-    translate([-raspi_mount_w/2+0.01,raspi_mount_l/2-5,-h/2]) long_tie_half(20);
-    translate([-raspi_mount_w/2+0.01,-raspi_mount_l/2+25,-h/2]) long_tie_half(20);
+    translate([-raspi_mount_w/2+0.01,raspi_mount_l/2-15,-h/2]) long_tie_half(20);
+    translate([-raspi_mount_w/2+0.01,-raspi_mount_l/2+15,-h/2]) long_tie_half(20);
 
-    translate([raspi_mount_w/2-0.01,raspi_mount_l/2-25,-h/2]) rotate([0,0,180]) long_tie_half(20);
-    translate([raspi_mount_w/2-0.01,-raspi_mount_l/2+5,-h/2]) rotate([0,0,180]) long_tie_half(20);
+    translate([raspi_mount_w/2-0.01,raspi_mount_l/2-15,-h/2]) rotate([0,0,180]) long_tie_half(20);
+    translate([raspi_mount_w/2-0.01,-raspi_mount_l/2+15,-h/2]) rotate([0,0,180]) long_tie_half(20);
 
-    translate([-20/2,-raspi_mount_l/2+0.01,-h/2]) rotate([0,0,90,0]) long_tie_half(20);
-    translate([20/2,raspi_mount_l/2-0.01,-h/2]) rotate([0,0,-90,0]) long_tie_half(20);
+    translate([0,-raspi_mount_l/2+0.01,-h/2]) rotate([0,0,90,0]) long_tie_half(20);
+    translate([0,raspi_mount_l/2-0.01,-h/2]) rotate([0,0,-90,0]) long_tie_half(20);
 }
 
 module atx_connector_mount() {
@@ -178,13 +179,13 @@ module atx_connector_mount() {
         translate([-inner_w/2, -2,h-1]) _notch(w=1.5,l=15);
         translate([-inner_w/2, -l/2+5,h-1]) _notch(w=1.5,l=7.5);
 
-        translate([-outer_w/2+0.01,l/2-5,0]) long_tie_half(20);
-        translate([-outer_w/2+0.01,-l/2+25,0]) long_tie_half(20);
+        translate([-outer_w/2+0.01,l/2-15,0]) long_tie_half(20);
+        translate([-outer_w/2+0.01,-l/2+15,0]) long_tie_half(20);
 
-        translate([outer_w/2-0.01,l/2-25,0]) rotate([0,0,180]) long_tie_half(20);
-        translate([outer_w/2-0.01,-l/2+5,0]) rotate([0,0,180]) long_tie_half(20);
+        translate([outer_w/2-0.01,l/2-15,0]) rotate([0,0,180]) long_tie_half(20);
+        translate([outer_w/2-0.01,-l/2+15,0]) rotate([0,0,180]) long_tie_half(20);
 
-        translate([-20/2,-l/2+0.01,0]) rotate([0,0,90,0]) long_tie_half(20);
+        translate([0,-l/2+0.01,0]) rotate([0,0,90,0]) long_tie_half(20);
     }
 }
 
@@ -228,7 +229,7 @@ module frame_clip() {
             translate([6,2,0]) _male_dove_half(21);
         }
         translate([8-2,0,0]) rounded_cube_side(2,14,20,2);
-        translate([3.5,14,0]) rotate([-90,0,180]) long_bow_tie_half(20);
+        translate([8.3,14,20/2]) rotate([-90,0,180]) long_bow_tie_half(20);
     }
 }
 
@@ -248,13 +249,13 @@ module debug() {
     translate([120.65,-180,80.8]) rotate([90,0,0]) ramps_mount();
 }
 
-debug();
+//debug();
 
 //translate([95,127.5,0]) rotate([90,0,0]) body();
 //ramps_mount_adapter();
 //ramps_mount();
 //raspberry_pi_3b_mount();
-//atx_connector_mount();
+atx_connector_mount();
 //fan_mount_60mm();
 //frame_clip();
 //joint_clip();

@@ -32,7 +32,7 @@ module long_bow_tie_unscaled(length) {
         }
     }
 
-    translate([0,0,male_dove_depth]) difference() {
+    translate([0,length/2,0]) difference() {
         intersection(){
             rotate([90,0,0]) bow_tie_master(length);
             rotate([90,0,0]) cylinder(r=5.8, h=200);
@@ -47,30 +47,59 @@ module long_bow_tie_unscaled(length) {
     }
 }
 
-module long_bow_tie(length=length, scale_x=scale_x(), scale_z=scale_z()) {
-    scale([scale_x, 1, scale_z]) long_bow_tie_unscaled(length);
+module long_bow_tie(length=length, scale_x=scale_x(), scale_z=scale_z(),middle=false) {
+    scale([scale_x, 1, scale_z]) {
+        if(middle)
+            long_bow_tie_unscaled(length);
+        else
+            translate([0,0,male_dove_depth]) long_bow_tie_unscaled(length);
+    }
 }
 
 module split(length) {
-    translate([0,0,-1]) linear_extrude(height=length+2) polygon(points=[[0,-1], [1,-1], [2.1,-5], [-2.1,-5], [-1,-1]]);
+    translate([0,0,-length/2-1]) linear_extrude(height=length+2) polygon(points=[[0,-1], [1,-1], [2.1,-5], [-2.1,-5], [-1,-1]]);
 }
 
-module long_bow_tie_split(length=length, scale_x=scale_x(), scale_z=scale_z()) {
-    translate([0,0,scale_z*male_dove_depth]) rotate([90,0,0]) difference() {
-        translate([0,-(scale_z*male_dove_depth),0]) rotate([-90,0,0]) long_bow_tie(length);
-        split(length);
-        rotate([0,0,180]) split();
+module long_bow_tie_split(length=length, scale_x=scale_x(), scale_z=scale_z(),middle=false) {
+    module _do_split() {
+        rotate([90,0,0]) difference() {
+            rotate([-90,0,0]) long_bow_tie(length,scale_x=scale_x,scale_z=scale_z,middle=true);
+            split(length);
+            rotate([0,0,180]) split(length);
+        }
     }
+        
+    if (!middle) 
+        translate([0,0,scale_z*male_dove_depth]) _do_split();
+    else
+        _do_split();
 }
 
-module long_bow_tie_half(length=length, scale_x=scale_x(), scale_z=scale_z()) {
+module long_bow_tie_half(length=length, scale_x=scale_x(), scale_z=scale_z(),middle=true) {
     rotate([0,-90,0]) intersection() {
-        long_bow_tie(length);
-        translate([0,-length,-1]) cube([6, length, 12]);
+        long_bow_tie(length,middle=middle);
+        translate([0,-length/2,-24/2]) cube([8, length, 24]);
     }
 }
 
-long_bow_tie();
+module long_bow_tie_half_split(length=length, scale_x=scale_x(), scale_z=scale_z()) {
+    union() {
+        intersection() {
+            long_bow_tie_split(length,scale_x=scale_x,scale_z=scale_z,middle=true);
+            translate([0,0,-6/2]) cube([10,length,6],center=true);
+        }
+        cube([scale_x*male_dove_min_width,length,1.6],center=true);
+        translate([((scale_x*male_dove_min_width)/2)/2,0,4/2]) cube([(scale_x*male_dove_min_width)/2,length,4],center=true);
+        translate([0,0,4]) intersection() {
+            long_bow_tie(length,scale_x=scale_x,scale_z=scale_z,middle=true);
+            translate([5/2,0,5/2]) cube([5,length,5],center=true);
+        }
+    }
+}
+
+//long_bow_tie();
 //long_bow_tie(25);
 //long_bow_tie_half(length);
+//long_bow_tie_half(30);
 //long_bow_tie_split(length);
+long_bow_tie_half_split(length);
