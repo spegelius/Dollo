@@ -136,18 +136,18 @@ module mock_stepper_motor(geared=false) {
     difference() {
         union() {
             intersection() {
-                translate([0,0,42/2]) cube([42,40,42], center=true);
-                translate([0,0,42/2]) rotate([0,45,0]) cube([54,40,54], center=true);
+                translate([0,0,motor_side_length/2]) cube([motor_side_length,40,motor_side_length], center=true);
+                translate([0,0,motor_side_length/2]) rotate([0,45,0]) cube([54,40,54], center=true);
             }
             if (geared) {
-                translate([0,40/2,42/2]) rotate([-90,0,0]) cylinder(d=37.2, h=26.5);
-                translate([0,40/2+26.5,42/2]) rotate([-90,0,0]) motor_shaft(22, $fn=40);
+                translate([0,40/2,motor_side_length/2]) rotate([-90,0,0]) cylinder(d=37.2, h=26.5);
+                translate([0,40/2+26.5,motor_side_length/2]) rotate([-90,0,0]) motor_shaft(22, $fn=40);
             } else {
-                translate([0,40/2,42/2]) rotate([-90,0,0]) cylinder(d=22, h=2);
-                translate([0,40/2+2,42/2]) rotate([-90,0,0]) motor_shaft(22, $fn=40);
+                translate([0,40/2,motor_side_length/2]) rotate([-90,0,0]) cylinder(d=22, h=2);
+                translate([0,40/2+2,motor_side_length/2]) rotate([-90,0,0]) motor_shaft(22, $fn=40);
             }
         }
-        translate([0,40/2,42/2]) rotate([90,0,0]) for (i=[0:3]) {
+        translate([0,40/2,motor_side_length/2]) rotate([90,0,0]) for (i=[0:3]) {
             rotate([0,0,i*(360/4)]) translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,-1]) cylinder(d=bolt_hole_dia, 7, $fn=20);
         }
     }
@@ -270,8 +270,8 @@ module mock_PSU_240W() {
         translate([10,61+126,-0.1]) cylinder(d=3,h=10,$fn=20);
         translate([w-15,61+126,-0.1]) cylinder(d=3,h=10,$fn=20);
         
-        translate([w,6,d-6]) rotate([0,90,0]) cylinder(d=4,h=5,center=true,$fn=30);
-        translate([w,6,d-16]) rotate([0,90,0]) cylinder(d=4,h=5,center=true,$fn=30);
+        translate([w,6,d-6.5]) rotate([0,90,0]) cylinder(d=4,h=5,center=true,$fn=30);
+        translate([w,6,d-16.5]) rotate([0,90,0]) cylinder(d=4,h=5,center=true,$fn=30);
     }
 }
 
@@ -331,6 +331,42 @@ module mock_PSU_600W() {
     }
 }
 
+module mock_SSR_75_DD() {
+    difference() {
+        union() {
+            translate([0,0,3/2]) cube([45.5,63,3],center=true);
+            translate([0,0,23/2]) cube([45.5,60,23],center=true);
+            translate([0,63/2-2/2,4.7/2]) cube([10,2,4.7],center=true);
+            translate([0,-63/2+2/2,4.7/2]) cube([10,2,4.7],center=true);
+        }
+        translate([0,60/2,25/2+4.7]) hull() {
+            cube([10,1,25],center=true);
+            translate([0,-6,0]) cylinder(d=10,h=25,center=true,$fn=40);
+        }
+        translate([0,-60/2,25/2+4.7]) hull() {
+            cube([10,1,25],center=true);
+            translate([0,6,0]) cylinder(d=10,h=25,center=true,$fn=40);
+        }
+        
+        translate([0,63/2-9,0]) hull() {
+            cylinder(d=4.2,h=10,center=true,$fn=40);
+            translate([0,3,0]) cylinder(d=4.2,h=10,center=true,$fn=40);
+        }
+        
+        translate([0,-63/2+8,0]) cylinder(d=4.2,h=10,center=true,$fn=40);
+        
+        translate([45.5/2-2.4-12.5/2,60/2-13/2,16+8/2]) cube([12.5,13,8],center=true);
+        translate([-45.5/2+2.4+12.5/2,60/2-13/2,16+8/2]) cube([12.5,13,8],center=true);
+        translate([-45.5/2+3.4+10.5/2,-60/2+12/2,16+8/2]) cube([10.5,12,8],center=true);
+        translate([45.5/2-3.4-10.5/2,-60/2+12/2,16+8/2]) cube([10.5,12,8],center=true);
+    }
+    translate([45.5/2-8.65,60/2-6.5,0]) cylinder(d=7,h=22,$fn=40);
+    translate([-45.5/2+8.65,60/2-6.5,0]) cylinder(d=7,h=22,$fn=40);
+    
+    translate([45.5/2-8.65,-60/2+6,0]) cylinder(d=7,h=22,$fn=40);
+    translate([-45.5/2+8.65,-60/2+6,0]) cylinder(d=7,h=22,$fn=40);
+}
+
 //mock_stepper_motor(false);
 //mock_stepper_motor(true);
 
@@ -346,3 +382,5 @@ module mock_PSU_600W() {
 //mock_PSU_240W();
 //mock_PSU_360W();
 //mock_PSU_600W();
+
+//mock_SSR_75_DD();
