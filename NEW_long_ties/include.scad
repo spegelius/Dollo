@@ -367,12 +367,14 @@ module _threads(d=8, h=10, z_step=1.8, depth=0.5, direction=0) {
     
     function get_twist(dir) = (direction == 0) ? -360 : 360;
 
-    multiple = h/z_step+1;
+    multiple = round(h/z_step)+1;
     echo(h);
     
     intersection() {
-        for (i = [0:multiple]) {
-            translate([0,0,i*z_step]) linear_extrude(height=z_step, center=true, convexity = 10, twist = get_twist(direction), $fn = 30) translate([depth, 0, 0]) circle(d=d-2*depth);
+        union() {
+            for (i = [0:multiple]) {
+                translate([0,0,i*z_step]) linear_extrude(height=z_step+0.0001, center=true, convexity = 10, twist = get_twist(direction)) translate([depth, 0, 0]) circle(d=d-2*depth);
+            }
         }
         cylinder(d=2*d,h=h);
     }

@@ -316,44 +316,49 @@ module bed_housing_coupler() {
 }
 
 module endstop_screw_mount() {
+    $fn = 80;
     difference() {
         union() {
             translate([-5,-0.01,0]) cube([10,3,23]);
             translate([-5,0,0]) cube([10,14,8]);
-            translate([0,14.5,0]) cylinder(d=12,h=8, $fn=40);
+            translate([0,13.5,0]) cylinder(d=11,h=8);
             rotate([-90,0,180]) translate([0,-23/2,0]) long_tie(23);
         }
-        translate([0,14.5,0]) _threads(h=15);
+        translate([0,13.5,-0.1]) _threads(h=15, $fn=40);
     }
 }
 
 module _screw_knob(h=10) {
     h1 = h/5;
     h2 = h-2*h1;
+    d = 13.5;
     difference() {
-            union() {
-                cylinder(d1=15-2*h1, d2=15,h=h1, $fn=40);
-                translate([0,0,h1]) cylinder(d=15,h=h2, $fn=40);
-                translate([0,0,h-h1]) cylinder(d2=15-2*h1, d1=15,h=h1, $fn=40);
-            }
-            for (i=[0:11]) {
-                rotate([0,0,i*360/12]) translate([15/2,0,0]) cylinder(d=2,h=10,$fn=20);
-            }
+        union() {
+            cylinder(d1=d-2*h1, d2=d,h=h1, $fn=40);
+            translate([0,0,h1]) cylinder(d=d,h=h2, $fn=40);
+            translate([0,0,h-h1]) cylinder(d2=d-2*h1, d1=d,h=h1, $fn=40);
+        }
+        for (i=[0:11]) {
+            rotate([0,0,i*360/12]) translate([d/2,0,0]) cylinder(d=2,h=10,$fn=20);
+        }
     }
 }
 
 module endstop_screw() {
-    
-    union() {
-        translate([0,0,9.99]) _threads(8-2*slop, 38);
-        _screw_knob();
+    h = 40;
+    difference() {
+        union() {
+            translate([0,0,9.99]) _threads(8-2*slop, h, $fn=40);
+            _screw_knob();
+        }
+        cylinder(d=0.1,h=h+11);
     }
 }
 
 module endstop_screw_nut() {
     difference() {
         _screw_knob(h=7);
-        _threads(h=15);
+        _threads(h=15, $fn=40);
     }
 }
 
@@ -650,8 +655,8 @@ module slide_test_parts() {
 //translate([5,0,0]) bed_housing_coupler();
 //mirror([1,0,0]) bed_housing_coupler();
 
-endstop_screw_mount();
-//endstop_screw();
+//endstop_screw_mount();
+endstop_screw();
 //endstop_screw_nut();
 
 //bed_attachment_spring();
