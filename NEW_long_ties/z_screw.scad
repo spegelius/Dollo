@@ -292,7 +292,7 @@ module z_screw_motor_coupler(fast_render=false) {
         
         hull() {
             translate([-m3_nut_side/2,4.5,0]) cube([m3_nut_side,m3_nut_height+slop,1]);
-            translate([0,4.5,8]) rotate([-90,30,0]) nut(m3_nut_height+slop,cone=false);
+            translate([0,4.5,8]) rotate([-90,30,0]) M3_nut(m3_nut_height+slop,cone=false);
         }
     }
 }

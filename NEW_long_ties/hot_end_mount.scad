@@ -345,8 +345,8 @@ module cable_pcb_mount_clamp() {
         translate([26/2,4]) cylinder(d=3.3,h=5,$fn=20);
         translate([26/2,l-4]) cylinder(d=3.3,h=5,$fn=20);
         
-        translate([26/2,4,3]) nut();
-        translate([26/2,l-4,3]) nut();
+        translate([26/2,4,3]) M3_nut();
+        translate([26/2,l-4,3]) M3_nut();
     }
 }
 
@@ -383,6 +383,6 @@ module view_proper() {
 //    cube([100,100,36]);
 //}
 //fan_duct();
-//cable_pcb_mount_clamp();
+cable_pcb_mount_clamp();
 
-gnd_fan_adapter();
+//gnd_fan_adapter();

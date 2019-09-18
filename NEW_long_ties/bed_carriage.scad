@@ -537,7 +537,7 @@ module bed_adjustment_nut() {
             }
             cylinder(d=24,h=6,$fn=30);
         }
-        nut();
+        M3_nut();
         cylinder(d=3.2,h=12,$fn=20);
     }
 }
@@ -656,7 +656,7 @@ module slide_test_parts() {
 //mirror([1,0,0]) bed_housing_coupler();
 
 //endstop_screw_mount();
-endstop_screw();
+//endstop_screw();
 //endstop_screw_nut();
 
 //bed_attachment_spring();
@@ -669,7 +669,7 @@ endstop_screw();
 
 //bed_attachment_inner();
 
-//bed_adjustment_nut();
+bed_adjustment_nut();
 
 //bed_attachment_spring_screw();
 //bed_attachment_spring_nut();

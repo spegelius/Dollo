@@ -28,11 +28,11 @@ module rigid_leadscrew_coupler () {
                 translate([-9,height/2,27]) rotate([90,0,0]) cylinder(d=bolt_head_hole_dia, h=9);
 
                 // nut holes
-                translate([8,9,5]) rotate([0,90,0]) nut(6);
-                translate([8,-9,5]) rotate([0,90,0]) nut(6);
+                translate([8,9,5]) rotate([0,90,0]) M3_nut(6);
+                translate([8,-9,5]) rotate([0,90,0]) M3_nut(6);
 
-                translate([9,-8,27]) rotate([90,0,0]) nut(6);
-                translate([-9,-8,27]) rotate([90,0,0]) nut(6);
+                translate([9,-8,27]) rotate([90,0,0]) M3_nut(6);
+                translate([-9,-8,27]) rotate([90,0,0]) M3_nut(6);
             }
             
         }
@@ -97,8 +97,8 @@ module flexible_coupler_clamp() {
             translate([-4.2,-8.3,h/2]) rotate([0,-90,0]) cylinder(d=bolt_head_hole_dia, h=9);
         
             // nut holes
-            translate([4,8.3,h/2]) rotate([0,90,0]) nut(8);
-            translate([4,-8.3,h/2]) rotate([0,90,0]) nut(8);
+            translate([4,8.3,h/2]) rotate([0,90,0]) M3_nut(8);
+            translate([4,-8.3,h/2]) rotate([0,90,0]) M3_nut(8);
         
             translate([-1.5/2,-height/2,0]) cube([1.5, height, height/2]);
         }

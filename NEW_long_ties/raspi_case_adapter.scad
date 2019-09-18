@@ -24,20 +24,20 @@ module base() {
             translate([65/2-30/2,-9/2,0]) cube([30,70+9,8]);
         }
         translate([65/2,-8,8]) rotate([-90,0,0]) male_dovetail();
-        
+
         cylinder(d=bolt_hole_dia, h=5);
-        translate([0,0,1.6]) nut(cone=false);
+        translate([0,0,1.6]) M3_nut(cone=false);
         translate([65,0,0]) {
             cylinder(d=bolt_hole_dia, h=5);
-            translate([0,0,1.6]) nut(cone=false);
+            translate([0,0,1.6]) M3_nut(cone=false);
         }
         translate([0,70,0]) {
             cylinder(d=bolt_hole_dia, h=5);
-            translate([0,0,1.6]) nut(cone=false);
+            translate([0,0,1.6]) M3_nut(cone=false);
         }
         translate([65,70,0]) {
             cylinder(d=bolt_hole_dia, h=5);
-            translate([0,0,1.6]) nut(cone=false);
+            translate([0,0,1.6]) M3_nut(cone=false);
         }
     }
 }

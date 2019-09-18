@@ -42,10 +42,10 @@ module ears() {
             mirror([1,0,0]) ear();
         }
         translate([20,7.5,0]) cylinder(d=bolt_hole_dia,h=7);
-        translate([20,7.5,1.8]) nut();
+        translate([20,7.5,1.8]) M3_nut();
 
         translate([-20,7.5,0]) cylinder(d=bolt_hole_dia,h=7);
-        translate([-20,7.5,1.8]) nut();
+        translate([-20,7.5,1.8]) M3_nut();
     }
 }
 

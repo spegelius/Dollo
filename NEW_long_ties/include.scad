@@ -191,7 +191,7 @@ module wrap(units){
 	}
 }
 
-module nut(h=2.4, cone=true) {
+module M3_nut(h=2.4, cone=true) {
     hull() {
         cylinder(d = 6.5, h=h, $fn=6);
         if (cone) {
@@ -220,8 +220,8 @@ module M8_nut(h=5.3, cone=true) {
 
 module elongated_nut(length=4) {
     hull() {
-        translate([-length/2,0,0]) nut();
-        translate([length/2,0,0]) nut();
+        translate([-length/2,0,0]) M3_nut();
+        translate([length/2,0,0]) M3_nut();
     }
 }
 
@@ -448,7 +448,7 @@ module hexagon(inner_diameter, height=10) {
     cylinder(d=hexagon_dia_to_cylinder(inner_diameter), h=height, $fn=6);
 }
 
-//translate([50,50]) nut();
+//translate([50,50]) M3_nut();
 //translate([50,50]) elongated_nut();
 //translate([50,47.2]) cube([5.6, 5.6, 2.4]);
 
