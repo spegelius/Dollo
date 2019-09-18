@@ -58,16 +58,20 @@ module adapter_shy_rockabilly() {
     // adapter for this extruder: https://www.thingiverse.com/thing:1223730
 
     module fixing_plate() {
-        difference() {
-            union () {
-                translate([8/2,0,20/2]) cube([8,46,20], center = true);
-                translate([-15/2,0,5/2]) cube([15, 46, 5], center=true);
-                translate([23/2+8,15+8/2,20/2]) cube([23, 8, 20], center=true);
-            }
-            translate([-10,-15,0]) cylinder(d=m4_bolt_hole_dia, h=20);
-            translate([-10,14,0]) cylinder(d=m4_bolt_hole_dia, h=20);
+        union () {
+            translate([8/2,5,20/2]) cube([8,36,20], center = true);
+            translate([23/2+8,15+8/2,20/2]) cube([23, 8, 20], center=true);
+            translate([10,45,0]) rotate([0,0,-20]) difference() {
+                hull() {
+                    translate([-15/2,0,5/2]) cube([15, 46, 5], center=true);
+                    #translate([13,-20,5/2]) rotate([0,0,20]) cube([25, 1, 5], center=true);
+                }
+                translate([-10,-15,0]) cylinder(d=m4_bolt_hole_dia, h=20);
+                translate([-10,14,0]) cylinder(d=m4_bolt_hole_dia, h=20);
        
-            translate([-24,-22,0]) rotate([0,0,45]) cube([30,30,30]);
+                translate([-24,-22,0]) rotate([0,0,45]) cube([30,30,30]);
+
+            }
         }
     }
     
@@ -125,6 +129,6 @@ module adapter_airtrippers_bowden_extruder(pin_distance=61, pin_size=6.4) {
 
 //adapter_mks_sbase_box();
 //adapter_dove_m3_28();
-adapter_dove_m3_15();
-//adapter_shy_rockabilly();
+//adapter_dove_m3_15();
+adapter_shy_rockabilly();
 //adapter_airtrippers_bowden_extruder();
