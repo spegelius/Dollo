@@ -191,12 +191,34 @@ module wrap(units){
 	}
 }
 
-module M3_nut(h=2.4, cone=true) {
+module M3_nut(h=2.4, cone=true, bridging=false) {
     hull() {
-        cylinder(d = 6.5, h=h, $fn=6);
+        cylinder(d=6.5, h=h, $fn=6);
         if (cone) {
             translate([0,0,h-0.01]) cylinder(d=3.2, h=1.2, $fn=20);
         }
+    }
+    
+    if (bridging) {
+        translate([0,0,h]) intersection() {
+            cube([10,3.2,0.4],center=true);
+            cylinder(d=6.5,h=0.5,center=true,$fn=6);
+        }
+        translate([0,0,h+0.2]) cube([3.2,3.2,0.4],center=true);
+    }
+}
+
+module M3_nut_tapering(h=2.4, cone=true, bridging=false) {
+    if (h>3) {
+        union() {
+            hull() {
+                cylinder(d=6.9, h=0.01, $fn=6);
+                translate([0,0,h-2.5]) M3_nut(h=0.1, cone=false, bridging=false);
+            }
+            translate([0,0,h-2.5]) M3_nut(h=2.5, cone=cone, bridging=bridging);
+        }
+    } else {
+        M3_nut(h=h, cone=cone, bridging=bridging);
     }
 }
 
