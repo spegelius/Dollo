@@ -119,7 +119,8 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
     }
     
     module stiffener(length) {
-        cube([length,7,10],center=true);
+        //cube([length,7,10],center=true);
+        rotate([0,90,0]) chamfered_cube_side(10,7,length,3,center=true);
     }
 
     difference() {
@@ -132,9 +133,9 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
                 translate([0,-30+7/2,s_h+15]) stiffener(s_l);
                 translate([0,-7/2,s_h+15]) stiffener(s_l);
                 if (s_h > 30) {
-                    h2 = s_h-10;
-                    translate([0,-30+7/2,22+h2/2]) cube([10,7,h2],center=true);
-                    translate([0,-7/2,22+h2/2]) cube([10,7,h2],center=true);
+                    h2 = s_h-5;
+                    translate([0,-30+7/2,22+h2/2]) chamfered_cube_side(10,7,h2,3,center=true);
+                    translate([0,-7/2,22+h2/2]) chamfered_cube_side(10,7,h2,3,center=true);
                 }
             }
         }
@@ -192,4 +193,5 @@ module debug_90() {
 
 // for bed carriage
 //corner_90(corner_len=20, extra_stiff=false);
-corner_90(corner_len=20, extra_stiff=true);
+//corner_90(corner_len=20, extra_stiff=true);
+corner_90(corner_len=70, extra_stiff=true);
