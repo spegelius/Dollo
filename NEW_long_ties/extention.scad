@@ -26,11 +26,22 @@ module extention_base(length, support=true){
                 rotate([0,r*90,0]) translate([0,0,15]) rotate([-90,0,0])male_dovetail(height=length+2);
             }
         }
+    } //subtracted
 
-	} //subtracted
+    module infill() {
+        rotate([-90,0,0]) translate([30/2,-30/2,0]) {
+            for(i = [0:3]) {
+                rotate([0,0,360/4*i]) translate([5,30/2-2,0]) cylinder(d=0.1,h=7);
+                rotate([0,0,360/4*i]) translate([-5,30/2-2,0]) cylinder(d=0.1,h=7);
+            }
+        }
+    }
+
 	difference(){
 		added();
 		subtracted();
+        translate([0,-1,0])infill();
+        translate([0,length-6,0]) infill();
 	}
     //support
     if (support==true)
@@ -85,7 +96,7 @@ module extention_center(length=120, stopper_position=60) {
 //extention_center(length=150,stopper_position=150/2);
 
 // 180cm extention
-//extention(6);
+extention(6);
 //extention_center(length=180,stopper_position=180/2);
 
 // centers for corner
