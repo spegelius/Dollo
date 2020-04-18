@@ -96,16 +96,43 @@ module bed_rail_frame_mount() {
 }
 
 module bed_rail_frame_mount_top() {
-    screw_pos = -30/2-z_screw_d/2-1;
     difference() {
         union() {
             bed_rail_frame_mount();
-            hull() {
-                translate([-1,0,3.5/2]) cube([1,z_screw_d+10,3.5],center=true);
-                translate([screw_pos,0,0]) cylinder(d=z_screw_d+10,h=3.5,$fn=50);
-            }
+            translate([0,0,5.5/2]) chamfered_cube(21,10,5.5,0.5,center=true);
+            translate([0,0,5.5]) rotate([0,0,90]) long_tie(20);
         }
-        translate([screw_pos,0,-1]) cylinder(d=z_screw_d+3,h=10,$fn=50);
+    }
+}
+
+module bed_screw_trap() {
+    screw_pos = -30/2-z_screw_d/2-1;
+
+    //hole_d = z_screw_d+4;
+
+    // Dollo rework
+    hole_d = 12+4;
+
+    hole_outer = hole_d+6;
+
+    difference() {
+        union() {
+            hull() {
+                translate([-1,0,3.5/2])
+                cube([1,hole_outer,3.5],center=true);
+
+                translate([screw_pos,0,0])
+                cylinder(d=hole_d+6,h=3.5,$fn=50);
+            }
+            translate([0,0,7/2])
+            cube([20,hole_outer,7],center=true);
+        }
+        translate([screw_pos,0,-1])
+        cylinder(d=hole_d,h=7,$fn=50);
+
+        translate([-20/2,0,7])
+        rotate([-90,0,-90])
+        male_dovetail(20);
     }
 }
 
