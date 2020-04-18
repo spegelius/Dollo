@@ -390,9 +390,14 @@ module chamfered_cube(x,y,z, chamfer, center=false) {
             cube([x-2*chamfer,y,z-2*chamfer], center=center);
             cube([x-2*chamfer,y-2*chamfer,z], center=center);
         } else {
-            translate([0,chamfer,chamfer]) cube([x, y-2*chamfer,z-2*chamfer], center=center);
-            translate([chamfer,0,chamfer]) cube([x-2*chamfer,y,z-2*chamfer], center=center);
-            translate([chamfer,chamfer,0]) cube([x-2*chamfer,y-2*chamfer,z], center=center);
+            translate([0,chamfer,chamfer])
+            cube([x, y-2*chamfer,z-2*chamfer], center=center);
+
+            translate([chamfer,0,chamfer])
+            cube([x-2*chamfer,y,z-2*chamfer], center=center);
+
+            translate([chamfer,chamfer,0])
+            cube([x-2*chamfer,y-2*chamfer,z], center=center);
         }
     }
 }
@@ -416,13 +421,14 @@ module rounded_cylinder(d, h, corner) {
         translate([0,0,h-corner/2]) donut(d-corner,corner);
     }
 }
+//rounded_cylinder(10,10,2,$fn=40);
+//donut(10,2,$fn=40);
 
 module chamfered_cylinder(d,h,chamfer,center=false) {
     module _chamfered_cylinder() {
-        union() {
-            cylinder(d1=d-2*chamfer,d2=d,h=chamfer);
+        hull() {
             translate([0,0,chamfer]) cylinder(d=d,h=h-2*chamfer);
-            translate([0,0,h-chamfer]) cylinder(d1=d,d2=d-2*chamfer,h=chamfer);
+            cylinder(d=d-2*chamfer,h=h);
         }
     }
     
