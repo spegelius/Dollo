@@ -517,8 +517,8 @@ module _donut(d, h, angle=360, rotation=45) {
     children();
 }
 
-module donut(d, h, angle=360, rotation=45) {
-    _donut(d, h, angle=angle, rotation=rotation)
+module donut(d, h, angle=360) {
+    _donut(d, h, angle=angle, rotation=0)
     translate([-d/2,0,0])
     intersection() {
         translate([d/2,0,0]) circle(d=h);
