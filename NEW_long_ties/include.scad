@@ -306,46 +306,78 @@ module motor_plate(h=5, bolt_head_cones=false) {
 }
 
 module rounded_cube(x,y,z,corner,center=false) {
-    fn=50;
+
     module rcube(x,y,z,corner) {
         translate([corner/2,corner/2,corner/2]) hull() {
-            sphere(d=corner, $fn=fn);
+            sphere(d=corner);
             cube([x-corner,y-corner,z-corner]);
-            if (x>corner) translate([x-corner,0,0]) sphere(d=corner, $fn=fn);
-            if (x>corner && y>corner) translate([x-corner,y-corner,0]) sphere(d=corner, $fn=fn);
-            if (y>corner) translate([0,y-corner,0]) sphere(d=corner, $fn=fn);
-            if (z>corner) translate([0,0,z-corner]) sphere(d=corner, $fn=fn);
-            if (z>corner && x>corner) translate([x-corner,0,z-corner]) sphere(d=corner, $fn=fn);
-            if (z>corner && x>corner && y>corner) translate([x-corner,y-corner,z-corner]) sphere(d=corner, $fn=fn);
-            if (z>corner && y>corner)translate([0,y-corner,z-corner]) sphere(d=corner, $fn=fn);
+            if (x>corner) {
+                translate([x-corner,0,0])
+                sphere(d=corner);
+            }
+            if (x>corner && y>corner) {
+                translate([x-corner,y-corner,0])
+                sphere(d=corner);
+            }
+            if (y>corner) {
+                translate([0,y-corner,0])
+                sphere(d=corner);
+            }
+            if (z>corner) {
+                translate([0,0,z-corner])
+                sphere(d=corner);
+            }
+            if (z>corner && x>corner) {
+                translate([x-corner,0,z-corner])
+                sphere(d=corner);
+            }
+            if (z>corner && x>corner && y>corner) {
+                translate([x-corner,y-corner,z-corner])
+                sphere(d=corner);
+            }
+            if (z>corner && y>corner) {
+                translate([0,y-corner,z-corner])
+                sphere(d=corner);
+            }
         }
     }
 
     module wrap() {
-        diff_x = x<corner ? (corner-x)/2 : 0;
-        diff_y = y<corner ? (corner-y)/2 : 0;
-        diff_z = z<corner ? (corner-z)/2 : 0;
-        
-        translate([-diff_x,-diff_y,-diff_z]) intersection() {
-            rcube(x,y,z,corner);
-            translate([diff_x,diff_y,diff_z]) cube([x,y,z]);
+        if (corner < 0) {
+            cube([x,y,z]);
+        } else {
+            diff_x = x<corner ? (corner-x)/2 : 0;
+            diff_y = y<corner ? (corner-y)/2 : 0;
+            diff_z = z<corner ? (corner-z)/2 : 0;
+
+            translate([-diff_x,-diff_y,-diff_z])
+            intersection() {
+                rcube(x,y,z,corner);
+
+                translate([diff_x,diff_y,diff_z])
+                cube([x,y,z]);
+            }
         }
     }
     
     if (center) {
-        translate([-x/2, -y/2, -z/2]) wrap();
+        translate([-x/2, -y/2, -z/2])
+        wrap();
     } else {
         wrap();
     }
 }
 
 module rounded_cube_side(x,y,z,corner,center=false) {
+    _z = corner < 0 ? z : z+2*corner;
+    _c = corner < 0 ? 0 : -corner;
     intersection() {
         cube([x,y,z], center=center);
         if (!center) {
-            translate([0,0,-corner]) rounded_cube(x,y,z+2*corner,corner,center);
+            translate([0,0,_c])
+            rounded_cube(x,y,_z,corner,center);
         } else {
-            rounded_cube(x,y,z+2*corner,corner,center);
+            rounded_cube(x,y,_z,corner,center);
         }
     }
 }
