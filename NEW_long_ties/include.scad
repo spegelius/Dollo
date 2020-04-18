@@ -191,45 +191,64 @@ module wrap(units){
 	}
 }
 
-module M3_nut(h=2.4, cone=true, bridging=false) {
+module _m_nut(d=6.5, id=3.3, h=2.4, cone=true, bridging=false) {
     hull() {
-        cylinder(d=6.5, h=h, $fn=6);
+        cylinder(d=d, h=h, $fn=6);
         if (cone) {
-            translate([0,0,h-0.01]) cylinder(d=3.2, h=1.2, $fn=20);
+            translate([0,0,h-0.01])
+            cylinder(d=id, h=id/2, $fn=20);
         }
     }
     
     if (bridging) {
-        translate([0,0,h]) intersection() {
-            cube([10,3.2,0.4],center=true);
-            cylinder(d=6.5,h=0.5,center=true,$fn=6);
+        translate([0,0,h])
+        intersection() {
+            cube([10,id,0.4],center=true);
+            cylinder(d=d,h=0.5,center=true,$fn=6);
         }
-        translate([0,0,h+0.2]) cube([3.2,3.2,0.4],center=true);
+        translate([0,0,h+0.2])
+        cube([id,id,0.4],center=true);
     }
 }
 
-module M3_nut_tapering(h=2.4, cone=true, bridging=false) {
+module _m_nut_tapering(d=6.5, id=3.3, h=2.4, cone=true, bridging=false) {
     if (h>3) {
         union() {
             hull() {
-                cylinder(d=6.9, h=0.01, $fn=6);
-                translate([0,0,h-2.5]) M3_nut(h=0.1, cone=false, bridging=false);
+                cylinder(d=d+0.5, h=0.01, $fn=6);
+
+                translate([0,0,h-2.5])
+                _m_nut(d=d, id=id, h=0.1, cone=false, bridging=false);
             }
-            translate([0,0,h-2.5]) M3_nut(h=2.5, cone=cone, bridging=bridging);
+            translate([0,0,h-2.5])
+            _m_nut(d=d, id=id, h=2.5, cone=cone, bridging=bridging);
         }
     } else {
-        M3_nut(h=h, cone=cone, bridging=bridging);
+        _m_nut(d=d, id=id, h=h, cone=cone, bridging=bridging);
     }
 }
 
-module M4_nut(h=3.2, cone=true) {
-    hull() {
-        cylinder(d = 7.85, h=h, $fn=6);
-        if (cone) {
-            translate([0,0,h-0.01]) cylinder(d=4.2, h=2.2, $fn=20);
-        }
-    }
+module M3_nut(h=2.4, cone=true, bridging=false) {
+    _m_nut(d=6.5, id=3.3, h=h, cone=cone, bridging=bridging);
 }
+
+module M4_nut(h=3.2, cone=true, bridging=false) {
+    _m_nut(d=7.85, id=4.3, h=h, cone=cone, bridging=bridging);
+}
+
+module M3_nut_tapering(h=2.4, cone=true, bridging=false) {
+    _m_nut_tapering(d=6.5, id=3.3, h=h, cone=cone, bridging=bridging);
+}
+
+module M4_nut_tapering(h=3.2, cone=true, bridging=false) {
+    _m_nut_tapering(d=7.85, id=4.3, h=h, cone=cone, bridging=bridging);
+}
+
+//M3_nut();
+//M3_nut_tapering(5);
+//M4_nut(cone=false, bridging=true);
+//M4_nut_tapering(5);
+
 
 module M8_nut(h=5.3, cone=true) {
     hull() {
