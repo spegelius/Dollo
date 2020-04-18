@@ -329,23 +329,31 @@ module bed_housing_coupler() {
     }
 }
 
-module endstop_screw_mount() {
+module endstop_screw_mount(render_thread=true) {
     $fn = 80;
     difference() {
         union() {
-            translate([-5,-0.01,0]) cube([10,3,23]);
-            translate([-5,0,0]) cube([10,14,8]);
-            translate([0,13.5,0]) cylinder(d=11,h=8);
+            translate([-5,-0.01,0]) cube([10,1.5,23]);
+            translate([-5,0,0]) cube([10,10,8]);
+            translate([0,10.5,0]) cylinder(d=11,h=8);
             rotate([-90,0,180]) translate([0,-23/2,0]) long_tie(23);
         }
-        translate([0,13.5,-0.1]) _threads(h=15, $fn=40);
+        translate([0,10.5,-0.1]) {
+            if (render_thread) {
+                //_threads(d=7,h=15, $fn=40);
+                v_screw(h=15, screw_d=7, pitch=1.4, direction=0, steps=40);
+            } else {
+                cylinder(d=7,h=15, $fn=40);
+            }
+        }
+        translate([-0.5/2,3,0]) cube([0.5,15,10]);
     }
 }
 
 module _screw_knob(h=10) {
     h1 = h/5;
     h2 = h-2*h1;
-    d = 13.5;
+    d = 11.5;
     difference() {
         union() {
             cylinder(d1=d-2*h1, d2=d,h=h1, $fn=40);
@@ -358,21 +366,33 @@ module _screw_knob(h=10) {
     }
 }
 
-module endstop_screw() {
-    h = 40;
+module endstop_screw(render_thread=true) {
+    h = 35;
     difference() {
         union() {
-            translate([0,0,9.99]) _threads(8-2*slop, h, $fn=40);
+            translate([0,0,9.99]) {
+                if (render_thread) {
+                    //_threads(d=7-3*slop, h=h, $fn=40);
+                    v_screw(h=h, screw_d=7-3*slop, pitch=1.4, direction=0, steps=40);
+                } else {
+                    cylinder(d=7-3*slop,h=h, $fn=40);
+                }
+            }
             _screw_knob();
         }
-        cylinder(d=0.1,h=h+11);
+        //cylinder(d=0.1,h=h+11);
     }
 }
 
-module endstop_screw_nut() {
+module endstop_screw_nut(render_thread=true) {
     difference() {
         _screw_knob(h=7);
-        _threads(h=15, $fn=40);
+        if (render_thread) {
+            //_threads(d=7,h=15, $fn=40);
+            v_screw(h=15, screw_d=7, pitch=1.4, direction=0, steps=40);
+        } else {
+            cylinder(d=7,h=15,$fn=40);
+        }
     }
 }
 
@@ -633,8 +653,15 @@ module view_proper() {
 
     translate([-120-45,30,bed_position+15]) bed_rail_slide(true, slop=0, render_thread=false);
 
-    translate([-120-60,15,225]) rotate([0,180,90]) z_endstop();
-    translate([-120-53.1,0,bed_position+40]) rotate([180,0,-90]) endstop_screw_mount();
+    translate([-120-60,15,225]) rotate([0,180,90])
+    z_endstop();
+    translate([-120-53.1,0,bed_position+40])
+    rotate([180,0,-90])
+    endstop_screw_mount(render_thread=false);
+
+    translate([-120-63.6,0,bed_position-8])
+    rotate([0,0,0])
+    endstop_screw(render_thread=false);
     //translate([-120-53.1-14.5,0,bed_position+40-25]) endstop_screw();
 }
 
