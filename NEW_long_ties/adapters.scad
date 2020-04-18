@@ -59,27 +59,152 @@ module adapter_shy_rockabilly() {
 
     module fixing_plate() {
         union () {
-            translate([8/2,5,20/2]) cube([8,36,20], center = true);
-            translate([23/2+8,15+8/2,20/2]) cube([23, 8, 20], center=true);
-            translate([10,45,0]) rotate([0,0,-20]) difference() {
-                hull() {
-                    translate([-15/2,0,5/2]) cube([15, 46, 5], center=true);
-                    #translate([13,-20,5/2]) rotate([0,0,20]) cube([25, 1, 5], center=true);
-                }
-                translate([-10,-15,0]) cylinder(d=m4_bolt_hole_dia, h=20);
-                translate([-10,14,0]) cylinder(d=m4_bolt_hole_dia, h=20);
-       
-                translate([-24,-22,0]) rotate([0,0,45]) cube([30,30,30]);
+            translate([8/2,5,20/2])
+            cube([8,36,20], center = true);
 
+            translate([23/2+8,15+8/2,20/2])
+            cube([23, 8, 20], center=true);
+
+            translate([10,45,0])
+            rotate([0,0,-20])
+            difference() {
+                hull() {
+                    translate([-15/2,0,5/2])
+                    cube([15, 46, 5], center=true);
+
+                    translate([13,-20,5/2])
+                    rotate([0,0,20])
+                    cube([25, 1, 5], center=true);
+                }
+                translate([-10,-15,0])
+                cylinder(d=m4_bolt_hole_dia, h=20);
+
+                translate([-10,14,0])
+                cylinder(d=m4_bolt_hole_dia, h=20);
+
+                translate([-24,-22,0])
+                rotate([0,0,45])
+                cube([30,30,30]);
             }
         }
     }
-    
-    
     difference() {
         fixing_plate();
-        translate([8,0,0]) rotate([0,0,90]) male_dovetail(height=80);
-        translate([8+15,15,0]) rotate([0,0,0]) male_dovetail(height=80);
+        translate([8,0,0])
+        rotate([0,0,90]) male_dovetail(height=80);
+
+        translate([8+15,15,0])
+        rotate([0,0,0]) male_dovetail(height=80);
+    }
+}
+
+module adapter_shy_rockabilly2() {
+
+    // adapter for this extruder: https://www.thingiverse.com/thing:1223730
+    
+    // different angle
+
+    module fixing_plate() {
+        union () {
+            translate([8/2,5,20/2])
+            cube([8,36,20], center = true);
+
+            translate([23/2+8,15+8/2,20/2])
+            cube([23, 8, 20], center=true);
+
+            translate([10,27,0])
+            rotate([0,0,-45])
+            difference() {
+                hull() {
+                    translate([-16/2,0,7/2])
+                    cube([16, 44, 7], center=true);
+
+                    #translate([8,1,7/2])
+                    rotate([0,0,45])
+                    cube([25, 1, 7], center=true);
+                }
+                translate([-10,-14.5,0]) {
+                    translate([0,0,3.4])
+                    cylinder(d=m4_bolt_hole_dia, h=20);
+                    rotate([0,0,360/6/2])
+                    M4_nut(cone=false);
+                }
+
+                translate([-10,14.5,0]) {
+                    translate([0,0,3.4])
+                    cylinder(d=m4_bolt_hole_dia, h=20);
+                    rotate([0,0,360/6/2])
+                    M4_nut(cone=false);
+                }
+
+                translate([-26,-22,0])
+                rotate([0,0,45])
+                cube([30,30,30]);
+            }
+        }
+    }
+    difference() {
+        fixing_plate();
+        translate([8,0,0])
+        rotate([0,0,90]) male_dovetail(height=80);
+
+        translate([8+15,15,0])
+        rotate([0,0,0]) male_dovetail(height=80);
+    }
+}
+
+module adapter_shy_rockabilly3() {
+
+    // adapter for this extruder: https://www.thingiverse.com/thing:1223730
+    
+    // different angle
+
+    module fixing_plate() {
+        union () {
+            translate([8/2,5,20/2])
+            cube([8,36,20], center = true);
+
+            translate([23/2+8,15+8/2,20/2])
+            cube([23, 8, 20], center=true);
+
+            translate([22,23,0])
+            rotate([0,0,-90])
+            difference() {
+                hull() {
+                    translate([-16/2,0,7/2])
+                    cube([16, 44, 7], center=true);
+
+                    translate([2,-7,7/2])
+                    rotate([0,0,90])
+                    cube([25, 1, 7], center=true);
+                }
+                translate([-10,-14.5,0]) {
+                    translate([0,0,3.4])
+                    cylinder(d=m4_bolt_hole_dia, h=20);
+                    rotate([0,0,360/6/2])
+                    M4_nut(cone=false);
+                }
+
+                translate([-10,14.5,0]) {
+                    translate([0,0,3.4])
+                    cylinder(d=m4_bolt_hole_dia, h=20);
+                    rotate([0,0,360/6/2])
+                    M4_nut(cone=false);
+                }
+
+                translate([-26,-22,0])
+                rotate([0,0,45])
+                cube([30,30,30]);
+            }
+        }
+    }
+    difference() {
+        fixing_plate();
+        translate([8,0,0])
+        rotate([0,0,90]) male_dovetail(height=80);
+
+        translate([8+15,15,0])
+        rotate([0,0,0]) male_dovetail(height=80);
     }
 }
 
@@ -130,5 +255,7 @@ module adapter_airtrippers_bowden_extruder(pin_distance=61, pin_size=6.4) {
 //adapter_mks_sbase_box();
 //adapter_dove_m3_28();
 //adapter_dove_m3_15();
-adapter_shy_rockabilly();
+//adapter_shy_rockabilly();
+//adapter_shy_rockabilly2();
+adapter_shy_rockabilly3();
 //adapter_airtrippers_bowden_extruder();
