@@ -509,15 +509,25 @@ module _bolt(d=8, h=20, h2=20, shaft=0, diameter=1, z_step=1.8, depth=0.5) {
     }
 }
 
-module donut(d, h, angle=360) {
-    rotate_extrude(angle=angle, convexity=10) translate([d/2,0,0]) circle(h);
-}
-
-module cube_donut(d, h, angle=360, rotation=45) {
+module _donut(d, h, angle=360, rotation=45) {
     rotate([0,0,-angle/2])
     rotate_extrude(angle=angle, convexity=10)
     translate([d/2,0,0])
     rotate([0,0,rotation])
+    children();
+}
+
+module donut(d, h, angle=360, rotation=45) {
+    _donut(d, h, angle=angle, rotation=rotation)
+    translate([-d/2,0,0])
+    intersection() {
+        translate([d/2,0,0]) circle(d=h);
+        translate([0,-h/2,0]) square([max([d,h])+1,h]);
+    }
+}
+
+module cube_donut(d, h, angle=360, rotation=45) {
+    _donut(d, h, angle=angle, rotation=rotation)
     square([h,h], center=true);
 }
 
@@ -562,10 +572,15 @@ module ridged_cylinder(d=10, h=15, r=1.5) {
     }
 }
 
-module _v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=100) {
+module _v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=100, depth=0) {
+    scaling = (pitch + depth * 2) / pitch;
+    echo(scaling);
 
     module _v_thread_slice(d, h, angle=360, rotation=45) {
-        cube_donut(d, h, angle=angle, rotation=rotation, $fn=angle);
+        _donut(d, h, angle=angle, rotation=0, $fn=angle)
+        scale([scaling,1,1])
+        rotate([0,0,45])
+        square([h,h], center=true);
     }
 
     thread_length = PI*thread_d;
@@ -584,25 +599,33 @@ module _v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=100) {
     _rounds = rounds * steps - 1;
     union() {
         for (i=[0:_rounds]) {
-            rotate([0,0,i*angle_step]) translate([0,0,get_z_pos(i)]) rotate([get_rise_angle(),0,0]) _v_thread_slice(thread_d, cube_w, angle_step*1.01);
+            rotate([0,0,i*angle_step])
+            translate([0,0,get_z_pos(i)])
+            rotate([get_rise_angle(),0,0])
+            _v_thread_slice(thread_d, cube_w, angle_step*1.01);
         }
     }
 }
-//_v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=50);
+//_v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=100, depth=2);
 
-module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100) {
+module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100, depth=0) {
     rounds = h/pitch+1;
     d = screw_d - pitch;
 
     // debug
     //translate([0,0,5]) cylinder(d=screw_d, h=20);
 
-
     render(convexity = 10) {
         intersection() {
             union() {
-                translate([0,0,-pitch/2]) _v_thread(thread_d=d, pitch=pitch, rounds=rounds, direction=direction, steps=steps);
-                cylinder(d=d+pitch/10, h=h, $fn=steps);
+                translate([0,0,-pitch/2])
+                _v_thread(thread_d=d-2*depth,
+                          pitch=pitch,
+                          rounds=rounds,
+                          direction=direction,
+                          steps=steps,
+                          depth=depth);
+                cylinder(d=d+pitch/10-2*depth, h=h, $fn=steps);
             }
             cylinder(d=screw_d-pitch/10, h=h, $fn=steps);
         }
@@ -610,6 +633,9 @@ module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100) {
 }
 
 //v_screw(h=10, screw_d=20, pitch=4, direction=1, steps=100);
+//translate([20,0,0])
+//v_screw(h=10, screw_d=20, pitch=4, direction=1, steps=100,depth=1);
+
 
 module tube(d=10,h=10,wall=1,center=false) {
     difference() {
