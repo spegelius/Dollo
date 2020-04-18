@@ -45,19 +45,6 @@ module bed_rail_center_short() {
     }
 }
 
-module debug_bed_rail() {
-    intersection() {
-        union() {
-            bed_rail_short();
-            translate([0,0,60-2]) bed_rail();
-            translate([0,0,120+60-2]) bed_rail();
-            bed_rail_center_short();
-            translate([0,0,120-1]) bed_rail_center();
-        }
-        translate([0,15,0]) cube([30,30,400], center=true); 
-    }
-}
-
 module bed_rail_frame_mount() {
     
     h = 139;
@@ -75,13 +62,13 @@ module bed_rail_frame_mount() {
     
     difference() {
         union() {
-            translate([0,0,3.5/2]) cube([30,h,3.5], center=true);
+            translate([0,0,5/2]) cube([30,h,5], center=true);
             hull() {
-                translate([0,h/2-15,7/2]) cube([14,30,7],center=true);
+                translate([0,h/2-15,8/2]) cube([14,30,8],center=true);
                 translate([0,h/2-15,1/2]) cube([18,30,1],center=true);
             }
             hull() {
-                translate([0,-h/2+15,7/2]) cube([14,30,7],center=true);
+                translate([0,-h/2+15,8/2]) cube([14,30,8],center=true);
                 translate([0,-h/2+15,1/2]) cube([18,30,1],center=true);
             }
             hull() {
@@ -131,7 +118,7 @@ module _slide_hull(width=rail_width, height=20, bewel=2.1) {
 }
 
 module bed_rail_slide(beweled=false, slop=0, render_thread=true) {
-    h = 50;
+    h = 60;
     difference() {
         intersection() {
             rail_slide(width=rail_width, height=h, wiggles=11,slop=slop);
@@ -139,7 +126,7 @@ module bed_rail_slide(beweled=false, slop=0, render_thread=true) {
                 _slide_hull(height=h);
             }
         }
-        translate([0,0,14]) _slide_hull(width=rail_width-5, height=h-28, bewel=5);
+        translate([0,0,(h-(h-40))/2]) _slide_hull(width=rail_width-5, height=h-40, bewel=5);
         if (render_thread) {
             translate([0,0,-3/2]) _v_thread(thread_d=hexagon_dia_to_cylinder(rail_width+9), pitch=3, rounds=h/3+1, direction=0, steps=100);
         }
@@ -542,6 +529,19 @@ module bed_adjustment_nut() {
     }
 }
 
+module debug_bed_rail() {
+    intersection() {
+        union() {
+            bed_rail_short();
+            translate([0,0,60-2]) bed_rail();
+            translate([0,0,120+60-2]) bed_rail();
+            bed_rail_center_short();
+            translate([0,0,120-1]) bed_rail_center();
+        }
+        translate([0,15,0]) cube([30,30,400], center=true); 
+    }
+}
+
 module view_bed_frame(extensions_x=1, extensions_y=1) {
     offset_x = extensions_x * 120 / 2;
     offset_y = extensions_y * 120 / 2;
@@ -627,11 +627,6 @@ module slide_test_parts() {
 }
 
 //debug_bed_rail();
-//intersection() {
-//    bed_screw_housing(render_threads=false);
-//    translate([10.5,-22,0])cube([50,50,50]);
-//}
-
 //view_proper();
 //view_bed_frame();
 //view_bed_frame(2, 2);
@@ -642,10 +637,13 @@ module slide_test_parts() {
 //bed_rail_short();
 //bed_rail_center();
 
-//bed_rail_frame_mount();
+bed_rail_frame_mount();
 //bed_rail_frame_mount_top();
 
-//bed_rail_slide(true);
+//bed_screw_trap();
+
+//bed_rail_slide(render_thread=true);
+//bed_rail_slide(render_thread=false);
 //bed_rail_slide_nut();
 
 //bed_screw_housing(render_threads=false);
@@ -669,7 +667,7 @@ module slide_test_parts() {
 
 //bed_attachment_inner();
 
-bed_adjustment_nut();
+//bed_adjustment_nut();
 
 //bed_attachment_spring_screw();
 //bed_attachment_spring_nut();
