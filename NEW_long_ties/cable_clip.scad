@@ -30,7 +30,7 @@ module clip_large() {
 }
 
 module clip_small() {
-    _clip(d=7);
+    _clip(d=9);
 }
 
 module _shroud_holder(h=25,d=13.5,edge_h=1, gap=9) {
@@ -103,47 +103,53 @@ module cable_shroud_frame_clip2() {
     }
 }
 
-module cable_shroud_motor_clip() {
-    %rotate([90,0,0]) translate([0,0,-42.5/2]) mock_stepper_motor(false);
-
-    module _body_form(side) {
-        d = 500;
-        difference() {
-            hull() {
-                translate([0,side/2-1/2,0]) cube([side,1,10],center=true);
-                translate([0,-side/2+1/2,0]) cube([side-6,1,10],center=true);
-            }
-            translate([0,-d/2-side/2+0.7,0]) cylinder(d=d,h=11,center=true,$fn=400);
-        }
-    }
+module _cable_shroud_motor_clip_body(h=12) {
+    //%rotate([90,0,180])
+    //translate([0,0,-motor_side_length/2])
+    //mock_stepper_motor(false);
 
     difference() {
         union() {
-            difference() {
-                _body_form(motor_side_length+5);
-                _body_form(motor_side_length+0.2);
-                translate([0,-60/2-3,0]) cube([20,60,20],center=true);
-            }
-            translate([motor_side_length/2,motor_side_length/2]) rotate([90,0,45]) cylinder(d=5,h=12,center=true,$fn=40);
+            chamfered_cube_side(motor_side_length+7,
+                                motor_side_length+7,
+                                h, 4,center=true);
+            translate([0,-(motor_side_length+8)/2-20/2+13,0])
+            chamfered_cube_side(16.5+7, 20, h, 2,center=true);
         }
-        translate([motor_side_length/2,motor_side_length/2]) rotate([90,0,45]) cylinder(d=2.4,h=13,center=true,$fn=40);
+        difference() {
+            chamfered_cube_side(motor_side_length+slop,
+                                motor_side_length+slop,
+                                h+1, 2,center=true);
+            for(i=[0:3]) {
+                rotate([0,0,360/4*i]) {
+                    translate([motor_side_length/2+3/2-0.5,4,0])
+                    cylinder(d=3,h=h,center=true,$fn=20);
+
+                    translate([motor_side_length/2+3/2-0.5,-4,0])
+                    cylinder(d=3,h=h,center=true,$fn=20);
+                }
+            }
+        }
+
+        translate([0,-(motor_side_length+slop)/2,0])
+        cube([16.5,15,h+1],center=true);
     }
+
 }
 
-module cable_shroud_support() {
-    h = 14;
-    w = 17;
+module cable_shroud_motor_clip() {
 
-    union() {
-        difference() {
-            union() {
-                rounded_cube_side(w,20,h,4);
-                translate([4,-18,]) rotate([0,-90,0]) rounded_cube_side(30,22,4,5);
-            }
-            translate([0,8,0]) cube([30,40,30]);
-            translate([w/2,8.01,0]) rotate([0,0,180]) male_dovetail(h+1.1);
-            translate([5,-13,h]) rotate([0,-90,0]) rounded_cube_side(30,20,6,5);
+    difference() {
+        union() {
+            _cable_shroud_motor_clip_body();
+
+            translate([-motor_side_length/2-3,-motor_side_length/2+4])
+            rotate([90,0,0])
+            cylinder(d=5,h=15,center=true,$fn=40);
         }
+        translate([-motor_side_length/2-3,-motor_side_length/2+4])
+        rotate([90,0,0])
+        cylinder(d=2.4,h=36,center=true,$fn=40);
     }
 }
 
@@ -163,10 +169,9 @@ module debug() {
 
 //clip_verylarge();
 //clip_large();
-//clip_small();
+clip_small();
 //cable_shroud_frame_mount();
 //cable_shroud_frame_clip();
 //cable_shroud_frame_clip2();
 //cable_shroud_motor_clip();
-//cable_shroud_support();
-frame_spacer();
+//frame_spacer();
