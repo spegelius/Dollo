@@ -1,9 +1,11 @@
+////// INCLUDES //////
 include <globals.scad>;
 include <include.scad>;
 
 use <long_bow_tie.scad>;
 use <mockups.scad>;
 
+////// VARIABLES //////
 psu_height = 50;
 psu_width = 114;
 
@@ -13,14 +15,34 @@ psu_cover_height = 55+2*slop;
 atx_psu_width = 150+2*slop;
 atx_psu_height = 86+2*slop;
 
-atx_psu_cover_width = atx_psu_width+4+2*slop;
+atx_psu_cover_width = atx_psu_width+5+2*slop;
 atx_psu_cover_height = atx_psu_height+2+slop;
 
-thickness = 7;
+thickness = 8;
 
 bolt_hole_down = 11.5;
 bolt_hole_up = 13;
 
+////// VIEW //////
+//view_proper();
+//view_proper_atx();
+//view_proper_side_mount();
+
+// old vers
+//psu_clips();
+//clip();
+
+// ATX
+//atx_psu_cover();
+//rotate([90,0,0]) front_atx();
+//rotate([90,0,0]) back_atx();
+clip_extension();
+
+// new
+//side_clip1();
+//side_clip2();
+
+////// MODULES //////
 module mock_psu() {
     cube([psu_width, 220, psu_height]);
 }
@@ -32,10 +54,12 @@ module mock_atx_psu(holes=true, slop=0) {
     color("grey") {
         if (holes) {
             minus_atx_psu_holes() {
-                translate([-w/2,0.01,0]) cube([w, 140, h]);
+                translate([-w/2,0.01,0])
+                cube([w, 140, h]);
             }
         } else {
-            translate([-w/2,0,0]) cube([w, 140, h]);
+            translate([-w/2,0,0])
+            cube([w, 140, h]);
         }
     }
 }
@@ -43,25 +67,54 @@ module mock_atx_psu(holes=true, slop=0) {
 module minus_atx_psu_holes(hole=3.2) {
     difference() {
         children();
-        translate([-138/2,0,6]) rotate([-90,0,0]) cylinder(d=hole, h=5, $fn=30);
-        translate([138/2,0,6]) rotate([-90,0,0]) cylinder(d=hole, h=5, $fn=30);
-        translate([138/2,0,6+64]) rotate([-90,0,0]) cylinder(d=hole, h=5, $fn=30);
-        translate([-150/2+30,0,atx_psu_height-6]) rotate([-90,0,0]) cylinder(d=hole, h=5, $fn=30);
+        translate([-138/2,0,6])
+        rotate([-90,0,0])
+        cylinder(d=hole, h=5, $fn=30);
+
+        translate([138/2,0,6])
+        rotate([-90,0,0])
+        cylinder(d=hole, h=5, $fn=30);
+
+        translate([138/2,0,6+64])
+        rotate([-90,0,0])
+        cylinder(d=hole, h=5, $fn=30);
+
+        translate([-150/2+30,0,atx_psu_height-6])
+        rotate([-90,0,0])
+        cylinder(d=hole, h=5, $fn=30);
     }
 }
 
 module _front(w, h, dove_pos=26) {
     difference() {
-        cube([w+10, thickness, h+10], center=true);
+        cube([w+12, thickness, h+12], center=true);
         cube([w, thickness+1, h], center=true);
     }
     difference() {
-        translate([-w/2, -thickness+thickness/2, h/2]) cube([25,8,dove_pos+8]);
-        translate([-w/2+25,thickness/2+(8-thickness), h/2+dove_pos]) rotate([0,90,180]) male_dovetail(25);
+        translate([-w/2+25/2,0,h/2+(dove_pos+8)/2])
+        hull() {
+            cube([25,8,dove_pos+8],center=true);
+
+            translate([0,0,-(dove_pos+8)/2+1/2])
+            cube([33,8,1],center=true);
+        }
+
+        translate([-w/2+27,thickness/2, h/2+dove_pos])
+        rotate([0,90,180])
+        male_dovetail(30);
     }
     difference() {
-        translate([w/2-25,-thickness+thickness/2, h/2]) cube([25,8,dove_pos+8]);
-        translate([w/2,thickness/2+(8-thickness), h/2+dove_pos]) rotate([0,90,180]) male_dovetail(26);
+        translate([w/2-25/2,0,h/2+(dove_pos+8)/2])
+        hull() {
+            cube([25,8,dove_pos+8],center=true);
+
+            translate([0,0,-(dove_pos+8)/2+1/2])
+            cube([33,8,1],center=true);
+        }
+
+        translate([w/2+2,thickness/2, h/2+dove_pos])
+        rotate([0,90,180])
+        male_dovetail(30);
     }
 }
 
@@ -70,17 +123,12 @@ module front() {
 }
 
 module front_atx() {
-    union() {
-        difference() {
-            _front(atx_psu_cover_width, atx_psu_cover_height, 18);
-            translate([0,10/2-2,-atx_psu_cover_height/2-1]) cube([atx_psu_cover_width,10,10],center=true);
-        }
-    }
+    _front(atx_psu_cover_width, atx_psu_height+0.4, 18);
 }
 
 module _back(w,h) {
     difference() {
-        cube([w+10, thickness, h+10], center=true);
+        cube([w+12, thickness, h+12], center=true);
         cube([w, thickness+1, h], center=true);
     }
 }
@@ -97,13 +145,17 @@ module back() {
 
 module back_atx() {
     union() {
+        _back(atx_psu_width, atx_psu_height);
+
         difference() {
-            _back(atx_psu_width, atx_psu_height);
-            translate([0,10/2-2,-atx_psu_height/2-1]) cube([atx_psu_width,10,10],center=true);
-        }
-        difference() {
-            translate([atx_psu_width/2-0.5+2*slop,-thickness/2,atx_psu_height/2]) cube([8,15,27]);
-            translate([atx_psu_width/2+7.5+2*slop,-thickness/2-1,atx_psu_height/2+18]) rotate([0,90,90]) male_dovetail(17);
+            translate([atx_psu_width/2-2,
+                    -thickness/2,atx_psu_height/2])
+            cube([8,15,27]);
+
+            translate([atx_psu_width/2+7.5+2*slop,
+                    -thickness/2-1,atx_psu_height/2+18])
+            rotate([0,90,90])
+            male_dovetail(17);
         }
     }
 }
@@ -124,31 +176,61 @@ module clip() {
 
 module atx_psu_cover() {
     l = 45;
-    nob_y = l/2-3;
+    nob_y = l/2-2;
 
+    module _stopper(l=12) {
+        hull() {
+            cube([1,4,l],center=true);
+
+            translate([1.5,0,0])
+            cube([1,2,l-3],center=true);
+        }
+    }
+
+    rotate([90,0,0]) 
     minus_atx_psu_holes(3.7) {
-        translate([0,45/2+0.01,atx_psu_cover_height/2]) difference() {
+        translate([0,45/2+0.01,atx_psu_cover_height/2])
+        difference() {
             union() {
-                cube([atx_psu_cover_width, l,atx_psu_cover_height],center=true);
-                translate([-atx_psu_cover_width/2,nob_y,5]) sphere(d=3,$fn=20);
-                translate([-atx_psu_cover_width/2,nob_y,-5]) sphere(d=3,$fn=20);
-                translate([-atx_psu_cover_width/2,nob_y-thickness-2,5]) sphere(d=3,$fn=20);
-                translate([-atx_psu_cover_width/2,nob_y-thickness-2,-5]) sphere(d=3,$fn=20);
+                cube([atx_psu_cover_width,l,atx_psu_cover_height],
+                        center=true);
 
-                translate([atx_psu_cover_width/2,nob_y,5]) sphere(d=3,$fn=20);
-                translate([atx_psu_cover_width/2,nob_y,-5]) sphere(d=3,$fn=20);
-                translate([atx_psu_cover_width/2,nob_y-thickness-2,5]) sphere(d=3,$fn=20);
-                translate([atx_psu_cover_width/2,nob_y-thickness-2,-5]) sphere(d=3,$fn=20);
+                translate([-atx_psu_cover_width/2,nob_y,0])
+                mirror([1,0,0])
+                _stopper();
 
+                translate([-atx_psu_cover_width/2,nob_y-thickness-4,0])
+                mirror([1,0,0])
+                _stopper(20);
+
+                translate([atx_psu_cover_width/2,nob_y,0])
+                _stopper();
+
+                translate([atx_psu_cover_width/2,nob_y-thickness-4,0])
+                _stopper(20);
             }
-            translate([0,2,0]) cube([atx_psu_width, l,atx_psu_cover_height+1],center=true);
-            translate([-atx_psu_cover_width,-15,atx_psu_cover_height/2]) rotate([-45,0,0]) cube([atx_psu_cover_width*2,60,60]);
-            translate([-atx_psu_cover_width,-15,-atx_psu_cover_height/2]) rotate([-45,0,0]) cube([atx_psu_cover_width*2,60,60]);
+            translate([0,2.5,0])
+            cube([atx_psu_width, l,atx_psu_cover_height+1],center=true);
 
-            translate([-11/2+1,-0.01,-1]) cube([atx_psu_width-11,l,atx_psu_cover_height-20],center=true);
-            translate([1,-0.01,-6]) cube([atx_psu_width-4,l,atx_psu_cover_height-32],center=true);
-            translate([0,-0.01,-13]) cube([atx_psu_width-20,l,atx_psu_cover_height-32],center=true);
-            translate([12,-0.01,13]) cube([atx_psu_width-44,l,atx_psu_cover_height-32],center=true);
+            translate([-atx_psu_cover_width,-15,atx_psu_cover_height/2])
+            rotate([-45,0,0])
+            cube([atx_psu_cover_width*2,60,60]);
+
+            translate([-atx_psu_cover_width,-15,-atx_psu_cover_height/2])
+            rotate([-45,0,0])
+            cube([atx_psu_cover_width*2,60,60]);
+
+            translate([-11/2+1,-1,-1])
+            cube([atx_psu_width-11,l,atx_psu_cover_height-21 ],center=true);
+
+            translate([1,-1,-6])
+            cube([atx_psu_width-4,l,atx_psu_cover_height-32],center=true);
+
+            translate([0,-1,-13])
+            cube([atx_psu_width-20,l,atx_psu_cover_height-32],center=true);
+
+            translate([12,-1,13])
+            cube([atx_psu_width-44,l,atx_psu_cover_height-32],center=true);
         }
     }
 }
@@ -208,23 +290,42 @@ module psu_clips() {
     translate([0,-psu_height/2-17,0]) rotate([90,0,0]) back(psu_width,psu_height);
 }
 
-module psu_clips_atx() {
-    translate([0,psu_cover_height,0]) rotate([90,0,0]) front_atx();
-    translate([0,-psu_height/2-17,0]) rotate([90,0,0]) back_atx();
-}
-
-module psu_clips_new() {
-    
-}
-
 module clip_extension() {
-    rotate([0,10,0]) difference() {
+    rotate([0,10,0])
+    difference() {
         intersection() {
-            rotate([0,-10,0]) cube([46,25,15]);
-            cube([42,30,25]);
+            difference() {
+                union() {
+                    cube([46,25,30]);
+
+                    hull() {
+                        translate([27,0,0])
+                        cube([1,25,30]);
+
+                        translate([37,4,0])
+                        cube([28,30,30]);
+                    }
+                }
+                translate([42,-5,-1])
+                cube([30,30,32]);
+
+                translate([0,25-15,-1])
+                rotate([0,0,-90])
+                male_dovetail(35);
+
+                translate([42,25-15,-1])
+                rotate([0,0,90])
+                male_dovetail(35);
+
+                translate([42+15,25,-1])
+                rotate([0,0,0])
+                male_dovetail(35);
+
+
+            }
+            rotate([0,-10,0])
+            cube([75,40,17]);
         }
-        translate([0,25-15,0]) rotate([0,0,-90]) male_dovetail(25);
-        translate([42,25-15,0]) rotate([0,0,90]) male_dovetail(25);
     }
 }
 
@@ -237,12 +338,29 @@ module view_proper() {
 }
 
 module view_proper_atx() {
-    translate([atx_psu_width/2-8,300/2-(thickness/2+(8-thickness)),atx_psu_height/2-90.5]) front_atx();
-    translate([atx_psu_width/2-8,60-(thickness/2+(8-thickness)),atx_psu_height/2-89.5]) back_atx();
+    translate([27,
+            300/2-(thickness/2+(8-thickness)),
+            atx_psu_height/2-89.5])
+    front_atx();
+
+    translate([27,
+            60-(thickness/2+(8-thickness)),
+            atx_psu_height/2-89.5])
+    back_atx();
 
     frame_mockup(bed_angle=0, units_x=2, units_y=2, units_z=2);
-    translate([-8+atx_psu_width/2, 180, -89.5 ]) rotate([0,0,180]) mock_atx_psu();
-    translate([-8+atx_psu_width/2, 183, -89.5 ]) rotate([0,0,180]) atx_psu_cover();
+
+    translate([27, 180, -89.5 ])
+    rotate([0,0,180])
+    mock_atx_psu();
+    
+    translate([27, 183, -89.5 ])
+    rotate([90,180,0])
+    atx_psu_cover();
+
+    translate([108,50,24])
+    rotate([-90,0,10])
+    clip_extension();
 }
 
 module view_proper_side_mount() {
@@ -251,21 +369,3 @@ module view_proper_side_mount() {
     translate([0,153,0]) side_clip2();
 }
 
-//view_proper();
-//view_proper_atx();
-//view_proper_side_mount();
-
-// old vers
-//psu_clips();
-clip();
-
-// ATX
-//psu_clips_atx();
-//rotate([90,0,0]) atx_psu_cover();
-//rotate([90,0,0]) front_atx();
-//rotate([90,0,0]) back_atx();
-//clip_extension();
-
-// new
-//side_clip1();
-//side_clip2();

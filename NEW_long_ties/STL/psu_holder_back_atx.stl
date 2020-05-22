@@ -1,548 +1,464 @@
 solid OpenSCAD_Model
   facet normal -1 0 0
     outer loop
-      vertex -80.15 48.15 -3.5
-      vertex -80.15 -48.15 3.5
-      vertex -80.15 48.15 3.5
-    endloop
-  endfacet
-  facet normal -1 0 0
-    outer loop
-      vertex -80.15 -48.15 3.5
-      vertex -80.15 48.15 -3.5
-      vertex -80.15 -48.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 -1 0
-    outer loop
-      vertex -80.15 -48.15 -3.5
-      vertex 74.95 -48.15 3.5
-      vertex -80.15 -48.15 3.5
-    endloop
-  endfacet
-  facet normal 0 -1 -0
-    outer loop
-      vertex 74.95 -48.15 3.5
-      vertex -80.15 -48.15 -3.5
-      vertex 74.95 -48.15 -3.5
-    endloop
-  endfacet
-  facet normal 1 -0 0
-    outer loop
-      vertex 80.15 -43.15 3.5
-      vertex 80.15 48.15 -3.5
-      vertex 80.15 48.15 3.5
-    endloop
-  endfacet
-  facet normal 1 0 0
-    outer loop
-      vertex 80.15 48.15 -3.5
-      vertex 80.15 -43.15 3.5
-      vertex 80.15 -43.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 1 0
-    outer loop
-      vertex 80.15 48.15 3.5
-      vertex 75.15 48.15 -2
-      vertex 75.15 48.15 3.5
-    endloop
-  endfacet
-  facet normal 0 1 0
-    outer loop
-      vertex 75.15 48.15 -2
-      vertex 80.15 48.15 -3.5
-      vertex -75.15 48.15 -2
-    endloop
-  endfacet
-  facet normal 0 1 -0
-    outer loop
-      vertex 80.15 48.15 -3.5
-      vertex 75.15 48.15 -2
-      vertex 80.15 48.15 3.5
-    endloop
-  endfacet
-  facet normal 0 1 -0
-    outer loop
-      vertex -75.15 48.15 -2
-      vertex -80.15 48.15 3.5
-      vertex -75.15 48.15 3.5
-    endloop
-  endfacet
-  facet normal 0 1 0
-    outer loop
-      vertex -75.15 48.15 -2
-      vertex -80.15 48.15 -3.5
-      vertex -80.15 48.15 3.5
-    endloop
-  endfacet
-  facet normal 0 1 0
-    outer loop
-      vertex -80.15 48.15 -3.5
-      vertex -75.15 48.15 -2
-      vertex 80.15 48.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 82.95 -70.15 -3.5
-      vertex 77.95 -65.15 -3.5
-      vertex 82.95 -63.65 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 74.95 -70.15 -3.5
-      vertex 77.95 -57.15 -3.5
-      vertex 77.95 -65.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 74.95 -70.15 -3.5
-      vertex 77.95 -65.15 -3.5
-      vertex 82.95 -70.15 -3.5
-    endloop
-  endfacet
-  facet normal -0 0 -1
-    outer loop
-      vertex 77.95 -57.15 -3.5
-      vertex 74.95 -70.15 -3.5
-      vertex 74.95 -48.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 77.95 -57.15 -3.5
-      vertex 74.95 -48.15 -3.5
-      vertex 75.15 -43.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 74.95 -48.15 -3.5
-      vertex 74.95 -43.15 -3.5
-      vertex 75.15 -43.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 74.95 -48.15 -3.5
-      vertex -75.15 -43.15 -3.5
-      vertex 74.95 -43.15 -3.5
-    endloop
-  endfacet
-  facet normal -0 0 -1
-    outer loop
-      vertex -75.15 -43.15 -3.5
-      vertex -80.15 -48.15 -3.5
-      vertex -75.15 43.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex -80.15 -48.15 -3.5
-      vertex -75.15 -43.15 -3.5
-      vertex 74.95 -48.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 77.95 -57.15 -3.5
-      vertex 82.95 -43.15 -3.5
-      vertex 82.95 -58.65 -3.5
-    endloop
-  endfacet
-  facet normal -0 0 -1
-    outer loop
-      vertex 82.95 -43.15 -3.5
-      vertex 77.95 -57.15 -3.5
-      vertex 80.15 -43.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 75.15 -43.15 -3.5
-      vertex 80.15 -43.15 -3.5
-      vertex 77.95 -57.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 75.15 43.15 -3.5
-      vertex 80.15 -43.15 -3.5
-      vertex 75.15 -43.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex 80.15 -43.15 -3.5
-      vertex 75.15 43.15 -3.5
-      vertex 80.15 48.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex -75.15 43.15 -3.5
-      vertex 80.15 48.15 -3.5
-      vertex 75.15 43.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex -75.15 43.15 -3.5
-      vertex -80.15 48.15 -3.5
-      vertex 80.15 48.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 0 -1
-    outer loop
-      vertex -80.15 48.15 -3.5
-      vertex -75.15 43.15 -3.5
-      vertex -80.15 -48.15 -3.5
-    endloop
-  endfacet
-  facet normal -0 0 1
-    outer loop
-      vertex 75.15 48.15 3.5
-      vertex 80.15 -43.15 3.5
-      vertex 80.15 48.15 3.5
-    endloop
-  endfacet
-  facet normal 0 0 1
-    outer loop
-      vertex 80.15 -43.15 3.5
-      vertex 75.15 48.15 3.5
-      vertex 75.15 -43.15 3.5
-    endloop
-  endfacet
-  facet normal 0 0 1
-    outer loop
-      vertex -75.15 48.15 3.5
-      vertex -80.15 48.15 3.5
-      vertex -75.15 -43.15 3.5
-    endloop
-  endfacet
-  facet normal -0 0 1
-    outer loop
-      vertex -75.15 -43.15 3.5
-      vertex 74.95 -48.15 3.5
-      vertex 74.95 -43.15 3.5
-    endloop
-  endfacet
-  facet normal 0 0 1
-    outer loop
-      vertex -75.15 -43.15 3.5
-      vertex -80.15 -48.15 3.5
-      vertex 74.95 -48.15 3.5
-    endloop
-  endfacet
-  facet normal 0 0 1
-    outer loop
-      vertex -80.15 -48.15 3.5
-      vertex -75.15 -43.15 3.5
-      vertex -80.15 48.15 3.5
-    endloop
-  endfacet
-  facet normal 1 0 0
-    outer loop
-      vertex -75.15 48.15 3.5
-      vertex -75.15 43.15 -2
-      vertex -75.15 48.15 -2
-    endloop
-  endfacet
-  facet normal 1 -0 0
-    outer loop
-      vertex -75.15 -43.15 3.5
-      vertex -75.15 43.15 -2
-      vertex -75.15 48.15 3.5
-    endloop
-  endfacet
-  facet normal 1 0 0
-    outer loop
-      vertex -75.15 -43.15 -3.5
-      vertex -75.15 43.15 -2
-      vertex -75.15 -43.15 3.5
-    endloop
-  endfacet
-  facet normal 1 0 0
-    outer loop
-      vertex -75.15 43.15 -2
-      vertex -75.15 -43.15 -3.5
-      vertex -75.15 43.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 1 -0
-    outer loop
-      vertex 74.95 -43.15 -3.5
-      vertex -75.15 -43.15 3.5
-      vertex 74.95 -43.15 3.5
-    endloop
-  endfacet
-  facet normal 0 1 0
-    outer loop
-      vertex -75.15 -43.15 3.5
-      vertex 74.95 -43.15 -3.5
-      vertex -75.15 -43.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 1 0
-    outer loop
-      vertex 82.95 -43.15 11.5
-      vertex 80.15 -43.15 3.5
-      vertex 74.95 -43.15 11.5
-    endloop
-  endfacet
-  facet normal 0 1 -0
-    outer loop
-      vertex 82.95 -43.15 -3.5
-      vertex 80.15 -43.15 3.5
-      vertex 82.95 -43.15 11.5
-    endloop
-  endfacet
-  facet normal 0 1 0
-    outer loop
-      vertex 80.15 -43.15 3.5
-      vertex 82.95 -43.15 -3.5
-      vertex 80.15 -43.15 -3.5
-    endloop
-  endfacet
-  facet normal 0 1 -0
-    outer loop
-      vertex 75.15 -43.15 3.5
-      vertex 74.95 -43.15 11.5
-      vertex 80.15 -43.15 3.5
-    endloop
-  endfacet
-  facet normal 0 1 0
-    outer loop
-      vertex 75.15 -43.15 3.5
-      vertex 74.95 -43.15 3.5
-      vertex 74.95 -43.15 11.5
-    endloop
-  endfacet
-  facet normal 0 1 -0
-    outer loop
-      vertex 75.15 -43.15 -3.5
-      vertex 74.95 -43.15 3.5
-      vertex 75.15 -43.15 3.5
-    endloop
-  endfacet
-  facet normal 0 1 0
-    outer loop
-      vertex 74.95 -43.15 3.5
-      vertex 75.15 -43.15 -3.5
-      vertex 74.95 -43.15 -3.5
-    endloop
-  endfacet
-  facet normal -1 0 0
-    outer loop
-      vertex 75.15 -43.15 -3.5
-      vertex 75.15 43.15 -2
-      vertex 75.15 43.15 -3.5
+      vertex -81.15 -49.15 -4
+      vertex -81.15 49.15 4
+      vertex -81.15 49.15 -4
     endloop
   endfacet
   facet normal -1 -0 0
     outer loop
-      vertex 75.15 43.15 -2
-      vertex 75.15 -43.15 -3.5
-      vertex 75.15 -43.15 3.5
+      vertex -81.15 49.15 4
+      vertex -81.15 -49.15 -4
+      vertex -81.15 -49.15 4
+    endloop
+  endfacet
+  facet normal 0 -1 0
+    outer loop
+      vertex -81.15 -49.15 -4
+      vertex 73.15 -49.15 4
+      vertex -81.15 -49.15 4
+    endloop
+  endfacet
+  facet normal 0 -1 -0
+    outer loop
+      vertex 73.15 -49.15 4
+      vertex -81.15 -49.15 -4
+      vertex 73.15 -49.15 -4
+    endloop
+  endfacet
+  facet normal 1 0 0
+    outer loop
+      vertex 81.15 -43.15 11
+      vertex 81.15 -58.11 11
+      vertex 81.15 -43.15 4
+    endloop
+  endfacet
+  facet normal 1 -0 0
+    outer loop
+      vertex 81.15 -43.15 4
+      vertex 81.15 49.15 -4
+      vertex 81.15 49.15 4
+    endloop
+  endfacet
+  facet normal 1 0 0
+    outer loop
+      vertex 81.15 -43.15 4
+      vertex 81.15 -58.11 -4
+      vertex 81.15 49.15 -4
+    endloop
+  endfacet
+  facet normal 1 0 0
+    outer loop
+      vertex 81.15 -58.11 -4
+      vertex 81.15 -43.15 4
+      vertex 81.15 -58.11 11
+    endloop
+  endfacet
+  facet normal 1 -0 0
+    outer loop
+      vertex 81.15 -70.15 11
+      vertex 81.15 -64.19 -4
+      vertex 81.15 -64.19 11
+    endloop
+  endfacet
+  facet normal 1 0 0
+    outer loop
+      vertex 81.15 -64.19 -4
+      vertex 81.15 -70.15 11
+      vertex 81.15 -70.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex 81.15 49.15 4
+      vertex 75.15 43.15 4
+      vertex 81.15 -43.15 4
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex 81.15 49.15 4
+      vertex -75.15 43.15 4
+      vertex 75.15 43.15 4
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex -75.15 43.15 4
+      vertex -81.15 49.15 4
+      vertex -75.15 -43.15 4
+    endloop
+  endfacet
+  facet normal -0 0 1
+    outer loop
+      vertex -81.15 49.15 4
+      vertex -75.15 43.15 4
+      vertex 81.15 49.15 4
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex 81.15 -43.15 4
+      vertex 75.15 43.15 4
+      vertex 75.15 -43.15 4
+    endloop
+  endfacet
+  facet normal -0 0 1
+    outer loop
+      vertex -75.15 -43.15 4
+      vertex 73.15 -49.15 4
+      vertex 73.15 -43.15 4
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex -75.15 -43.15 4
+      vertex -81.15 -49.15 4
+      vertex 73.15 -49.15 4
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex -81.15 -49.15 4
+      vertex -75.15 -43.15 4
+      vertex -81.15 49.15 4
+    endloop
+  endfacet
+  facet normal 0 1 -0
+    outer loop
+      vertex 81.15 49.15 -4
+      vertex -81.15 49.15 4
+      vertex 81.15 49.15 4
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex -81.15 49.15 4
+      vertex 81.15 49.15 -4
+      vertex -81.15 49.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 81.15 -70.15 -4
+      vertex 77.95 -65.15 -4
+      vertex 81.15 -64.19 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 73.15 -70.15 -4
+      vertex 77.95 -57.15 -4
+      vertex 77.95 -65.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 73.15 -70.15 -4
+      vertex 77.95 -65.15 -4
+      vertex 81.15 -70.15 -4
+    endloop
+  endfacet
+  facet normal -0 0 -1
+    outer loop
+      vertex 77.95 -57.15 -4
+      vertex 73.15 -70.15 -4
+      vertex 73.15 -49.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 77.95 -57.15 -4
+      vertex 73.15 -49.15 -4
+      vertex 75.15 -43.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 73.15 -49.15 -4
+      vertex 73.15 -43.15 -4
+      vertex 75.15 -43.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 73.15 -49.15 -4
+      vertex -75.15 -43.15 -4
+      vertex 73.15 -43.15 -4
+    endloop
+  endfacet
+  facet normal -0 0 -1
+    outer loop
+      vertex -75.15 -43.15 -4
+      vertex -81.15 -49.15 -4
+      vertex -75.15 43.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex -81.15 -49.15 -4
+      vertex -75.15 -43.15 -4
+      vertex 73.15 -49.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 75.15 -43.15 -4
+      vertex 81.15 -58.11 -4
+      vertex 77.95 -57.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 81.15 -58.11 -4
+      vertex 75.15 -43.15 -4
+      vertex 81.15 49.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 75.15 43.15 -4
+      vertex 81.15 49.15 -4
+      vertex 75.15 -43.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex -75.15 43.15 -4
+      vertex 81.15 49.15 -4
+      vertex 75.15 43.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex -75.15 43.15 -4
+      vertex -81.15 49.15 -4
+      vertex 81.15 49.15 -4
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex -81.15 49.15 -4
+      vertex -75.15 43.15 -4
+      vertex -81.15 -49.15 -4
+    endloop
+  endfacet
+  facet normal 1 -0 0
+    outer loop
+      vertex -75.15 -43.15 4
+      vertex -75.15 43.15 -4
+      vertex -75.15 43.15 4
+    endloop
+  endfacet
+  facet normal 1 0 0
+    outer loop
+      vertex -75.15 43.15 -4
+      vertex -75.15 -43.15 4
+      vertex -75.15 -43.15 -4
+    endloop
+  endfacet
+  facet normal 0 1 -0
+    outer loop
+      vertex 73.15 -43.15 -4
+      vertex -75.15 -43.15 4
+      vertex 73.15 -43.15 4
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex -75.15 -43.15 4
+      vertex 73.15 -43.15 -4
+      vertex -75.15 -43.15 -4
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex 75.15 -43.15 4
+      vertex 81.15 -43.15 11
+      vertex 81.15 -43.15 4
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex 81.15 -43.15 11
+      vertex 75.15 -43.15 4
+      vertex 73.15 -43.15 11
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex 75.15 -43.15 4
+      vertex 73.15 -43.15 4
+      vertex 73.15 -43.15 11
+    endloop
+  endfacet
+  facet normal 0 1 -0
+    outer loop
+      vertex 75.15 -43.15 -4
+      vertex 73.15 -43.15 4
+      vertex 75.15 -43.15 4
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex 73.15 -43.15 4
+      vertex 75.15 -43.15 -4
+      vertex 73.15 -43.15 -4
     endloop
   endfacet
   facet normal -1 0 0
     outer loop
-      vertex 75.15 43.15 -2
-      vertex 75.15 48.15 3.5
-      vertex 75.15 48.15 -2
+      vertex 75.15 -43.15 -4
+      vertex 75.15 43.15 4
+      vertex 75.15 43.15 -4
     endloop
   endfacet
   facet normal -1 -0 0
     outer loop
-      vertex 75.15 48.15 3.5
-      vertex 75.15 43.15 -2
-      vertex 75.15 -43.15 3.5
+      vertex 75.15 43.15 4
+      vertex 75.15 -43.15 -4
+      vertex 75.15 -43.15 4
     endloop
   endfacet
   facet normal 0 -1 0
     outer loop
-      vertex -75.15 43.15 -3.5
-      vertex 75.15 43.15 -2
-      vertex -75.15 43.15 -2
+      vertex -75.15 43.15 -4
+      vertex 75.15 43.15 4
+      vertex -75.15 43.15 4
     endloop
   endfacet
   facet normal 0 -1 -0
     outer loop
-      vertex 75.15 43.15 -2
-      vertex -75.15 43.15 -3.5
-      vertex 75.15 43.15 -3.5
-    endloop
-  endfacet
-  facet normal -0 0 1
-    outer loop
-      vertex -75.15 48.15 -2
-      vertex 75.15 43.15 -2
-      vertex 75.15 48.15 -2
-    endloop
-  endfacet
-  facet normal 0 0 1
-    outer loop
-      vertex 75.15 43.15 -2
-      vertex -75.15 48.15 -2
-      vertex -75.15 43.15 -2
+      vertex 75.15 43.15 4
+      vertex -75.15 43.15 -4
+      vertex 75.15 43.15 -4
     endloop
   endfacet
   facet normal -1 0 0
     outer loop
-      vertex 74.95 -48.15 3.5
-      vertex 74.95 -43.15 11.5
-      vertex 74.95 -43.15 3.5
+      vertex 73.15 -49.15 4
+      vertex 73.15 -43.15 11
+      vertex 73.15 -43.15 4
     endloop
   endfacet
   facet normal -1 0 0
     outer loop
-      vertex 74.95 -70.15 -3.5
-      vertex 74.95 -48.15 3.5
-      vertex 74.95 -48.15 -3.5
+      vertex 73.15 -70.15 11
+      vertex 73.15 -49.15 4
+      vertex 73.15 -70.15 -4
     endloop
   endfacet
   facet normal -1 0 0
     outer loop
-      vertex 74.95 -70.15 11.5
-      vertex 74.95 -48.15 3.5
-      vertex 74.95 -70.15 -3.5
+      vertex 73.15 -49.15 4
+      vertex 73.15 -70.15 11
+      vertex 73.15 -43.15 11
     endloop
   endfacet
   facet normal -1 0 0
     outer loop
-      vertex 74.95 -48.15 3.5
-      vertex 74.95 -70.15 11.5
-      vertex 74.95 -43.15 11.5
+      vertex 73.15 -49.15 -4
+      vertex 73.15 -70.15 -4
+      vertex 73.15 -49.15 4
     endloop
   endfacet
   facet normal 0 -1 0
     outer loop
-      vertex 74.95 -70.15 -3.5
-      vertex 82.95 -70.15 11.5
-      vertex 74.95 -70.15 11.5
+      vertex 73.15 -70.15 -4
+      vertex 81.15 -70.15 11
+      vertex 73.15 -70.15 11
     endloop
   endfacet
   facet normal 0 -1 -0
     outer loop
-      vertex 82.95 -70.15 11.5
-      vertex 74.95 -70.15 -3.5
-      vertex 82.95 -70.15 -3.5
-    endloop
-  endfacet
-  facet normal 1 -0 0
-    outer loop
-      vertex 82.95 -70.15 11.5
-      vertex 82.95 -63.65 -3.5
-      vertex 82.95 -63.65 11.5
-    endloop
-  endfacet
-  facet normal 1 0 0
-    outer loop
-      vertex 82.95 -63.65 -3.5
-      vertex 82.95 -70.15 11.5
-      vertex 82.95 -70.15 -3.5
-    endloop
-  endfacet
-  facet normal 1 -0 0
-    outer loop
-      vertex 82.95 -58.65 11.5
-      vertex 82.95 -43.15 -3.5
-      vertex 82.95 -43.15 11.5
-    endloop
-  endfacet
-  facet normal 1 0 0
-    outer loop
-      vertex 82.95 -43.15 -3.5
-      vertex 82.95 -58.65 11.5
-      vertex 82.95 -58.65 -3.5
+      vertex 81.15 -70.15 11
+      vertex 73.15 -70.15 -4
+      vertex 81.15 -70.15 -4
     endloop
   endfacet
   facet normal 0 0 1
     outer loop
-      vertex 82.95 -43.15 11.5
-      vertex 77.95 -57.15 11.5
-      vertex 82.95 -58.65 11.5
+      vertex 81.15 -43.15 11
+      vertex 77.95 -57.15 11
+      vertex 81.15 -58.11 11
     endloop
   endfacet
   facet normal 0 0 1
     outer loop
-      vertex 74.95 -70.15 11.5
-      vertex 77.95 -57.15 11.5
-      vertex 74.95 -43.15 11.5
+      vertex 73.15 -70.15 11
+      vertex 77.95 -57.15 11
+      vertex 73.15 -43.15 11
     endloop
   endfacet
   facet normal -0 0 1
     outer loop
-      vertex 74.95 -43.15 11.5
-      vertex 77.95 -57.15 11.5
-      vertex 82.95 -43.15 11.5
+      vertex 73.15 -43.15 11
+      vertex 77.95 -57.15 11
+      vertex 81.15 -43.15 11
     endloop
   endfacet
   facet normal -0 0 1
     outer loop
-      vertex 77.95 -65.15 11.5
-      vertex 82.95 -70.15 11.5
-      vertex 82.95 -63.65 11.5
+      vertex 77.95 -65.15 11
+      vertex 81.15 -70.15 11
+      vertex 81.15 -64.19 11
     endloop
   endfacet
   facet normal 0 0 1
     outer loop
-      vertex 77.95 -65.15 11.5
-      vertex 74.95 -70.15 11.5
-      vertex 82.95 -70.15 11.5
+      vertex 77.95 -65.15 11
+      vertex 73.15 -70.15 11
+      vertex 81.15 -70.15 11
     endloop
   endfacet
   facet normal 0 0 1
     outer loop
-      vertex 77.95 -57.15 11.5
-      vertex 74.95 -70.15 11.5
-      vertex 77.95 -65.15 11.5
-    endloop
-  endfacet
-  facet normal 1 -0 0
-    outer loop
-      vertex 77.95 -65.15 11.5
-      vertex 77.95 -57.15 -3.5
-      vertex 77.95 -57.15 11.5
-    endloop
-  endfacet
-  facet normal 1 0 0
-    outer loop
-      vertex 77.95 -57.15 -3.5
-      vertex 77.95 -65.15 11.5
-      vertex 77.95 -65.15 -3.5
+      vertex 77.95 -57.15 11
+      vertex 73.15 -70.15 11
+      vertex 77.95 -65.15 11
     endloop
   endfacet
   facet normal -0.287348 0.957826 0
     outer loop
-      vertex 82.95 -63.65 -3.5
-      vertex 77.95 -65.15 11.5
-      vertex 82.95 -63.65 11.5
+      vertex 81.15 -64.19 -4
+      vertex 77.95 -65.15 11
+      vertex 81.15 -64.19 11
     endloop
   endfacet
   facet normal -0.287348 0.957826 0
     outer loop
-      vertex 77.95 -65.15 11.5
-      vertex 82.95 -63.65 -3.5
-      vertex 77.95 -65.15 -3.5
+      vertex 77.95 -65.15 11
+      vertex 81.15 -64.19 -4
+      vertex 77.95 -65.15 -4
     endloop
   endfacet
   facet normal -0.287348 -0.957826 0
     outer loop
-      vertex 77.95 -57.15 -3.5
-      vertex 82.95 -58.65 11.5
-      vertex 77.95 -57.15 11.5
+      vertex 77.95 -57.15 -4
+      vertex 81.15 -58.11 11
+      vertex 77.95 -57.15 11
     endloop
   endfacet
   facet normal -0.287348 -0.957826 -0
     outer loop
-      vertex 82.95 -58.65 11.5
-      vertex 77.95 -57.15 -3.5
-      vertex 82.95 -58.65 -3.5
+      vertex 81.15 -58.11 11
+      vertex 77.95 -57.15 -4
+      vertex 81.15 -58.11 -4
+    endloop
+  endfacet
+  facet normal 1 -0 0
+    outer loop
+      vertex 77.95 -65.15 11
+      vertex 77.95 -57.15 -4
+      vertex 77.95 -57.15 11
+    endloop
+  endfacet
+  facet normal 1 0 0
+    outer loop
+      vertex 77.95 -57.15 -4
+      vertex 77.95 -65.15 11
+      vertex 77.95 -65.15 -4
     endloop
   endfacet
 endsolid OpenSCAD_Model
