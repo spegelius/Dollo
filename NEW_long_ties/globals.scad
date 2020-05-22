@@ -61,7 +61,8 @@ The Y is so normal that all of those global variables at the top should change a
 */
 
 // stepper
-motor_side_length = 43.2;
+motor_side_length = 42.3;
+motor_height = 40;
 motor_bolt_hole_distance = 31;
 motor_center_hole = 23;
 motor_shaft_dia = 5;
