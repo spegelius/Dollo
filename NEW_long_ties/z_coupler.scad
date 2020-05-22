@@ -89,18 +89,34 @@ module flexible_coupler_clamp() {
             cylinder(d=13, h=h);
 
             // bolt holes
-            translate([-height/2,8.3,h/2]) rotate([0,90,0]) cylinder(d=bolt_hole_dia, h=height);
-            translate([-height/2,-8.3,h/2]) rotate([0,90,0]) cylinder(d=bolt_hole_dia, h=height);
-    
+            translate([-height/2,8.3,h/2])
+            rotate([0,90,0])
+            cylinder(d=bolt_hole_dia, h=height);
+
+            translate([-height/2,-8.3,h/2])
+            rotate([0,90,0])
+            cylinder(d=bolt_hole_dia, h=height);
+
             // bolt head holes
-            translate([-4.2,8.3,h/2]) rotate([0,-90,0]) cylinder(d=bolt_head_hole_dia, h=9);
-            translate([-4.2,-8.3,h/2]) rotate([0,-90,0]) cylinder(d=bolt_head_hole_dia, h=9);
-        
+            translate([-4.2,8.3,h/2])
+            rotate([0,-90,0])
+            cylinder(d=bolt_head_hole_dia, h=9);
+
+            translate([-4.2,-8.3,h/2])
+            rotate([0,-90,0])
+            cylinder(d=bolt_head_hole_dia, h=9);
+
             // nut holes
-            translate([4,8.3,h/2]) rotate([0,90,0]) M3_nut(8);
-            translate([4,-8.3,h/2]) rotate([0,90,0]) M3_nut(8);
-        
-            translate([-1.5/2,-height/2,0]) cube([1.5, height, height/2]);
+            translate([4,8.3,h/2])
+            rotate([0,90,0])
+            M3_nut(8);
+
+            translate([4,-8.3,h/2])
+            rotate([0,90,0])
+            M3_nut(8);
+
+            translate([-1.5/2,-height/2,0])
+            cube([1.5, height, height/2]);
         }
     }
     clamp();
