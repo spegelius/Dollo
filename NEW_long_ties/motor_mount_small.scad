@@ -69,106 +69,152 @@ module y_mount_added(){
 module bolt_hole() {
     hull() {
         cylinder(d=bolt_hole_dia, h=70);
-        translate([hole_length,hole_length,0]) cylinder(d=bolt_hole_dia, h=70);
+
+        translate([hole_length,hole_length,0])
+        cylinder(d=bolt_hole_dia, h=70);
     }
 }
 
 module bolt_head_hole() {
     hull() {
         cylinder(d=6.5, h=3);
-        translate([hole_length,hole_length,0]) cylinder(d=6.5, h=3);
+
+        translate([hole_length,hole_length,0])
+        cylinder(d=6.5, h=3);
     }
 }
 
 module tapered_bolt_head_hole() {
     hull() {
         cylinder(d1=bolt_hole_dia, d2=6.5, h=3);
-        translate([hole_length,hole_length,0]) cylinder(d1=bolt_hole_dia, d=6.5, h=3);
+        translate([hole_length,hole_length,0]) cylinder(d1=bolt_hole_dia, d2=6.5, h=3);
     }
 }
 
-module y_mount_taken(){
+module y_mount_taken(bridges){
+
+    function bolt_hole_h() = bridges ? 0.2 : 0;
+
 	halign = [
 	   [0, "center"]
 	 ];
 	 
-		 rotate([0,0,-90]) for (a = halign) {
-		   translate([-7, 12.5,-3]) {
-			 linear_extrude(height = 1) {
-			   text(text = str(text), font = font, size = 6, halign = a[1]);
-			 }
-		   }
-		 }
-		 rotate([0,0,90]) for (a = halign) {
-		   translate([7,12.5,-3]) {
-			 linear_extrude(height = 1) {
-			   text(text = str(text), font = font, size = 6, halign = a[1]);
-			 }
-		   }
-		 }
+    rotate([0,0,-90])
+    for (a = halign) {
+        translate([-7, 12.5,-3])
+        linear_extrude(height = 1)
+        text(text = str(text), font = font, size = 6, halign = a[1]);
+    }
+    rotate([0,0,90]) for (a = halign) {
+        translate([7,12.5,-3])
+        linear_extrude(height = 1)
+        text(text = str(text), font = font, size = 6, halign = a[1]);
+    }
 		 
 	rotate([0,0,45]) {
         // bolt holes. leave 0.2 = one layer which can be easily drilled out
-        translate([5.65-21,5.65-21,0.2]) bolt_hole();
-		translate([5.65+31-21,5.65-21,0.2]) bolt_hole();
-		translate([5.65-21,5.65+31-21,0.2]) bolt_hole();
-		translate([5.65+31-21,5.65+31-21,-10]) bolt_hole();
+        translate([5.65-21,5.65-21,bolt_hole_h()])
+        bolt_hole();
+
+		translate([5.65+31-21,5.65-21,bolt_hole_h()])
+        bolt_hole();
+
+		translate([5.65-21,5.65+31-21,bolt_hole_h()])
+        bolt_hole();
+
+		translate([5.65+31-21,5.65+31-21,-10])
+        bolt_hole();
 
 		//counter sink
 
-        translate([5.65-21,5.65-21,-3]) bolt_head_hole();
-		translate([5.65+31-21,5.65-21,-3]) bolt_head_hole();
-		translate([5.65-21,5.65+31-21,-3]) bolt_head_hole();
-		translate([5.65+31-21,5.65+31-21,0.5]) tapered_bolt_head_hole();
+        translate([5.65-21,5.65-21,-3])
+        bolt_head_hole();
+
+		translate([5.65+31-21,5.65-21,-3])
+        bolt_head_hole();
+
+		translate([5.65-21,5.65+31-21,-3])
+        bolt_head_hole();
+
+		translate([5.65+31-21,5.65+31-21,0.5])
+        tapered_bolt_head_hole();
 
         difference() {
-            translate([-70,-30,-5]) cube([50,70,50]);
-            translate([-19,-7,0]) rotate([0,0,45]) rounded_cube(12,12,100,3,center=true);
+            translate([-70,-30,-5])
+            cube([50,70,50]);
+
+            translate([-19,-7,0])
+            rotate([0,0,45])
+            rounded_cube(12,12,100,3,center=true);
         }
         difference() {
-            translate([-30,-70,-5]) cube([70,50,50]);
-            translate([-7,-19,0]) rotate([0,0,45]) rounded_cube(12,12,100,3,center=true);
+            translate([-30,-70,-5])
+            cube([70,50,50]);
+
+            translate([-7,-19,0])
+            rotate([0,0,45])
+            rounded_cube(12,12,100,3,center=true);
         }
 
-		translate([0,0,-5]) cylinder(d=motor_center_hole, h=20);
-        translate([hole_length,hole_length,-5]) cylinder(d=motor_center_hole, h=20);
+		translate([0,0,-5])
+        cylinder(d=motor_center_hole, h=20);
 
-		rotate([90,0,-45]) translate([-8,-3,-53+tail_depth]) male_dovetail(height=30);
-		rotate([90,0,-45]) translate([8,-3,-53+tail_depth]) male_dovetail(height=30);
+        translate([hole_length,hole_length,-5])
+        cylinder(d=motor_center_hole, h=20);
 
-		rotate([90,0,-45]) translate([-8,-3,22-tail_depth]) male_dovetail(height=30);
-		rotate([90,0,-45]) translate([8,-3,22-tail_depth]) male_dovetail(height=30);
+		rotate([90,0,-45])
+        translate([-8,-3,-53+tail_depth])
+        male_dovetail(height=30);
+
+		rotate([90,0,-45])
+        translate([8,-3,-53+tail_depth])
+        male_dovetail(height=30);
+
+		rotate([90,0,-45])
+        translate([-8,-3,22-tail_depth])
+        male_dovetail(height=30);
+
+		rotate([90,0,-45])
+        translate([8,-3,22-tail_depth])
+        male_dovetail(height=30);
 	}
 }
 
-module motor_mount( ){
+module motor_mount(bridges){
 	difference(){
 		y_mount_added();
-		y_mount_taken();
+		y_mount_taken(bridges);
 	}
 }
 
-module translated_mount(){
-translate([(-obj_leg/2)-2.5,0,0]) rotate([0,90,0]) motor_mount();
+module translated_mount(bridges){
+    translate([(-obj_leg/2)-2.5,0,0])
+    rotate([0,90,0])
+    motor_mount(bridges);
 }
 
-module screw_driver(){
-translated_mount();
+module screw_driver(bridges){
+    translated_mount(bridges);
 }
 
-module do_motor_mount() {
-    translate([0,0,20.5]) rotate([0,-90,0]) difference(){
-        screw_driver();
-        translate([-15,0,0]) rotate([0,90,0]) union(){
-            translate([5.65,5.65,-1]) cylinder(d=3.5, h=40);
-            translate([5.65+31,5.65,-1]) cylinder(d=3.5, h=40);
-            translate([5.65,5.65+31,-1]) cylinder(d=9, h=40);
-            translate([5.65+31,5.65+31,-1]) cylinder(d=9, h=40);
+module do_motor_mount(bridges=true) {
+    translate([0,0,20.5])
+    rotate([0,-90,0])
+    difference(){
+        screw_driver(bridges);
 
-            translate([-20,20,15]) rotate([90,0,45]) cylinder(h=70, d=22);
-            translate([20,20,15]) rotate([90,0,-45]) cylinder(h=70, d=22);
+        translate([-15,0,0])
+        rotate([0,90,0])
+        union(){
+            translate([-20,20,15])
+            rotate([90,0,45])
+            cylinder(h=70, d=22);
+
+            translate([20,20,15])
+            rotate([90,0,-45])
+            cylinder(h=70, d=22);
         }
     }
 }
 
-do_motor_mount();
+do_motor_mount(bridges=false);
