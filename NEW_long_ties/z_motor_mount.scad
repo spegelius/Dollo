@@ -7,7 +7,9 @@ use <extention.scad>;
 use <long_tie.scad>;
 use <z_coupler.scad>;
 
-module z_motor_mount() {
+
+// not used anymore
+module z_motor_mount_old() {
     l = 66;
     translate([0,0,l/2]) rotate([90,0,0]) intersection() {
         difference() {
@@ -66,11 +68,72 @@ module z_motor_mount() {
     translate([-13,-22.5,0]) cylinder(d=4,h=8);
 }
 
-module debug() {
-    z_motor_mount();
-    %translate([0,40/2,12]) rotate([0,0,180]) mock_stepper_motor();
-    %translate([0,-6,12+42/2]) rotate([90,0,0]) motor_shaft_adapter();
-    %translate([0,-23,42/2+12]) rotate([90,0,0]) z_screw_motor_flex_coupler(fast_render=true);
+module z_motor_mount() {
+    difference() {
+        union() {
+            translate([-30/2,-120/2,0])
+            extention_side();
+
+            // center body
+            cylinder(d=40,h=30,$fn=40);
+            // for rail mount positioning
+            cylinder(d=31-0.4,h=32,$fn=40);
+
+            // bolt ears
+            for (i=[0:3]) {
+                rotate([0,0,i*(360/4)]) {
+                    translate([motor_bolt_hole_distance/2,
+                               motor_bolt_hole_distance/2,
+                               0])
+                    cylinder(d=8, h=11.4, $fn=20);
+                }
+            }
+            motor_plate(h=5, bolt_head_cones=false);
+
+        }
+        translate([0,0,-0.1])
+        cylinder(d=28,h=35,$fn=40);
+
+        translate([0,0,-0.1])
+        for (i=[0:3]) {
+            rotate([0,0,i*(360/4)]) {
+                translate([motor_bolt_hole_distance/2,
+                           motor_bolt_hole_distance/2,
+                           0]) {
+                    translate([0,0,11.5])
+                    cylinder(d=7, h=20, $fn=20);
+
+                    cylinder(d=bolt_hole_dia,h=25,$fn=30);
+
+                    translate([0,0,11.5-1.8])
+                    cylinder(d1=bolt_hole_dia,
+                             d2=bolt_hole_dia+3,
+                             h=1.81,$fn=30);
+                }
+            }
+        }
+    }
+
+    %translate([0,43/2,-40/2])
+    rotate([90,0,0])
+    mock_stepper_motor();
+
+    %translate([0,0,3])
+    motor_shaft_adapter();
+
+    %translate([0,0,3+16])
+    z_screw_motor_flex_coupler(fast_render=true);
 }
-debug();
-//z_motor_mount();
+
+module debug() {
+    intersection() {
+        union() {
+            z_motor_mount();
+
+        }
+        translate([0,100/2,100/2])
+        cube([200,100,100],center=true);
+    }
+}
+//debug();
+z_motor_mount();
