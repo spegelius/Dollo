@@ -280,16 +280,28 @@ module motor_shaft(h=10, extra_slop=0) {
 //motor_shaft(extra_slop=0.0,$fn=30);
 
 module motor_plate_holes(h=5, bolt_head_cones=false, center_chamfer=true) {
-    translate([0,0,-.5]) cylinder(d=motor_center_hole, h=h+1);
+    translate([0,0,-.5])
+    cylinder(d=motor_center_hole, h=h+1);
+
     if (h > 2 && center_chamfer) {
-        translate([0,0,2]) cylinder(d1=motor_center_hole, d2=motor_center_hole+(h-2), h=h-2+0.1);
+        translate([0,0,2])
+        cylinder(d1=motor_center_hole,
+                 d2=motor_center_hole+(h-2),
+                 h=h-2+0.1);
     }
 
     for (i=[0:3]) {
         rotate([0,0,i*(360/4)]) {
-            translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,-0.01]) cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
+            translate([motor_bolt_hole_distance/2,
+                       motor_bolt_hole_distance/2,
+                       -0.01])
+            cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
+
             if (bolt_head_cones) {
-                translate([motor_bolt_hole_distance/2,motor_bolt_hole_distance/2,h-2]) cylinder(d1=bolt_hole_dia, d2=bolt_head_hole_dia, h=2.01, $fn=20);
+                translate([motor_bolt_hole_distance/2,
+                           motor_bolt_hole_distance/2,
+                           h-2])
+                cylinder(d1=bolt_hole_dia, d2=bolt_head_hole_dia, h=2.01, $fn=20);
 
             }
         }
@@ -298,9 +310,11 @@ module motor_plate_holes(h=5, bolt_head_cones=false, center_chamfer=true) {
 
 module motor_plate(h=5, bolt_head_cones=false) {
     difference () {
-        translate([0,0,h/2]) cube([motor_side_length,motor_side_length,h], center=true);
+        translate([0,0,h/2])
+        chamfered_cube_side(motor_side_length,
+                            motor_side_length,
+                            h,5,center=true);
             
-
         motor_plate_holes(h, bolt_head_cones);
     }
 }
@@ -552,7 +566,7 @@ module pyramid(w, cap=0) {
 
     if (cap > 0) {
         intersection() {
-            _pyramid(w);
+            _pyramid();
             translate([0,0,(h-cap)/2]) cube([w,w,h-cap], center=true);
         }
     } else {
@@ -608,7 +622,7 @@ module _v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=100, depth=0
 }
 //_v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=100, depth=2);
 
-module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100, depth=0) {
+module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100, depth=0, chamfer=false) {
     rounds = h/pitch+1;
     d = screw_d - pitch;
 
@@ -628,6 +642,11 @@ module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100, depth=0) {
                 cylinder(d=d+pitch/10-2*depth, h=h, $fn=steps);
             }
             cylinder(d=screw_d-pitch/10, h=h, $fn=steps);
+
+            if(chamfer) {
+                c_h = h+screw_d/2 - 1;
+                cylinder(d1=c_h*2, d2=0,h=c_h,$fn=40);
+            }
         }
     }
 }
