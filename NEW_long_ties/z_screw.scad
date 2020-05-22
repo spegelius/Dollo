@@ -203,20 +203,39 @@ module screw_housing_bolt_side() {
     // printing sideways makes a stronger bolt
     module block() {
         difference() {
-            translate([-4/2,0,0]) cube([4,50,1.8]);
-            rotate([-48,0,0]) translate([-5/2,-2,-1]) cube([5,2,4]);
+            translate([-4/2,0,0])
+            cube([4,50,1.8]);
+
+            rotate([-48,0,0])
+            translate([-5/2,-2,-1])
+            cube([5,2,4]);
         }
     }
     
     difference() {
-        translate([0,0,(screw_housing_thread_d+2)/2]) intersection() {
-            rotate([-90,0,0]) screw_housing_bolt();
+        translate([0,0,(screw_housing_thread_d+2)/2])
+        intersection() {
+            rotate([-90,0,0])
+            screw_housing_bolt();
+
             cube([13,50,screw_housing_thread_d+2], center=true);
         }
         block();
-        translate([0,0,9.01]) rotate([0,180,0]) block();
+
+        translate([0,0,9.01])
+        rotate([0,180,0]) block();
     }
-    translate([-4/2,2.1,0]) cube([4,21,1.6]);
+    // support
+    translate([-4/2,2.1,0])
+    cube([4,21,1.6]);
+
+    // brim
+    translate([0,1,0.2/2])
+    cube([6,4,0.2],center=true);
+
+    translate([0,0.6/2,0.6/2])
+    cube([6,0.6,0.6],center=true);
+
 }
 
 module _axle_end(d) {
