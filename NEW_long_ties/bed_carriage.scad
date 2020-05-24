@@ -928,10 +928,3 @@ module slide_test_parts() {
 
 //bed_attachment_spring_screw();
 //bed_attachment_spring_nut();
-
-
-union() {
-    hull()
-    rail(rail_width, 2);
-    rail_center(length=6, width=rail_width/2);
-}
