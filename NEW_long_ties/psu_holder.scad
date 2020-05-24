@@ -35,8 +35,8 @@ bolt_hole_up = 13;
 // ATX
 //atx_psu_cover();
 //rotate([90,0,0]) front_atx();
-//rotate([90,0,0]) back_atx();
-clip_extension();
+rotate([90,0,0]) back_atx();
+//clip_extension();
 
 // new
 //side_clip1();
@@ -152,7 +152,7 @@ module back_atx() {
                     -thickness/2,atx_psu_height/2])
             cube([8,15,27]);
 
-            translate([atx_psu_width/2+7.5+2*slop,
+            #translate([atx_psu_width/2+6,
                     -thickness/2-1,atx_psu_height/2+18])
             rotate([0,90,90])
             male_dovetail(17);
