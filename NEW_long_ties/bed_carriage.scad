@@ -553,7 +553,12 @@ module endstop_screw(render_thread=true) {
 
 module endstop_screw_nut(render_thread=true) {
     difference() {
-        _screw_knob(h=7);
+        union() {
+            _screw_knob(h=7);
+
+            translate([0,0,6.9])
+            tube(9.5,7,1.2,$fn=40);
+        }
         if (render_thread) {
             //_threads(d=7,h=15, $fn=40);
             v_screw(h=15, screw_d=7, pitch=1.4, direction=0, steps=40);
@@ -912,7 +917,7 @@ module slide_test_parts() {
 
 //endstop_screw_mount();
 //endstop_screw();
-//endstop_screw_nut();
+endstop_screw_nut();
 
 //bed_attachment_spring();
 //mirror([1,0,0]) bed_attachment_spring();
