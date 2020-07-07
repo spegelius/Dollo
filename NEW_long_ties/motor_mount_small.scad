@@ -1,10 +1,8 @@
-///////// NEED TO REDO THE MATH BECUASE OF THE SNAP ON RAILS, WELL WORTH IT
-
 $fn = 30;
 include <globals.scad>;
 include <include.scad>;
 
-
+////// VARIABLES //////
 frame_width = 35.5;
 tail_depth = 11;
 rack_height = 12.5;
@@ -18,51 +16,75 @@ tower_height = 17.5+3;
 text = "Dollo";
 font = "Liberation Sans";
 
-hole_length = 0.5;
+hole_length = 1;
 
 //$fn=220;
 
 // for rounded cube
 diameter = 2;
 
+
+////// VIEW //////
+do_motor_mount(bridges=true);
+
+
+////// MODULES //////
 module y_mount_added(){    
     //base
-    translate([0,-5.75+rack_gap/2,-1]) rounded_cube(y=38.5+rack_gap*2, x=frame_width+35+1, z=4, center=true, corner=diameter);
+    translate([0,-5.75+rack_gap/2,-1])
+    rounded_cube(y=38.5+rack_gap*2, x=frame_width+35+1, z=4, center=true, corner=diameter);
     
     // lower slide
     slide_depth = 11;
-    slide_pos_y = frame_width-24.5+rack_gap;
+    slide_pos_y = frame_width-24.8+rack_gap;
     
     module slide() {
         difference() {
-            rotate([45,0,0]) rounded_cube(z=15, x=17, y=15, corner=2.5, center=true);
-            translate([0,0,-8]) cube([60,30,30], center=true);
+            rotate([45,0,0])
+            rounded_cube(z=15, x=17, y=15, corner=2.5, center=true);
+
+            translate([0,0,-8])
+            cube([60,30,30], center=true);
         }
     }
     
-    translate([-27.25,slide_pos_y,-4.55]) slide();
-    translate([0,slide_pos_y,-4.55]) slide();
-    translate([27.25,slide_pos_y,-4.55]) slide();
+    translate([-27.25,slide_pos_y,-4.55])
+    slide();
+
+    translate([0,slide_pos_y,-4.55])
+    slide();
+
+    translate([27.25,slide_pos_y,-4.55])
+    slide();
     
-    translate([0,slide_pos_y-7.25,0.6]) rounded_cube(z=5, x=frame_width+35+1, y=22, corner=diameter,center=true);
+    translate([0,slide_pos_y-7.25,0.6])
+    rounded_cube(z=5, x=frame_width+35+1, y=22, corner=diameter,center=true);
     
-    translate([0,slide_pos_y,0.05]) rounded_cube(z=6.1, x=30, y=28, corner=diameter, center=true);
+    translate([0,slide_pos_y,0.05])
+    rounded_cube(z=6.1, x=30, y=28, corner=diameter, center=true);
     
-    //towers
+    // towers
 
     //top tower
-	translate([0-21,-25.75,0.625]) cube([42,18,tower_height]);
+	translate([0-21,-25.75,0.625])
+    cube([42,18,tower_height]);
     
     tower_pos_y = -2;
 
     // right tower
-	translate([17,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height,diameter,center=true);
-    translate([(32-21-4)+19-4.5,tower_pos_y+15/2-4.8,tower_height]) cylinder(d=7,h=2);
+	translate([17,tower_pos_y,(17.5+4.25)/2])
+    rounded_cube(26,15,tower_height,diameter,center=true);
+
+    translate([(32-21-4)+19-4.5,tower_pos_y+15/2-4.8,tower_height]) 
+    cylinder(d=7,h=2);
     
     // left tower
     difference() {
-        translate([-17,tower_pos_y,(17.5+4.25)/2]) rounded_cube(26,15,tower_height, diameter,center=true);
-        translate([(-21-4)+3.5,tower_pos_y+15/2-4.8,tower_height-1.5]) cylinder(d=7.25,h=2.5);
+        translate([-17,tower_pos_y,(17.5+4.25)/2])
+        rounded_cube(26,15,tower_height, diameter,center=true);
+
+        translate([(-21-4)+3.5,tower_pos_y+15/2-4.8,tower_height-1.5])
+        cylinder(d=7.25,h=2.5);
     }
 }
 
@@ -101,12 +123,12 @@ module y_mount_taken(bridges){
 	 
     rotate([0,0,-90])
     for (a = halign) {
-        translate([-7, 12.5,-3])
+        translate([-6.5, 12.3,-3])
         linear_extrude(height = 1)
         text(text = str(text), font = font, size = 6, halign = a[1]);
     }
     rotate([0,0,90]) for (a = halign) {
-        translate([7,12.5,-3])
+        translate([6.5,12.3,-3])
         linear_extrude(height = 1)
         text(text = str(text), font = font, size = 6, halign = a[1]);
     }
@@ -126,7 +148,6 @@ module y_mount_taken(bridges){
         bolt_hole();
 
 		//counter sink
-
         translate([5.65-21,5.65-21,-3])
         bolt_head_hole();
 
@@ -139,6 +160,7 @@ module y_mount_taken(bridges){
 		translate([5.65+31-21,5.65+31-21,0.5])
         tapered_bolt_head_hole();
 
+        // large chamfers
         difference() {
             translate([-70,-30,-5])
             cube([50,70,50]);
@@ -156,12 +178,19 @@ module y_mount_taken(bridges){
             rounded_cube(12,12,100,3,center=true);
         }
 
+        // motor center hole
 		translate([0,0,-5])
-        cylinder(d=motor_center_hole, h=20);
+        hull() {
+            cylinder(d=motor_center_hole, h=4);
+            cylinder(d=motor_center_hole-8, h=18);
 
-        translate([hole_length,hole_length,-5])
-        cylinder(d=motor_center_hole, h=20);
+            translate([hole_length,hole_length,0]) {
+                cylinder(d=motor_center_hole, h=4);
+                cylinder(d=motor_center_hole-8, h=18);
+            }
+        }
 
+        // dove holes
 		rotate([90,0,-45])
         translate([-8,-3,-53+tail_depth])
         male_dovetail(height=30);
@@ -217,4 +246,4 @@ module do_motor_mount(bridges=true) {
     }
 }
 
-do_motor_mount(bridges=false);
+

@@ -96,3 +96,8 @@ pin_bolt_dia_minus = 12+2*slop;
 
 clip_bolt_dia = 10-2*slop;
 clip_bolt_dia_minus = 10+2*slop;
+
+// rack
+rack_teeth_angle = 30;
+rack_h = 12;
+rack_tooth = 5;
