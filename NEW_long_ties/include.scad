@@ -259,10 +259,13 @@ module M8_nut(h=5.3, cone=true) {
     }
 }
 
-module elongated_nut(length=4) {
+module elongated_nut(length=4, cone=true, bridging=false) {
     hull() {
-        translate([-length/2,0,0]) M3_nut();
-        translate([length/2,0,0]) M3_nut();
+        translate([-length/2,0,0])
+        M3_nut(cone=cone, bridging=bridging);
+
+        translate([length/2,0,0])
+        M3_nut(cone=cone, bridging=bridging);
     }
 }
 
@@ -271,8 +274,10 @@ module motor_shaft(h=10, extra_slop=0) {
     intersection() {
         cylinder(d=d, h=h);
         union() {
-            translate([0,-.5,h/2+4]) cube([d,d,h], center=true);
-            cylinder(d=d, h=4.5);
+            translate([0,-.5,h/2])
+            cube([d,d,h], center=true);
+
+            cylinder(d=d, h=3.5);
         }
     }
 }
