@@ -2,8 +2,35 @@
 include <include.scad>;
 include <globals.scad>;
 use <long_tie.scad>;
+use <mockups.scad>;
 
 $fn=30;
+
+module _frame_clip(h=20) {
+    intersection() {
+        union() {
+            difference() {
+                translate([0,-11.5,0])
+                cube([35,23,h],center=true);
+
+                cube([30,30,60],center=true);
+
+                translate([0,-15,-30])
+                rotate([0,0,180])
+                male_dovetail();
+            }
+            translate([15,0,0])
+            rotate([0,0,5])
+            cube([4,5,h],center=true);
+
+            translate([-15,0,0])
+            rotate([0,0,-5])
+            cube([4,4.8,h],center=true);
+        }
+        translate([0,-11.5])
+        chamfered_cube(35,23,20,1,center=true);
+    }
+}
 
 module adapter_mks_sbase_box() {
     
@@ -11,26 +38,163 @@ module adapter_mks_sbase_box() {
 
     difference() {
         union() {
-            intersection() {
-                union() {
-                    difference() {
-                        translate([0,-11.5,0]) cube([35,23,h],center=true);
-                        cube([30,30,60],center=true);
-                        translate([0,-15,-30]) rotate([0,0,180]) male_dovetail();
-                    }
-                    translate([15,0,0]) rotate([0,0,5]) cube([3,5,h],center=true);
-                    translate([-15,0,0]) rotate([0,0,-5]) cube([3,4.8,h],center=true);
-                }
-                translate([0,-11.5]) chamfered_cube(35,23,20,1,center=true);
-            }
-            translate([-80,-18,-10]) rotate([90,0,0]) chamfered_cube_side(70,10,5,3);
-            translate([-24,-20,-10]) hull() {
-                rotate([0,0,35]) cube([10,1,5]);
-                translate([7.5,1/2,0]) cylinder(d=1,h=5);
+            _frame_clip(h);
+
+            translate([-80,-18,-10])
+            rotate([90,0,0])
+            chamfered_cube_side(70,10,5,3);
+
+            translate([-24,-20,-10])
+            hull() {
+                rotate([0,0,35])
+                cube([10,1,5]);
+
+                translate([7.5,1/2,0])
+                cylinder(d=1,h=5);
             }
         }
-        translate([-10,-24,-5]) rotate([-90,0,0]) cylinder(d=2.8,h=8,$fn=20);
-        translate([-75,-24,-5]) rotate([-90,0,0]) cylinder(d=2.8,h=8,$fn=20);
+        translate([-10,-24,-5])
+        rotate([-90,0,0])
+        cylinder(d=2.8,h=8,$fn=20);
+
+        translate([-75,-24,-5])
+        rotate([-90,0,0])
+        cylinder(d=2.8,h=8,$fn=20);
+    }
+}
+
+module adapter_titan() {
+    
+    module _titan_body() {
+        hull() {
+            translate([-46.5/2+1/2,-4/2,30/2])
+            cube([1.5,40.5,30],center=true);
+
+            translate([-46.5/2+1/2+4,0,30/2])
+            cube([1.5,44.5,30],center=true);
+
+            translate([46.5/2-1/2,10/2,30/2])
+            cube([1.5,34.5,30],center=true);
+
+            translate([46.5/2-16/2,-44/2+16/2,0])
+            cylinder(d=16.5,h=30,$fn=80);
+        }
+        translate([-46.5/2+7+27/2,44/2-7-27/2,0]) {
+            for(i=[0:3]) {
+                rotate([0,0,360/4*i])
+                translate([motor_bolt_hole_distance/2,
+                       -motor_bolt_hole_distance/2,
+                       0])
+                cylinder(d=3.5,h=100,center=true,$fn=30);
+            }
+            cylinder(d=27,h=100,center=true,$fn=40);
+        }
+    }
+
+    module _mount() {
+        difference() {
+            union() {
+                hull() {
+                    cube([32,32,6]);
+                
+                    translate([41,5,0])
+                    rotate([0,0,5])
+                    cube([50,48,6]);
+                }
+                cube([32,32,20]);
+
+                hull() {
+                    translate([35,36,0])
+                    cube([6,10,1]);
+
+                    translate([32-6,32-6,20-1])
+                    cube([6,6,1]);
+
+                }
+            }
+
+            translate([-1,-1,-1])
+            cube([32-8+1,32-8+1,22]);
+
+            translate([32-8,32-8-15,0])
+            rotate([0,0,-90])
+            male_dovetail(height=80);
+
+            translate([32-8-15,32-8,0])
+            rotate([0,0,0]) male_dovetail(height=80);
+
+            translate([64,31,33])
+            rotate([0,180,5])
+            _titan_body();
+
+            translate([88,52,-1])
+            rotate([0,0,45+5])
+            cube([10,10,10]);
+        }
+    }
+
+    _mount();
+
+    %translate([64,31,33])
+    rotate([0,180,5])
+    mock_titan();
+}
+
+module ramps_mount_adapter() {
+    module ear() {
+        hull() {
+            translate([0,0,0])
+            cube([5,15,0.1]);
+
+            translate([20,7.5,0])
+            cylinder(d=15,h=0.1);
+
+            translate([0,3.5,3.9])
+            cube([5,8,0.1]);
+
+            translate([20,7.5,3.9])
+            cylinder(d=8,h=0.1);
+        }
+    }
+
+    module ears() {
+        difference() {
+            hull() {
+                ear();
+
+                mirror([1,0,0])
+                ear();
+            }
+            translate([20,7.5,0])
+            cylinder(d=bolt_hole_dia,h=7);
+
+            translate([20,7.5,1.8])
+            M3_nut();
+
+            translate([-20,7.5,0])
+            cylinder(d=bolt_hole_dia,h=7);
+
+            translate([-20,7.5,1.8])
+            M3_nut();
+        }
+    }
+
+    // for thing: https://www.thingiverse.com/thing:861360
+    // drill holes to the box and use 3mm screws & nuts
+    difference() {
+        union() {
+            translate([0,3.5,0])
+            cube([20, box_length-27, 7.5]);
+
+            translate([10, box_length-20-15, 0])
+            ears();
+
+            translate([10, 0, 0])
+            ears();
+        }
+        translate([10, 0, 7.5])
+        rotate([-90,0,0])
+        male_dovetail(box_length);
     }
 }
 
@@ -253,9 +417,11 @@ module adapter_airtrippers_bowden_extruder(pin_distance=61, pin_size=6.4) {
 }
 
 //adapter_mks_sbase_box();
+adapter_titan();
+//ramps_mount_adapter();
 //adapter_dove_m3_28();
 //adapter_dove_m3_15();
 //adapter_shy_rockabilly();
 //adapter_shy_rockabilly2();
-adapter_shy_rockabilly3();
+//adapter_shy_rockabilly3();
 //adapter_airtrippers_bowden_extruder();

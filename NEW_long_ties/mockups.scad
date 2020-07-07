@@ -489,6 +489,45 @@ module mock_SSR_75_DD() {
     translate([-45.5/2+8.65,-60/2+6,0]) cylinder(d=7,h=22,$fn=40);
 }
 
+module mock_titan() {
+
+    difference() {
+        union() {
+            hull() {
+                translate([-46.5/2+1/2,-4/2,30/2])
+                cube([1,40,30],center=true);
+
+                translate([-46.5/2+1/2+4,0,30/2])
+                cube([1,44,30],center=true);
+
+                translate([46.5/2-1/2,10/2,30/2])
+                cube([1,34,30],center=true);
+
+                translate([46.5/2-16/2,-44/2+16/2,0])
+                cylinder(d=16,h=30,$fn=80);
+            }
+            translate([-46.5/2+7+27/2,44/2-7-27/2,0])
+            translate([motor_bolt_hole_distance/2,
+                       -motor_bolt_hole_distance/2,
+                       30-5-4])
+            cylinder(d=34,h=4,$fn=40);
+        }
+        translate([-46.5/2+7+27/2,44/2-7-27/2,0])
+        cylinder(d=27,h=100,center=true,$fn=40);
+
+        translate([-46.5/2+7+27/2,44/2-7-27/2,0])
+        for(i=[0:3]) {
+            rotate([0,0,360/4*i])
+            translate([motor_bolt_hole_distance/2,
+                   -motor_bolt_hole_distance/2,
+                   0])
+            cylinder(d=3,h=100,center=true,$fn=30);
+        }
+
+    }
+   
+}
+
 //mock_stepper_motor(false);
 //mock_stepper_motor(true);
 
@@ -506,3 +545,4 @@ module mock_SSR_75_DD() {
 //mock_PSU_600W();
 
 //mock_SSR_75_DD();
+mock_titan();
