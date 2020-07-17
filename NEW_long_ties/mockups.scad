@@ -523,9 +523,19 @@ module mock_titan() {
                    0])
             cylinder(d=3,h=100,center=true,$fn=30);
         }
-
     }
-   
+}
+
+module mock_pulley_GT2_16t() {
+    difference() {
+        union() {
+            cylinder(d=13,h=6,$fn=30);
+            cylinder(d=10,h=14,$fn=30);
+
+            translate([0,0,13])
+            cylinder(d=13,h=1,$fn=30);
+        }
+    }
 }
 
 //mock_stepper_motor(false);
@@ -545,4 +555,4 @@ module mock_titan() {
 //mock_PSU_600W();
 
 //mock_SSR_75_DD();
-mock_titan();
+//mock_titan();
