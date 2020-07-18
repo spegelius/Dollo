@@ -2,9 +2,35 @@
 include <globals.scad>;
 use <include.scad>;
 
+
+////// VARIABLES //////
 prox_sensor_dia = 18;
 prox_sensor_washer_dia = 30;
 
+
+////// VIEW //////
+//mock_stepper_motor(false);
+//mock_stepper_motor(true);
+
+//mechanical_endstop();
+
+//proximity_sensor();
+
+//e3dv6();
+e3d_Volcano();
+//prometheus();
+//frame_mockup(0, 2, 3, 4);
+//bed_mk2();
+//mks_sbase_mockup();
+//mock_PSU_240W();
+//mock_PSU_360W();
+//mock_PSU_600W();
+
+//mock_SSR_75_DD();
+//mock_titan();
+
+
+////// MODULES //////
 // LJ18A3-8-Z/BX
 module proximity_sensor(nut_position=30, nut_gap=10) {
     
@@ -42,69 +68,94 @@ module proximity_sensor(nut_position=30, nut_gap=10) {
     cylinder(d=prox_sensor_washer_dia,h=1.5);
 }
 
+module _e3d_nozzle() {
+    cylinder(d1=1, d2=3.5, h=2, $fn=30);
+
+    translate([0,0,2])
+    cylinder(d=7,h=2.5, $fn=6);
+
+    translate([0,0,4.5])
+    cylinder(d=4,h=2, $fn=30);
+}
+
+module _e3dv6_heater_block() {
+    color("LightGrey") {
+        translate([-8, -8, 0])
+        chamfered_cube(16,23,11.5,0.5);
+
+        cylinder(d=5,h=15, $fn=30);
+    }
+}
+
+module _e3dvolcano_heater_block() {
+    color("LightGrey")
+    difference() {
+        union() {
+            translate([-4.5, -(24-15.5), 0])
+            chamfered_cube(2*5.75,24,20,0.5);
+
+            cylinder(d=5,h=23.5, $fn=30);
+        }
+        translate([0,10/2+15.5-8,-10/2+1])
+        rounded_cube(20,10,10,1,center=true,$fn=20);
+    }
+}
+
+e3d_heatsink_step = 2.5;
+e3d_heatsink_h = 12*e3d_heatsink_step;
+echo("E3D heatsink h:", e3d_heatsink_h);
+
+module _e3d_heatsink() {
+    color("LightGrey") {
+        cylinder(d1=12,d2=10,h=e3d_heatsink_h, $fn=50);
+
+        for (i = [0:10]) {
+            translate([0,0,i*e3d_heatsink_step])
+            cylinder(d=22.3, h=1, $fn=50);
+        }
+        translate([0,0,11*e3d_heatsink_step])
+        cylinder(d=16,h=1, $fn=50);
+    }
+}
+
+module _e3d_neck() {
+    color("LightGrey")
+    union() {
+        $fn=50;
+        cylinder(d=16, h=3);
+
+        translate([0,0,3])
+        cylinder(d=12, h=6);
+
+        translate([0,0,9])
+        cylinder(d=16, h=3.7);
+    }
+}
+
 module e3dv6() {
-    
-    module nozzle() {
-        hull() {
-            cylinder(d=1, h=1, $fn=30);
-
-            translate([0,0,2])
-            cylinder(d=3, h=1, $fn=30);
-        }
-        translate([0,0,2])
-        cylinder(d=7,h=2.5, $fn=6);
-
-        translate([0,0,4.5])
-        cylinder(d=4,h=2, $fn=30);
-    }
-    
-    module heater_block() {
-        color("LightGrey") {
-            translate([-8, -8, 0])
-            cube([16,23,11.5]);
-
-            cylinder(d=5,h=15, $fn=30);
-        }
-    }
-    
-    heatsink_step = 2.5;
-    heatsink_h = 12*heatsink_step;
-    
-    module heatsink() {
-        color("LightGrey") {
-            cylinder(d1=12,d2=10,h=heatsink_h, $fn=50);
-
-            for (i = [0:10]) {
-                translate([0,0,i*heatsink_step])
-                cylinder(r=11.2, h=1, $fn=50);
-            }
-            translate([0,0,11*heatsink_step])
-            cylinder(d=16,h=1, $fn=50);
-        }
-    }
-    
-    module neck() {
-        color("LightGrey") {
-            $fn=50;
-            cylinder(d=16, h=3);
-
-            translate([0,0,3])
-            cylinder(d=12, h=6);
-
-            translate([0,0,9])
-            cylinder(d=16, h=3.7);
-        }
-    }
-    nozzle();
+    _e3d_nozzle();
 
     translate([0,0,5])
-    heater_block(); 
+    _e3dv6_heater_block();
 
     translate([0,0,19.6])
-    heatsink();
+    _e3d_heatsink();
 
-    translate([0,0,19.6+heatsink_h])
-    neck();
+    translate([0,0,19.6+e3d_heatsink_h])
+    _e3d_neck();
+}
+
+module e3d_Volcano() {
+    _e3d_nozzle();
+
+    translate([0,0,5])
+    _e3dvolcano_heater_block();
+
+    translate([0,0,19.6+8.5])
+    _e3d_heatsink();
+
+    translate([0,0,19.6+8.5+e3d_heatsink_h])
+    _e3d_neck();
 }
 
 module prometheus() {
@@ -743,21 +794,4 @@ module mock_pulley_GT2_16t() {
     }
 }
 
-//mock_stepper_motor(false);
-//mock_stepper_motor(true);
 
-//mechanical_endstop();
-
-//proximity_sensor();
-
-//e3dv6();
-//prometheus();
-//frame_mockup(0, 2, 3, 4);
-//bed_mk2();
-//mks_sbase_mockup();
-//mock_PSU_240W();
-//mock_PSU_360W();
-//mock_PSU_600W();
-
-//mock_SSR_75_DD();
-//mock_titan();
