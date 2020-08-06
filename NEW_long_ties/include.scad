@@ -139,13 +139,22 @@ module stagger_pins() {
 
 //////////////////      DOVE TAIL       //////////////////
 
-module male_dovetail(height, bridge_extra=0) {
-    union() {
-        dovetail_3d(male_dove_max_width,male_dove_min_width,male_dove_depth,height);
-        if (bridge_extra > 0) {
-            translate([-male_dove_max_width/2,male_dove_depth,0]) cube([male_dove_max_width,bridge_extra,height]);
+module male_dovetail(height, bridge_extra=0, center=false) {
+    module _male_dovetail() {
+        union() {
+            dovetail_3d(male_dove_max_width,male_dove_min_width,male_dove_depth,height);
+
+            if (bridge_extra > 0) {
+                translate([-male_dove_max_width/2,male_dove_depth,0])
+                cube([male_dove_max_width,bridge_extra,height]);
+            }
         }
     }
+    if (center) {
+        translate([0,0,-height/2])
+        _male_dovetail();
+    }
+    _male_dovetail();
 }
 
 //male_dovetail(5,bridge_extra=0.2);
@@ -446,13 +455,16 @@ module rounded_cylinder(d, h, corner) {
 module chamfered_cylinder(d,h,chamfer,center=false) {
     module _chamfered_cylinder() {
         hull() {
-            translate([0,0,chamfer]) cylinder(d=d,h=h-2*chamfer);
+            translate([0,0,chamfer])
+            cylinder(d=d,h=h-2*chamfer);
+
             cylinder(d=d-2*chamfer,h=h);
         }
     }
     
     if (center) {
-        translate([0,0,-h/2]) _chamfered_cylinder();
+        translate([0,0,-h/2])
+        _chamfered_cylinder();
     } else {
         _chamfered_cylinder();
     }
