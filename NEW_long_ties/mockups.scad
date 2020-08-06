@@ -17,9 +17,9 @@ prox_sensor_washer_dia = 30;
 //proximity_sensor();
 
 //e3dv6();
-e3d_Volcano();
+//e3d_Volcano();
 //prometheus();
-//frame_mockup(0, 2, 3, 4);
+//frame_mockup(0, 3, 2, 4, x_pos=10);
 //bed_mk2();
 //mks_sbase_mockup();
 //mock_PSU_240W();
@@ -28,6 +28,7 @@ e3d_Volcano();
 
 //mock_SSR_75_DD();
 //mock_titan();
+mock_5015_fan();
 
 
 ////// MODULES //////
@@ -306,7 +307,7 @@ module mock_stepper_motor(geared=false, center=false) {
     }
 }
 
-module frame_mockup(bed_angle=45, units_x=1, units_y=1, units_z=1) {
+module frame_mockup(bed_angle=45, units_x=1, units_y=1, units_z=1, x_pos=0) {
     corner_side = 60;
     unit = 120;
     unit_len_x = units_x*unit;
@@ -316,6 +317,7 @@ module frame_mockup(bed_angle=45, units_x=1, units_y=1, units_z=1) {
     echo(z);
     
     module corner() {
+        render()
         difference() {
             union() {
                 cube([30,30,corner_side]);
@@ -340,6 +342,7 @@ module frame_mockup(bed_angle=45, units_x=1, units_y=1, units_z=1) {
     }
     
     module side(length) {
+        render()
         difference() {
             cube([30,30,length]);
             translate([15,-0.01,0])
@@ -358,6 +361,11 @@ module frame_mockup(bed_angle=45, units_x=1, units_y=1, units_z=1) {
             male_dovetail(length+1);
         }
     }
+    
+    %render()
+    translate([-unit_len_x/2,x_pos,z+30+43.5])
+    rotate([0,90,0])
+    side(unit_len_x);
     
     // corners
     %translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0])
@@ -794,4 +802,19 @@ module mock_pulley_GT2_16t() {
     }
 }
 
+module mock_5015_fan() {
+    union() {
+        import("../../_downloaded/50mm_Radial_fan/50mm_fan.stl");
 
+        translate([-0.5,1.5+11/2,9-2.5+2.5/2])
+        cube([2,11,2.5],center=true);
+
+        translate([26.5,2,9-2.5+2.5/2])
+        cube([10,2.5,2.5],center=true);
+
+        translate([36.5,49.8,9-2.5+2.5/2])
+        rotate([0,0,-22])
+        cube([10,2.5,2.5],center=true);
+    }
+    
+}
