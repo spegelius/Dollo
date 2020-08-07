@@ -22,9 +22,9 @@ natch_height = 6;
 
 $fn=60;
 
-
 ////// VIEW //////
-view_proper();
+//view_proper();
+//debug_radial_fan();
 
 //do_mount();
 //clamp();
@@ -37,12 +37,11 @@ view_proper();
 
 //leveling_switch_clamp();
 
-//intersection() {
-//    fan_duct();
-//    cube([100,100,36]);
-//}
-//fan_duct();
-//fan_duct(hot_end="E3D_Volcano");
+//fan_duct_axial_e3dv6();
+fan_duct_radial_e3dv6();
+
+//fan_duct_axial_e3dvolcano();
+//fan_duct_radial_e3dvolcano();
 //cable_pcb_mount_clamp();
 
 
@@ -87,6 +86,12 @@ module y_mount_added(){
         rotate([0,90,0])
         rotate([0,0,90])
         male_dovetail(15);
+
+        translate([-12,9.01,86])
+        rotate([90,0,0])
+        rotate([0,90,0])
+        rotate([0,0,-90])
+        male_dovetail(15);
     }
 }
 
@@ -111,7 +116,7 @@ module y_mount_taken(){
     translate([0,-13,hotend_depth/2])
     cylinder(h=70, d=mounting_diamiter);
 
-    translate([0,-13,-0.5])
+    translate([0,-13,-1])
     cylinder(h=70, d=top_diamiter);
 
 	translate([0,-26,hotend_depth-natch_height])
@@ -304,27 +309,330 @@ module leveling_switch_clamp() {
             }
             translate([22.5,length+5,0])
             rotate([0,0,180])
-            _endstop_body(25, 11, holes=true);
+            _endstop_body(25, 11, 10, holes=true);
         }
         translate([-1,14/2,10.01])
         rotate([-90,0,-90])
         male_dovetail(30);
     }
-    %translate([-0.2,length-5.5,3])
+    %translate([-0.2,length-5.5,2.2])
     mechanical_endstop();
 }
 
-module fan_duct(hot_end="E3D_v6") {
+module _fan_duct_nozzle(nozzle_offset, nozzle_width) {
+    module tube(d=8, h=20) {
+        rotate([-90,0,0]) {
 
-    nozzle_offset = 1.5;
-    nozzle_width = 38;
+            hull() {
+                translate([0.5/2,0,0])
+                cylinder(d=d+2.5, h=0.1);
+
+                difference() {
+                    hull() {
+                        translate([-1,1,4])
+                        cylinder(d=d);
+
+                        translate([-1,d/2-2+1,0])
+                        cube([d/2, 2, 4]);
+                    }
+                    translate([d-3,-d-1.5,4])
+                    rotate([0,0,55])
+                    cube([d,d,10]);
+                }
+            }
+            difference() {
+                hull() {
+                    hull() {
+                        translate([-1,1,4])
+                        cylinder(d=d);
+
+                        translate([-1,1,h])
+                        sphere(d=d);
+                    }
+                    translate([-1,d/2-2+1,4])
+                    cube([d/2, 2, h-4]);
+                }
+                translate([d-3,-d-1.5,0])
+                rotate([0,0,55])
+                cube([d,d,h+20]);
+           }
+        }
+    }
+
+    module hollow_tube() {
+        difference() {
+            tube(d=11, h=20);
+
+            translate([0,-0.1,0])
+            tube(d=9, h=20.1);
+        }
+    }
+
+    module nozzle_main() {
+        translate([-nozzle_width/2+1+nozzle_offset,0,0])
+        hollow_tube();
+
+        translate([nozzle_width/2-1+nozzle_offset,0,0])
+        mirror([1,0,0])
+        hollow_tube();
+        
+        rotate([-90,0,0])
+        difference() {
+            translate([nozzle_offset,0,1/2])
+            cube([nozzle_width-1,13,1], center=true);
+
+            translate([-nozzle_width/2+nozzle_offset+1,0,-1])
+            cylinder(d=12,h=2.1);
+
+            translate([nozzle_width/2+nozzle_offset-1,0,-1])
+            cylinder(d=12,h=2.1);
+        }
+    }
+
+    difference() {
+        nozzle_main();
+
+        // air cutouts
+        translate([nozzle_width/2+nozzle_offset-4,20/2+1,-4])
+        rotate([0,60,0])
+        cube([4, 20, 6], center=true);
+
+        translate([-nozzle_width/2+nozzle_offset+4,20/2+1,-4])
+        rotate([0,-60,0])
+        cube([4, 20, 6], center=true);
+        
+        translate([nozzle_offset,1,-4.35])
+        rotate([60,0,0])
+        cube([15,3,6], center=true);
+    }
+}
+
+module _fan_duct_radial(nozzle_offset, nozzle_width, hot_end, supports=false) {
+    
+    module fan_base() {
+        difference() {
+            union() {
+                hull() {
+                    // duct body
+                    translate([7.4,-3,17/2-1])
+                    rotate([0,0,20])
+                    cube([22.5,4,19],center=true);
+
+                    translate([nozzle_offset,7,13/2+1])
+                    rotate([90+25,0,0])
+                    hull() {
+                        translate([-nozzle_width/2+1,0,0])
+                        cylinder(d=13,h=1);
+
+                        translate([nozzle_width/2-1,0,0])
+                        cylinder(d=13,h=1);
+                    }
+                }
+
+                // mount body
+                if (hot_end == "E3D_v6") {
+                    rotate([25,0,0])
+                    translate([0,-4.1,15/2+29])
+                    cube([27.5,10,15],center=true);
+
+                    hull() {
+                        rotate([25,0,0])
+                        translate([0,-4.1,29])
+                        cube([27.5,10,0.1],center=true);
+
+                        translate([0,0,10])
+                        cube([27.5,10,1],center=true);
+
+                        translate([0,-5,-1.5])
+                        cube([27.5,12,1],center=true);
+
+                    }
+                } else {
+                    rotate([25,0,0])
+                    translate([0,-4.1,15/2+38.5])
+                    cube([27.5,10,15],center=true);
+
+                    hull() {
+                        rotate([25,0,0])
+                        translate([0,-4.1,38.5])
+                        cube([27.5,10,0.1],center=true);
+
+                        translate([0,0,10])
+                        cube([27.5,10,1],center=true);
+
+                        translate([0,-5,-1.5])
+                        cube([27.5,12,1],center=true);
+                    }
+                }
+
+                // fan hole body
+                hull() {
+                    translate([1.4,-34,-2])
+                    cylinder(d=55,h=19,$fn=40);
+
+                    translate([7.4,-3,17/2-1])
+                    rotate([0,0,20])
+                    cube([22.5,4,19],center=true);
+                }
+
+                // fan screw hole body
+                hull() {
+                    translate([-25.2,-22.7,-2])
+                    cylinder(d=8.5,h=19,$fn=30);
+
+                    translate([1.2,-34,-2])
+                    cylinder(d=30,h=19,$fn=40);
+
+                    translate([27.6,-43.8,-2])
+                    cylinder(d=8.5,h=19,$fn=30);
+                }
+            }
+
+            // fan input
+            translate([7.4,-3,15.2/2])
+            rotate([0,0,20])
+            translate([0,-2,0])
+            cube([19.4,4,15.2],center=true);
+
+            translate([7.4+19.4/2,-3,15.2/2-0.2])
+            rotate([0,0,20])
+            translate([0,-5,0])
+            cube([5,14,3],center=true);
+
+            translate([-1-19.4/2,-3,15.2/2-0.2])
+            rotate([0,0,20])
+            translate([0,-8,0])
+            cube([12,4,3],center=true);
+
+            // duct
+            difference() {
+                hull() {
+                    translate([7.4,-3,17/2-1])
+                    rotate([0,0,20])
+                    cube([19.4,0.1,15.2],center=true);
+
+                    translate([nozzle_offset,7.01,13/2+1])
+                    rotate([90+25,0,0])
+                    hull() {
+                        translate([-nozzle_width/2+1,0,0])
+                        cylinder(d=11,h=0.2);
+
+                        translate([nozzle_width/2-1,0,0])
+                        cylinder(d=11,h=0.2);
+
+                    }
+                }
+                translate([-9,20/2,20/2])
+                rotate([0,0,45])
+                cube([0.8,20,20],center=true);
+
+                if (hot_end == "E3D_v6") {
+                    translate([14.5,20/2,20/2])
+                    rotate([0,0,-44])
+                    cube([0.8,20,20],center=true);
+                } else {
+                    translate([11.3,20/2,20/2])
+                    rotate([0,0,-36])
+                    cube([0.8,20,20],center=true);
+                }
+                    
+            }
+
+            // mount dove
+            if (hot_end == "E3D_v6") {
+                rotate([25,0,0])
+                translate([0,-0.1,15/2+29.7-0.25])
+                rotate([180,90,0])
+                male_dovetail(34,center=true);
+
+                rotate([25,0,0])
+                translate([0,-0.1,15/2+29.7-0.25])
+                rotate([0,90,0])
+                male_dovetail(34,center=true);
+
+                rotate([25,0,0])
+                translate([0,-0.1+1,20/2+29.7-0.25])
+                cube([24,2,20],center=true);
+            } else {
+                rotate([25,0,0])
+                translate([0,-0.1,15/2+38.5-0.25])
+                rotate([180,90,0])
+                male_dovetail(34,center=true);
+
+                rotate([25,0,0])
+                translate([0,-0.1,15/2+38.5-0.25])
+                rotate([0,90,0])
+                male_dovetail(34,center=true);
+
+                rotate([25,0,0])
+                translate([0,-0.1+1,20/2++38.5-0.25])
+                cube([24,2,20],center=true);
+            }
+
+            // fan hole
+            translate([0,-64])
+            rotate([0,0,-21.4])
+            cube([100,50,60],center=true);
+
+            hull() {
+                translate([7.4,-3,15.4/2])
+                rotate([0,0,20])
+                translate([0,-5,0])
+                cube([19.4,8,15.4],center=true);
+
+                translate([7.2,-32.5,0])
+                cylinder(d=40,h=15.4);
+            }
+            translate([1.25,-34,15.2/2])
+            cylinder(d=51.5,h=15.2,center=true,$fn=40);
+
+            translate([1.2,-34,20/2])
+            cylinder(d=40,h=20,center=true,$fn=40);
+
+            translate([1.2,-34,19.99])
+            cylinder(d1=40,d2=20,h=10,$fn=40);
+
+
+            hull() {
+                translate([-25.2,-22.7,0])
+                cylinder(d=6.8,h=15.2,$fn=30);
+
+                translate([-8.2,-60,0])
+                cylinder(d=61,h=15.2,$fn=40);
+
+                translate([27.6,-43.8,0])
+                cylinder(d=6.8,h=15.2,$fn=30);
+            }
+
+            // fan screw holes
+            translate([-25.2,-22.7,-3])
+            cylinder(d=4.2,h=22,$fn=30);
+
+            translate([27.6,-43.8,-3])
+            cylinder(d=4.2,h=22,$fn=30);
+
+        }
+    }
+
+    fan_base();
+
+    translate([0,7,13/2+1])
+    rotate([25,0,0])
+    _fan_duct_nozzle(nozzle_offset, nozzle_width);
+
+    %translate([16.5,0,0])
+    rotate([0,0,200])
+    mock_5015_fan();
+}
+
+module _fan_duct_axial(nozzle_offset, nozzle_width, hot_end) {
 
     module fan_base() {
         difference() {
             translate([0,0,-2])
             union() {
                 translate([0,0,1])
-                cube([42,42,2],center=true);
+                rounded_cube_side(42,42,2,8,center=true);
 
                 translate([-32.5/2,-32.5/2,0])
                 cylinder(d=6, h=6);
@@ -344,163 +652,170 @@ module fan_duct(hot_end="E3D_v6") {
 
                 if (hot_end == "E3D_v6") {
                     rotate([11,0,0])
-                    translate([1.5,-12.25,16.6/2+4.3])
-                    cube([23,15,16.5], center=true);
+                    translate([nozzle_offset,-12.25,18.5/2+4.3])
+                    cube([27.5,15,18.5], center=true);
                 } else if (hot_end == "E3D_Volcano") {
                     intersection() {
                         rotate([11,0,0])
-                        translate([1.5,-16.5,16.6/2+4.3])
-                        cube([23,25,16.5], center=true);
+                        translate([nozzle_offset,-16.5,18.5/2+4.3])
+                        cube([27.5,25,18.5], center=true);
 
                         translate([0,-20,18/2])
-                        cube([24,30,18],center=true);
+                        cube([27.5,30,18],center=true);
                     }
                 }
             }
             translate([0,0,-4])
             cylinder(d=40,h=4,$fn=60);
 
-            translate([-32.5/2,-32.5/2,-2])
-            cylinder(d=bolt_hole_dia-0.1, h=8);
+            translate([-32.5/2,-32.5/2,-2.1])
+            cylinder(d=bolt_hole_dia-0.5, h=8.1);
 
-            translate([32.5/2,-32.5/2,-2])
-            cylinder(d=bolt_hole_dia-0.1, h=8);
+            translate([32.5/2,-32.5/2,-2.1])
+            cylinder(d=bolt_hole_dia-0.5, h=8.1);
 
-            translate([32.5/2,32.5/2,-2])
-            cylinder(d=bolt_hole_dia-0.1, h=8);
+            translate([32.5/2,32.5/2,-2.1])
+            cylinder(d=bolt_hole_dia-0.5, h=8.1);
 
-            translate([-32.5/2,32.5/2,-2])
-            cylinder(d=bolt_hole_dia-0.1, h=8);
-
-            translate([-26/2+4,-42/2-3,6/2-2])
-            rotate([0,90,0])
-            cylinder(d=bolt_hole_dia, h=30);
+            translate([-32.5/2,32.5/2,-2.1])
+            cylinder(d=bolt_hole_dia-0.5, h=8.1);
 
             translate([0,0,-1])
             duct(d=41, d2=11, x=nozzle_width-2, h=31.31);
 
             if (hot_end == "E3D_v6") {
-                %rotate([11,0,0])
-                translate([25/2,-13.85,18.9])
+                rotate([11,0,0])
+                translate([0,-13.65,18.9])
                 rotate([-90,0,90])
-                male_dovetail(27);
+                male_dovetail(36, center=true);
+
+                rotate([11,0,0])
+                translate([0,-13.65,18.9])
+                rotate([90,0,90])
+                male_dovetail(36, center=true);
             } else if (hot_end == "E3D_Volcano") {
                 rotate([11,0,0])
-                translate([25/2,-22.10,18.9])
+                translate([0,-22.10,18.9])
                 rotate([-90,0,90])
-                male_dovetail(27);
+                male_dovetail(33,center=true);
+
+                rotate([11,0,0])
+                translate([0,-22.10,18.9])
+                rotate([90,0,90])
+                male_dovetail(33,center=true);
 
                 translate([0,-35,-3])
                 rotate([45,0,0])
-                cube([25,15,15],center=true);
+                cube([33,15,15],center=true);
             }
+            rotate([11,0,0])
+            translate([nozzle_offset,-18,18.9+2/2])
+            cube([24,28,2],center=true);
         }
     }
 
     module capsule_3d(d=12, x=20, h=1) {
         hull() {
-            translate([0,x/2,0]) cylinder(d=d, h=h, $fn=30);
-            translate([0,-x/2,0]) cylinder(d=d, h=h, $fn=30);
+            translate([0,x/2,0])
+            cylinder(d=d, h=h, $fn=30);
+
+            translate([0,-x/2,0])
+            cylinder(d=d, h=h, $fn=30);
         }
     }
 
     module duct(d=43, d2=11, x=nozzle_width, h=31.3) {
         hull() {
             cylinder(d=d,h=1);
-            translate([nozzle_offset,14.2,h]) rotate([0,-11,90]) capsule_3d(d=d2, x=x);
+
+            translate([nozzle_offset,14.2,h])
+            rotate([0,-11,90])
+            capsule_3d(d=d2, x=x);
         }
     }
 
-    module nozzle() {
-
-        module tube(d=8, h=20) {
-            rotate([-90,0,0]) {
-
-                hull() {
-                    cylinder(d=d+2);
-                    difference() {
-                        hull() {
-                            translate([-1,1,4])
-                            cylinder(d=d);
-
-                            translate([-1,d/2-2+1,0])
-                            cube([d/2, 2, 4]);
-                        }
-                        translate([d-3,-d-1.5,4])
-                        rotate([0,0,55])
-                        cube([d,d,10]);
-                    }
-                }
-                difference() {
-                    hull() {
-                        hull() {
-                            translate([-1,1,4])
-                            cylinder(d=d);
-
-                            translate([-1,1,h])
-                            sphere(d=d);
-                        }
-                        translate([-1,d/2-2+1,4])
-                        cube([d/2, 2, h-4]);
-                    }
-                    translate([d-3,-d-1.5,0])
-                    rotate([0,0,55])
-                    cube([d,d,h+20]);
-               }
-            }
-        }
-
-        module hollow_tube() {
-            difference() {
-                tube(d=11, h=23);
-                tube(d=9, h=23);
-            }
-        }
-
-        module nozzle_main() {
-            translate([-nozzle_width/2+1+nozzle_offset,0,0])
-            hollow_tube();
-
-            translate([nozzle_width/2-1+nozzle_offset,0,0])
-            mirror([1,0,0])
-            hollow_tube();
-            
-            rotate([-90,0,0])
-            difference() {
-                translate([nozzle_offset,0,1/2])
-                cube([nozzle_width-1,13,1], center=true);
-
-                translate([-nozzle_width/2+nozzle_offset,0,-1])
-                cylinder(d=12,h=2);
-
-                translate([nozzle_width/2+nozzle_offset,0,-1])
-                cylinder(d=12,h=2);
-            }
-        }
-
-        difference() {
-            nozzle_main();
-
-            translate([nozzle_width/2+nozzle_offset-4,24/2+1,-5])
-            rotate([0,50,0])
-            cube([4, 24, 5], center=true);
-
-            translate([-nozzle_width/2+nozzle_offset+4,24/2+1,-5])
-            rotate([0,-50,0])
-            cube([3.5, 24, 5], center=true);
-            
-            translate([nozzle_offset,1,-4])
-            rotate([60,0,0])
-            cube([12,2.5,5], center=true);
-        }
-        
-    }
-    
     fan_base();
 
     translate([0,14,31.2])
     rotate([101,0,0])
-    nozzle();
+    _fan_duct_nozzle(nozzle_offset, nozzle_width);
+}
+
+module fan_duct_radial_supports() {
+    // brim
+    translate([-11,-7.5,0.2/2])
+    cube([10,19,0.2],center=true);
+
+    translate([38,-7.5,0.2/2])
+    cube([10,19,0.2],center=true);
+
+    translate([10,-38,0.2/2])
+    cube([30,15,0.2],center=true);
+
+    // supports
+    translate([-0.2,-43.5])
+    cylinder(d=5,h=2);
+
+    hull() {
+        translate([-1.8,-40,7/2])
+        cube([1,0.5,7],center=true);
+
+        translate([22.7,-40,13/2])
+        cube([1,0.5,13],center=true);
+    }
+
+    hull() {
+        translate([-3.30,-32,12/2])
+        cube([1,0.5,12],center=true);
+
+        translate([21.4,-32,16.5/2])
+        cube([1,0.5,16.5],center=true);
+    }
+
+    hull() {
+        translate([5,-44.2,6/2])
+        cube([0.5,1,6],center=true);
+
+        translate([5,-32.5,10/2])
+        cube([0.5,1,10],center=true);
+    }
+
+    hull() {
+        translate([15,-44.2,8/2])
+        cube([0.5,1,8],center=true);
+
+        translate([15,-32.5,16/2])
+        cube([0.5,1,16],center=true);
+    }
+}
+
+module fan_duct_axial_e3dv6() {
+    _fan_duct_axial(1.5, 38, "E3D_v6");
+}
+
+module fan_duct_radial_e3dv6(print_orientation=true) {
+    if (print_orientation) {
+        translate([0,0,34.6])
+        rotate([90,-21.4,0])
+        _fan_duct_radial(1.5, 38, "E3D_v6");
+    } else {
+        _fan_duct_radial(1.5, 38, "E3D_v6");
+    }
+}
+
+module fan_duct_axial_e3dvolcano() {
+    _fan_duct_axial(0, 34, "E3D_Volcano");
+}
+
+module fan_duct_radial_e3dvolcano(print_orientation=true) {
+    if (print_orientation) {
+        translate([0,0,34.6])
+        rotate([90,-21.4,0])
+        _fan_duct_radial(0, 34, "E3D_Volcano");
+    } else {
+        _fan_duct_radial(0, 34, "E3D_Volcano");
+    }
+    fan_duct_radial_supports();
 }
 
 module do_mount() {
@@ -603,49 +918,98 @@ module cable_pcb_mount_clamp() {
 }
 
 module view_proper() {
+
+    x_pos = -110;
+    translate([0,-x_pos+10.1,-449.7])
+    frame_mockup(bed_angle=45, units_x=2, units_y=2, units_z=2, x_pos=x_pos);
+    
+    //hot_end = "E3D_v6";
+    hot_end = "E3D_Volcano";
+    
+    //fan_duct = "axial";
+    fan_duct = "radial";
+
     rotate([0,-90,0])
+    render()
     mount();
 
     rotate([0,-90,0])
     mirror([0,0,1])
+    render()
     mount();
 
     %translate([0,1,-28.7])
     rotate([-90,0,0])
+    render()
     do_motor_mount();
 
     %translate([0,49.2,-28.7])
     rotate([-90,0,180])
+    render()
     do_motor_mount();
 
     %translate([0,25.1,-42.2])
+    render()
     do_rack(fast_render=true);
 
-    %translate([0,-13,-127.7])
-    rotate([0,0,180])
-    e3dv6();
+    //%translate([29,-13.5,-120])
+    //proximity_sensor(25.5,5);
 
-    //%translate([29,-13.5,-120]) proximity_sensor(25.5,5);
-    //translate([29,-13.5,-90]) prox_sensor_clamp();
+    //translate([29,-13.5,-90])
+    //prox_sensor_clamp();
     
-    %translate([50,40.1,-76.2])
-    rotate([0,-90,0])
-    extention(support=false);
+//    %translate([50,40.1,-76.2])
+//    rotate([0,-90,0])
+//    extention(support=false);
+//
+//    %translate([-60,-25,-76.2-43.5])
+//    rotate([-90,0,0])
+//    extention(support=false);
 
-    %translate([-60,-25,-76.2-43.5])
-    rotate([-90,0,0])
-    extention(support=false);
+    translate([0,-4,3.3])
+    rotate([180,0,0])
+    clamp();
+    
+//    translate([-10,-40,-62])
+//    rotate([-90,0,0])
+//    leveling_switch_clamp();
 
-    translate([1.5,28,-109.8])
-    rotate([-101,0,180])
-    fan_duct(hot_end="E3D_Volcano");
-    
-    translate([0,-4,-17.5])
-    rotate([0,0,180])
-    clamp_shroud_mount();
-    
-    translate([-10,-40,-62])
-    rotate([-90,0,0])
-    leveling_switch_clamp();
+    if (hot_end == "E3D_v6") {
+        %translate([0,-13,-127.6])
+        rotate([0,0,180])
+        e3dv6();
+
+        if (fan_duct == "axial") {
+            translate([0,27.9,-99.65])
+            rotate([-101,0,180])
+            fan_duct_axial_e3dv6();
+        } else {
+            translate([0,8.9,-123])
+            rotate([-25,0,180])
+            fan_duct_radial_e3dv6(print_orientation=false);
+        }
+    } else {
+        %translate([0,-13,-136.1])
+        rotate([0,0,180])
+        e3d_Volcano();
+
+        if (fan_duct == "axial") {
+            translate([0,27.9,-108.1])
+            rotate([-101,0,180])
+            fan_duct_axial_e3dvolcano();
+        } else {
+            translate([0,8.9,-131.5])
+            rotate([-25,0,180])
+            fan_duct_radial_e3dvolcano(print_orientation=false);
+        }
+    }
 }
 
+module debug_radial_fan() {
+    intersection() {
+        fan_duct_radial_e3dv6(print_orientation=false);
+
+        translate([0,0,20/2-10])
+        cube([200,200,20],center=true);
+    }
+}

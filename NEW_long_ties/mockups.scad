@@ -28,7 +28,7 @@ prox_sensor_washer_dia = 30;
 
 //mock_SSR_75_DD();
 //mock_titan();
-mock_5015_fan();
+//mock_5015_fan();
 
 
 ////// MODULES //////
@@ -806,13 +806,13 @@ module mock_5015_fan() {
     union() {
         import("../../_downloaded/50mm_Radial_fan/50mm_fan.stl");
 
-        translate([-0.5,1.5+11/2,9-2.5+2.5/2])
+        translate([-0.5,1.5+11/2,8.5-2.5+2.5/2])
         cube([2,11,2.5],center=true);
 
-        translate([26.5,2,9-2.5+2.5/2])
+        translate([26.5,2,8.5-2.5+2.5/2])
         cube([10,2.5,2.5],center=true);
 
-        translate([36.5,49.8,9-2.5+2.5/2])
+        translate([36.5,49.8,8.5-2.5+2.5/2])
         rotate([0,0,-22])
         cube([10,2.5,2.5],center=true);
     }
