@@ -491,6 +491,86 @@ module bed_mk2(bed_angle=0) {
     }
 }
 
+module bed_mk3_300(bed_angle=0) {
+    // bed mk2
+    bed_w = 330;
+    hole_distance = 325;
+
+    difference() {
+        rotate([0,0,bed_angle])
+        cube([bed_w,bed_w,1], center=true);
+
+        translate([-hole_distance/2,-hole_distance/2,0])
+        cylinder(d=3,h=2,center=true,$fn=20);
+
+        translate([hole_distance/2,-hole_distance/2,0])
+        cylinder(d=3,h=2,center=true,$fn=20);
+
+        translate([hole_distance/2,hole_distance/2,0])
+        cylinder(d=3,h=2,center=true,$fn=20);
+
+        translate([-hole_distance/2,hole_distance/2,0])
+        cylinder(d=3,h=2,center=true,$fn=20);
+    }
+}
+
+module bed_340(bed_angle=0) {
+    // bed mk2
+    bed_w = 340;
+    hole_distance = 335;
+
+    difference() {
+        rotate([0,0,bed_angle])
+        cube([bed_w,bed_w,1], center=true);
+
+        translate([-hole_distance/2,-hole_distance/2,0])
+        cylinder(d=3,h=2,center=true,$fn=20);
+
+        translate([hole_distance/2,-hole_distance/2,0])
+        cylinder(d=3,h=2,center=true,$fn=20);
+
+        translate([hole_distance/2,hole_distance/2,0])
+        cylinder(d=3,h=2,center=true,$fn=20);
+
+        translate([-hole_distance/2,hole_distance/2,0])
+        cylinder(d=3,h=2,center=true,$fn=20);
+    }
+}
+
+module bed_340_300() {
+    // bed mk2
+    bed_w = 340;
+    bed_l = 300;
+
+    difference() {
+        cube([bed_w,bed_l,3], center=true);
+
+        translate([-bed_w/2+5/2,-bed_l/2+5/2,0])
+        cylinder(d=3,h=8,center=true,$fn=20);
+
+        translate([bed_w/2-5/2,-bed_l/2+5/2,0])
+        cylinder(d=3,h=8,center=true,$fn=20);
+
+        translate([-bed_w/2+5/2,bed_l/2-5/2,0])
+        cylinder(d=3,h=8,center=true,$fn=20);
+
+        translate([bed_w/2-5/2,bed_l/2-5/2,0])
+        cylinder(d=3,h=8,center=true,$fn=20);
+        
+        translate([-bed_w/2+5/2,0,0])
+        cylinder(d=3,h=8,center=true,$fn=20);
+        
+        translate([bed_w/2-5/2,0,0])
+        cylinder(d=3,h=8,center=true,$fn=20);
+        
+        translate([0,-bed_l/2+5/2,0])
+        cylinder(d=3,h=8,center=true,$fn=20);
+        
+        translate([0,bed_l/2-5/2,0])
+        cylinder(d=3,h=8,center=true,$fn=20);
+    }
+}
+
 module mks_sbase_mockup() {
     w = 95;
     l = 146.5;
