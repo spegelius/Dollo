@@ -1,6 +1,7 @@
 include <include.scad>;
 include <globals.scad>;
 
+////// VARIABLES //////
 support = true;
 //min number of units is 2
 //unit size is 30mm
@@ -11,8 +12,49 @@ center_d = metal_rod_size;
 // for side support
 tip_size = 1.2;
 
-module extention_base(length, support=true){
-	
+////// VIEW //////
+
+// 50cm extention
+//extention(50/30);
+extention_center(length=50,stopper_position=50/2);
+
+// 60cm extention
+//extention(2);
+//extention_center(length=60,stopper_position=60/2);
+
+// 90cm extention
+//extention(3);
+//extention_center(length=90,stopper_position=90/2);
+
+// 120cm extention
+//extention();
+//extention_center();
+
+// 150cm extention
+//extention(5);
+//extention_center(length=150,stopper_position=150/2);
+
+// 180cm extention
+//extention(6);
+//extention_center(length=180,stopper_position=180/2);
+
+// centers for corner
+//extention_center(length=90/2+30,stopper_position=30);
+//extention_center(length=120/2+30,stopper_position=30);
+//extention_center(length=150/2+30,stopper_position=30);
+//extention_center(length=180/2+30,stopper_position=30);
+
+// center 120cm / 60cm
+//extention_center(length=180/2+60,stopper_position=60);
+
+//extention_side(units=units, supports=support);
+
+//extention_t();
+
+
+////// MODULES //////
+module extention_base(length, support=true) {
+
 	module added(){
 		translate([0,0,0])
         cube([30,length,30]);
@@ -95,7 +137,6 @@ module extention_base(length, support=true){
 } //module extention
 
 
-
 module extention(units=units, support=support){
     rotate([90,0,0])
     extention_base(units*30, support=support);
@@ -125,6 +166,18 @@ module extention_side(units=units, supports=support) {
 
             translate([30-0.5,0,30/2-3])
             cube([0.5,units*30,7]);
+
+            translate([4/2,units*30-5/2,0.2/2])
+            cube([4,5,0.2],center=true);
+
+            translate([30-4/2,units*30-5/2,0.2/2])
+            cube([4,5,0.2],center=true);
+
+            translate([4/2,5/2,0.2/2])
+            cube([4,5,0.2],center=true);
+
+            translate([30-4/2,5/2,0.2/2])
+            cube([4,5,0.2],center=true);
         }
     }
 }
@@ -201,36 +254,3 @@ module extention_t(units1=4, units2=2, _offset=0, supports=support) {
         cube([30,30,6]);
     }
 }
-
-// 60cm extention
-//extention(2);
-//extention_center(length=60,stopper_position=60/2);
-
-// 90cm extention
-extention(3);
-//extention_center(length=90,stopper_position=90/2);
-
-// 120cm extention
-//extention();
-//extention_center();
-
-// 150cm extention
-//extention(5);
-//extention_center(length=150,stopper_position=150/2);
-
-// 180cm extention
-//extention(6);
-//extention_center(length=180,stopper_position=180/2);
-
-// centers for corner
-//extention_center(length=90/2+30,stopper_position=30);
-//extention_center(length=120/2+30,stopper_position=30);
-//extention_center(length=150/2+30,stopper_position=30);
-//extention_center(length=180/2+30,stopper_position=30);
-
-// center 120cm / 60cm
-//extention_center(length=180/2+60,stopper_position=60);
-
-//extention_side(units=units, supports=support);
-
-//extention_t();
