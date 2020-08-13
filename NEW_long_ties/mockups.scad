@@ -545,22 +545,22 @@ module bed_340_300() {
     difference() {
         cube([bed_w,bed_l,3], center=true);
 
-        translate([-bed_w/2+5/2,-bed_l/2+5/2,0])
+        translate([-bed_w/2+8/2,-bed_l/2+8/2,0])
         cylinder(d=3,h=8,center=true,$fn=20);
 
-        translate([bed_w/2-5/2,-bed_l/2+5/2,0])
+        translate([bed_w/2-8/2,-bed_l/2+8/2,0])
         cylinder(d=3,h=8,center=true,$fn=20);
 
-        translate([-bed_w/2+5/2,bed_l/2-5/2,0])
+        translate([-bed_w/2+8/2,bed_l/2-8/2,0])
         cylinder(d=3,h=8,center=true,$fn=20);
 
-        translate([bed_w/2-5/2,bed_l/2-5/2,0])
+        translate([bed_w/2-8/2,bed_l/2-8/2,0])
         cylinder(d=3,h=8,center=true,$fn=20);
         
-        translate([-bed_w/2+5/2,0,0])
+        translate([-bed_w/2+8/2,0,0])
         cylinder(d=3,h=8,center=true,$fn=20);
         
-        translate([bed_w/2-5/2,0,0])
+        translate([bed_w/2-8/2,0,0])
         cylinder(d=3,h=8,center=true,$fn=20);
         
         translate([0,-bed_l/2+5/2,0])
