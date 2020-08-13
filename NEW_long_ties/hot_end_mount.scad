@@ -27,6 +27,7 @@ $fn=60;
 //debug_radial_fan();
 
 //do_mount();
+mount();
 //clamp();
 
 //rotate([0,180,0])
@@ -38,7 +39,7 @@ $fn=60;
 //leveling_switch_clamp();
 
 //fan_duct_axial_e3dv6();
-fan_duct_radial_e3dv6();
+//fan_duct_radial_e3dv6();
 
 //fan_duct_axial_e3dvolcano();
 //fan_duct_radial_e3dvolcano();
@@ -57,6 +58,7 @@ module y_mount_added(){
     difference() {
         union() {
             motor_mount_tie();
+
             translate([0,-29.99,69])
             rotate([90,90,0])
             long_tie(11.5);
