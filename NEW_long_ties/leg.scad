@@ -43,7 +43,7 @@ module _plate(length=40, height=10) {
 module _leg(units) {
     
     intersection() {
-        translate([0,30,-30])
+        translate([30/2,-30/2+30,units*30/2])
         extention(units=units+1);
 
         cube([31,31,30*(units+1)]);
@@ -83,7 +83,7 @@ module leg_z() {
     module _z_leg() {
         difference() {
             union() {
-                translate([-30/2,30/2,0])
+                translate([0,0,30])
                 extention(2);
 
                 translate([0,0,38])
@@ -234,9 +234,9 @@ module foot(dia=60) {
         _bottom_holes(dia);
         %translate([0,0,30])
 
-        rotate([90,0,45])
-        translate([-15,-15,-15])
-        extention(1);
+        rotate([0,0,45])
+        translate([0,0,-3])
+        extention(1,support=false);
     }
 }
 
@@ -266,8 +266,8 @@ module foot_adjustable_core() {
     }
     %translate([0,0,30])
     rotate([0,0,45])
-    translate([-15,15,0])
-    extention(1);
+    translate([0,0,0])
+    extention(1,support=false);
 }
 
 module foot_adjustable() {

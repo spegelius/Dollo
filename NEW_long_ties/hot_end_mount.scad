@@ -23,11 +23,11 @@ natch_height = 6;
 $fn=60;
 
 ////// VIEW //////
-//view_proper();
+view_proper();
 //debug_radial_fan();
 
 //do_mount();
-mount();
+//mount();
 //clamp();
 
 //rotate([0,180,0])

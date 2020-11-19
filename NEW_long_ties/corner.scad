@@ -14,9 +14,9 @@ extra_stiff = true;
 
 
 ////// VIEW //////
-full_corner();
+//full_corner();
 
-//corner_90(extra_stiff=false);
+corner_90(extra_stiff=false);
 //corner_90(extra_stiff=true);
 
 // for bed carriage
@@ -207,10 +207,10 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
         
         intersection() {
             rotate([0,45,0])
-            translate([-17,0,-23-get_diff(diff)])
+            translate([30/2-17,0,(parts*30)/2-23-get_diff(diff)])
             extention(parts);
 
-            translate([0,-35,0])
+            translate([0,-40/2,0])
             cube([100,40,100]);
         }
     }
@@ -231,78 +231,76 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
             extention_rotated();
 
             if (extra_stiff) {
-                translate([0,-30+7/2,s_h+15])
+                translate([0,30/2-7/2,s_h+15])
                 stiffener(s_l);
 
-                translate([0,-7/2,s_h+15])
+                translate([0,-30/2+7/2,s_h+15])
                 stiffener(s_l);
 
                 if (s_h > 30) {
                     h2 = s_h-5;
-                    translate([0,-30+7/2,22+h2/2])
+                    translate([0,-30/2+7/2,22+h2/2])
                     chamfered_cube_side(10,7,h2,3,center=true);
                     
-                    translate([0,-7/2,22+h2/2])
+                    translate([0,30/2-7/2,22+h2/2])
                     chamfered_cube_side(10,7,h2,3,center=true);
                 }
             }
         }
         
         if (extra_stiff) {
-            translate([0,-30+7/2,s_h+15+2])
+            translate([0,-30/2+7/2,s_h+15+2])
             cube([s_l+10,0.1,0.4],center=true);
 
-            translate([0,-30+7/2,s_h+15])
+            translate([0,-30/2+7/2,s_h+15])
             cube([s_l+12,0.1,0.4],center=true);
 
-            translate([0,-30+7/2,s_h+15-2])
+            translate([0,-30/2+7/2,s_h+15-2])
             cube([s_l+20,0.1,0.4],center=true);
 
-            translate([0,-7/2,s_h+15+2])
+            translate([0,30/2-7/2,s_h+15+2])
             cube([s_l+10,0.1,0.4],center=true);
 
-            translate([0,-7/2,s_h+15])
+            translate([0,30/2-7/2,s_h+15])
             cube([s_l+12,0.1,0.4],center=true);
 
-            translate([0,-7/2,s_h+15-2])
+            translate([0,30/2-7/2,s_h+15-2])
             cube([s_l+20,0.1,0.4],center=true);
         }
 
-        translate([0,-30/2,0])
         rotate([0,45,0])
         translate([-2,0,0])
         cylinder(d=23,h=34,$fn=30,center=true);
 
-        translate([0,-30/2,0])
         rotate([0,-45,0])
         translate([2,0,0])
         cylinder(d=23,h=34,$fn=30,center=true);
 
-        translate([13,0.01,-10])
+        translate([13,30/2+0.01,-10])
         rotate([0,45,180])
         male_dovetail(20);
 
-        translate([-13,0.01,-10])
+        translate([-13,30/2+0.01,-10])
         rotate([0,-45,180])
         male_dovetail(20);
 
-        translate([-12.83,-30,-10])
+        translate([-12.83,-30/2,-10])
         rotate([0,45,0])
         male_dovetail(20);
 
-        translate([12.83,-30,-10])
+        translate([12.83,-30/2,-10])
         rotate([0,-45,0])male_dovetail(20);
 
-        translate([12.83,-15,-10])
+        translate([12.83,0,-10])
         rotate([0,-45,0])
         rotate([0,0,180])
         cylinder(d=metal_rod_size,h=20,$fn=15);
 
-        translate([-12.83,-15,-10])
+        translate([-12.83,0,-10])
         rotate([0,45,0])
         cylinder(d=metal_rod_size,h=20,$fn=15);
 
-        translate([0,-30/2,16])
+        translate([0,0,16])
         hull() {
             translate([0,0,5])
             cube([6,6,0.1],center=true);
@@ -314,18 +312,17 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
     // supports
     if (support==true)
     {
+        translate([0,30/2,0])
         cylinder(d=4,h=7.5);
 
-        translate([0,-30,0])
+        translate([0,-30/2,0])
         cylinder(d=4,h=7.5);
     }
-    %translate([0,-30/2,0])
-    rotate([0,45,0])
+    %rotate([0,45,0])
     translate([-2,0,11.8])
     M8_nut(cone=false);
 
-    %translate([0,-30/2,0])
-    rotate([0,-45,0])
+    %rotate([0,-45,0])
     translate([2,0,11.8])
     M8_nut(cone=false);
 }

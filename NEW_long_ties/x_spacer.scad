@@ -13,8 +13,9 @@ thickness = 21;
 
 
 ////// VIEW //////
-debug();
-//x_spacer();
+//debug();
+
+x_spacer();
 
 
 ////// MODULES //////
@@ -81,11 +82,11 @@ module debug() {
     rotate([-90,0,0])
     do_rack(1, fast_render=true);
 
-    %translate([-30,-28.5,60.1])
+    %translate([0,-43.5,45.1])
     rotate([0,90,0])
     extention(2, support=false);
 
-    %translate([-15,15,-60])
+    %translate([0,0,-30])
     rotate([0,0,0])
     extention(2, support=false);
 }

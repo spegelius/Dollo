@@ -221,7 +221,9 @@ module frame_clip() {
         translate([0,sqrt(30*30/2)-sqrt(7*7),65]) rotate([45,0,0]) cube([25,20,20], center=true);
     }
     
-    //translate([5,65,0]) % rotate([90,0,0]) extention();
+    %translate([-4.9,87,30/2+3])
+    rotate([90,0,-45])
+    extention(support=false);
 }
 
 module frame_clip_middle() {
@@ -267,7 +269,10 @@ module frame_clip_corner_large() {
             translate([0,fc_length/2,-29/2-1]) rotate([0,0,180]) male_dovetail(20);
         }
     }
-    //translate([7,0,7]) %extention();
+
+    %translate([0,0,12])
+    rotate([-45,0,0])
+    extention(support=false);
     
     difference() {
         union() {
@@ -503,11 +508,11 @@ FAST=true;
 //view_proper_3_3_4();
 
 //frame_clip();
-//frame_clip_corner_large();
+frame_clip_corner_large();
 //frame_clip_corner_small();
 //frame_clip_middle();
 //frame_clip_middle_2x();
-frame_center_clip();
+//frame_center_clip();
 
 //frame_clip_spacer();
 

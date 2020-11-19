@@ -16,7 +16,8 @@ tip_size = 1.2;
 
 // 50cm extention
 //extention(50/30);
-extention_center(length=50,stopper_position=50/2);
+//extention(50/30, tie_ends=false);
+//extention_center(length=50,stopper_position=50/2);
 
 // 60cm extention
 //extention(2);
@@ -49,134 +50,152 @@ extention_center(length=50,stopper_position=50/2);
 
 //extention_side(units=units, supports=support);
 
-//extention_t();
+extention_t();
 
 
 ////// MODULES //////
-module extention_base(length, support=true) {
+module extention_base(length, support=true, tie_ends=true) {
 
 	module added(){
-		translate([0,0,0])
-        cube([30,length,30]);
+        cube([30,length,30],center=true);
 	}
 
 	module subtracted(){
-        translate([15,0,15])
-        rotate([0,45,0])
-        tie_end();
+        if (tie_ends) {
+            translate([0,-length/2,0])
+            rotate([0,45,0])
+            tie_end();
 
-        translate([15,length,15])
-        rotate([0,45,0])
-        rotate([0,0,180])
-        tie_end();
+            translate([0,length/2,0])
+            rotate([0,45,0])
+            rotate([0,0,180])
+            tie_end();
+        } else {
+            for(i = [0:3]) {
+                rotate([0,i*90,0]) {
+                    translate([30/2-4,-length/2,30/2-4])
+                    hull() {
+                        cube([4,20,4],center=true);
+                        cube([0.1,24,0.1],center=true);
+                    }
 
-        translate([15,-1,15])
+                    translate([30/2-4,length/2,30/2-4])
+                    hull() {
+                        cube([4,20,4],center=true);
+                        cube([0.1,24,0.1],center=true);
+                    }
+                }
+            }
+        }
+
+        translate([0,-length/2-1,0])
         rotate([-90,0,0])
         cylinder(h=length+2, d=center_d,$fn=15);
 
-        translate([15,-0.01,15])
+        translate([0,-length/2-0.01,0])
         rotate([-90,0,0])
         cylinder(d1=center_d+1,d2=center_d,h=0.5,$fn=15);
 
-        translate([15,length+0.01,15])
+        translate([0,length/2+0.01,0])
         rotate([90,0,0])
         cylinder(d1=center_d+1,d2=center_d,h=0.5,$fn=15);
 
-        translate([15, -1, 15]){
+        translate([0, -1, 0]){
             for (r = [0:4]) // two iterations, z = -1, z = 1
             {
                 rotate([0,r*90,0])
-                translate([0,0,15])
+                translate([0,-length/2,15])
                 rotate([-90,0,0])
                 male_dovetail(height=length+2);
             }
         }
     } //subtracted
 
+    // custom infill to fortify the tie ends
     module infill() {
-        rotate([-90,0,0])
-        translate([30/2,-30/2,0]) {
-            for(i = [0:3]) {
-                rotate([0,0,360/4*i])
-                translate([5,30/2-2,0])
-                cylinder(d=0.1,h=7);
+        if (tie_ends) {
+            rotate([-90,0,0])
+            translate([30/2,-30/2,0]) {
+                for(i = [0:3]) {
+                    rotate([0,0,360/4*i])
+                    translate([5,30/2-2,0])
+                    cylinder(d=0.1,h=7);
 
-                rotate([0,0,360/4*i])
-                translate([-5,30/2-2,0])
-                cylinder(d=0.1,h=7);
+                    rotate([0,0,360/4*i])
+                    translate([-5,30/2-2,0])
+                    cylinder(d=0.1,h=7);
+                }
             }
         }
     }
+    
+    difference(){
+        added();
+        subtracted();
 
-	difference(){
-		added();
-		subtracted();
         translate([0,-1,0])
         infill();
 
         translate([0,length-6,0])
         infill();
-	}
+    }
+
     //support
-    if (support==true)
-    {
+    if ((support==true) && (tie_ends==true)) {
         rotate([-90,0,0]) {
-            translate([0,0,5/2])
-            cylinder(h=5, d=6, center=true);
-
-            translate([30,0,5/2])
-            cylinder(h=5, d=6, center=true);
-
-            translate([0,-30,5/2])
-            cylinder(h=5, d=6, center=true);
-
-            translate([30,-30,5/2])
-            cylinder(h=5, d=6, center=true);
+            for (i = [0:3]) {
+                rotate([0,0,i*90])
+                translate([-30/2,-30/2,-length/2+5/2])
+                cylinder(h=5, d=6, center=true);
+            }
         }
     }
 } //module extention
 
 
-module extention(units=units, support=support){
+module extention(units=units, support=support, tie_ends=true){
     rotate([90,0,0])
-    extention_base(units*30, support=support);
+    extention_base(units*30, support=support, tie_ends=tie_ends);
 }
 
 module extention_side(units=units, supports=support) {
+    l = units*30;
 
     union() {
         difference() {
-            extention_base(units*30, support=false);
+            extention_base(l, support=false);
 
-            translate([30/2,0,5+0.2/2])
-            cube([male_dove_max_width,units*30,0.2],center=true);
+            translate([0,0,-30/2+5+0.2/2])
+            cube([male_dove_max_width,l+1,0.2],center=true);
         }
 
         if (supports) {
             reduce = 4/units;
+
+            translate([0,-l/2,0])
             for(i=[0:units]) {
-                translate([tip_size/2,i*30+4/2-i*reduce,20/2])
+                translate([-30/2+tip_size/2,i*30+4/2-i*reduce,-30/2+20/2])
                 cube([tip_size,4,20],center=true);
 
-                translate([30-tip_size/2,i*30+4/2-i*reduce,20/2])
+                translate([30/2-tip_size/2,i*30+4/2-i*reduce,-30/2+20/2])
                 cube([tip_size,4,20],center=true);
             }
-            translate([0,0,30/2-3])
-            cube([0.5,units*30,7]);
+            translate([-30/2,-l/2,-3])
+            cube([0.5,l,7]);
 
-            translate([30-0.5,0,30/2-3])
-            cube([0.5,units*30,7]);
+            translate([30/2-0.5,-l/2,-3])
+            cube([0.5,l,7]);
 
-            translate([4/2,units*30-5/2,0.2/2])
+            translate([-30/2+4/2,l/2-5/2,-30/2+0.2/2])
             cube([4,5,0.2],center=true);
 
-            translate([30-4/2,units*30-5/2,0.2/2])
+            translate([30/2-4/2,l/2-5/2,-30/2+0.2/2])
             cube([4,5,0.2],center=true);
 
-            translate([4/2,5/2,0.2/2])
+            translate([-30/2+4/2,-l/2+5/2,-30/2+0.2/2])
             cube([4,5,0.2],center=true);
 
-            translate([30-4/2,5/2,0.2/2])
+            translate([30/2-4/2,-l/2+5/2,-30/2+0.2/2])
             cube([4,5,0.2],center=true);
         }
     }
@@ -243,10 +262,10 @@ module extention_t(units1=4, units2=2, _offset=0, supports=support) {
     h = units1 * 30;
 
     union() {
-        translate([-30/2,-units*30/2,0])
+        translate([0,0,30/2])
         extention_side(units=units, supports=supports);
 
-        translate([-30/2,30/2+_offset,30-6])
+        translate([0,_offset,(units2*30+6)/2+30-6])
         rotate([90,0,0])
         extention_base(units2*30+6, support=false);
 
