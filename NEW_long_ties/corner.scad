@@ -14,7 +14,7 @@ extra_stiff = true;
 
 
 ////// VIEW //////
-full_corner(support=support, extra_stiff=extra_stiff);
+full_corner();
 
 //corner_90(extra_stiff=false);
 //corner_90(extra_stiff=true);
@@ -26,20 +26,21 @@ full_corner(support=support, extra_stiff=extra_stiff);
 
 
 ////// MODULES //////
-module basic_corner() {
+module basic_corner(w=obj_leg+15) {
+
+    w1 = obj_leg + cube_outset;
+    w2 = w + obj_leg;
 
 	module added(){
-        w1 = obj_leg + cube_outset;
-        w2 = obj_leg*2;
 
         union() {
-            translate([0,0,15])
+            translate([0,0,w2/2-15])
             cube([w1,w1,w2], center=true);
 
-            translate([0,15,0])
+            translate([0,w2/2-15,0])
             cube([w1,w2,w1], center=true);
 
-            translate([15,0,0])
+            translate([w2/2-15,0,0])
             cube([w2,w1,w1], center=true);
 
             if (extra_stiff) {
@@ -117,15 +118,15 @@ module basic_corner() {
         wrap();
 
 		rotate([0,45,180])
-        translate([0,-45,0])
+        translate([0,-w2+15,0])
         tie_end();
 
 		rotate([0,45,90])
-        translate([0,-45,0])
+        translate([0,-w2+15,0])
         tie_end();
 
 		rotate([-90,0,45])
-        translate([0,-45,0])
+        translate([0,-w2+15,0])
         tie_end();
 	}
 
@@ -140,7 +141,7 @@ module basic_corner() {
     corner();
 };
 
-module full_corner(support=support, extra_stiff=extra_stiff){
+module full_corner(w=obj_leg, support=support, extra_stiff=extra_stiff){
 	module support_pillars(){
 		translate([48-slot_translate/2,3,0])
         cylinder(h=11,d=4);
@@ -172,12 +173,16 @@ module full_corner(support=support, extra_stiff=extra_stiff){
         support_pillars();
 
         //center support
-        cylinder(h=19.4,d1=12,d2=3);
+        difference() {
+            cylinder(h=17.4,d1=12,d2=2);
+
+            cylinder(h=16.4,d1=11,d2=1);
+        }
 	}
 	difference(){
 		translate([0,0,0])
         rotate([0,-35,0])
-        basic_corner();
+        basic_corner(w);
 
 		union(){
 			//cylinder(h=50, d=15);
