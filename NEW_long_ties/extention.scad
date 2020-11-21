@@ -104,7 +104,7 @@ module extention_base(length, support=true, tie_ends=true) {
             for (r = [0:4]) // two iterations, z = -1, z = 1
             {
                 rotate([0,r*90,0])
-                translate([0,-length/2,15])
+                translate([0,-length/2,15.01])
                 rotate([-90,0,0])
                 male_dovetail(height=length+2);
             }
