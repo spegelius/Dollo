@@ -15,7 +15,7 @@ tip_size = 1.2;
 ////// VIEW //////
 
 // 50cm extention
-//extention(50/30);
+extention(50/30);
 //extention(50/30, tie_ends=false);
 //extention_center(length=50,stopper_position=50/2);
 
@@ -50,14 +50,25 @@ tip_size = 1.2;
 
 //extention_side(units=units, supports=support);
 
-extention_t();
+//extention_t();
 
+//extention_glue_peg();
 
 ////// MODULES //////
 module extention_base(length, support=true, tie_ends=true) {
 
 	module added(){
-        cube([30,length,30],center=true);
+        union() {
+            cube([30,length,30],center=true);
+
+            if (!tie_ends) {
+                for(i = [0:3]) {
+                    rotate([0,i*90,0])
+                    translate([30/2-4.5,length/2,30/2-4.5])
+                    cube([4.9,2,4.9],center=true);
+                }
+            }
+        }
 	}
 
 	module subtracted(){
@@ -75,14 +86,20 @@ module extention_base(length, support=true, tie_ends=true) {
                 rotate([0,i*90,0]) {
                     translate([30/2-4,-length/2,30/2-4])
                     hull() {
-                        cube([4,20,4],center=true);
-                        cube([0.1,24,0.1],center=true);
+                        cube([4,10,4],center=true);
+                        cube([0.1,14,0.1],center=true);
+                    }
+
+                    translate([30/2-4.5,-length/2,30/2-4.5])
+                    hull() {
+                        cube([5,2.4,5],center=true);
+                        cube([0.1,5,0.1],center=true);
                     }
 
                     translate([30/2-4,length/2,30/2-4])
                     hull() {
-                        cube([4,20,4],center=true);
-                        cube([0.1,24,0.1],center=true);
+                        cube([4,10,4],center=true);
+                        cube([0.1,14,0.1],center=true);
                     }
                 }
             }
@@ -115,16 +132,14 @@ module extention_base(length, support=true, tie_ends=true) {
     module infill() {
         if (tie_ends) {
             rotate([-90,0,0])
-            translate([30/2,-30/2,0]) {
-                for(i = [0:3]) {
-                    rotate([0,0,360/4*i])
-                    translate([5,30/2-2,0])
-                    cylinder(d=0.1,h=7);
+            for(i = [0:3]) {
+                rotate([0,0,360/4*i])
+                translate([5,30/2-2,0])
+                cylinder(d=0.1,h=8);
 
-                    rotate([0,0,360/4*i])
-                    translate([-5,30/2-2,0])
-                    cylinder(d=0.1,h=7);
-                }
+                rotate([0,0,360/4*i])
+                translate([-5,30/2-2,0])
+                cylinder(d=0.1,h=8);
             }
         }
     }
@@ -133,10 +148,10 @@ module extention_base(length, support=true, tie_ends=true) {
         added();
         subtracted();
 
-        translate([0,-1,0])
+        translate([0,-length/2-1,0])
         infill();
 
-        translate([0,length-6,0])
+        translate([0,length/2-7,0])
         infill();
     }
 
@@ -258,12 +273,12 @@ module extention_center(length=120, stopper_position=60) {
     }
 }
 
-module extention_t(units1=4, units2=2, _offset=0, supports=support) {
+module extention_t(units1=units, units2=2, _offset=0, supports=support) {
     h = units1 * 30;
 
     union() {
         translate([0,0,30/2])
-        extention_side(units=units, supports=supports);
+        extention_side(units=units1, supports=supports);
 
         translate([0,_offset,(units2*30+6)/2+30-6])
         rotate([90,0,0])
@@ -272,4 +287,8 @@ module extention_t(units1=4, units2=2, _offset=0, supports=support) {
         translate([-30/2,-30/2,0])
         cube([30,30,6]);
     }
+}
+
+module extention_glue_peg() {
+    cube([4-slop,10,4-0.2],center=true);
 }
