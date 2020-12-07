@@ -14,9 +14,9 @@ extra_stiff = true;
 
 
 ////// VIEW //////
-//full_corner();
+full_corner();
 
-corner_90(extra_stiff=false);
+//corner_90(extra_stiff=false);
 //corner_90(extra_stiff=true);
 
 // for bed carriage
@@ -35,27 +35,50 @@ module basic_corner(w=obj_leg+15) {
 
         union() {
             translate([0,0,w2/2-15])
-            cube([w1,w1,w2], center=true);
+            rotate([90,0,0])
+            extention_base(w2, support=false);
 
             translate([0,w2/2-15,0])
-            cube([w1,w2,w1], center=true);
+            extention_base(w2, support=false);
 
             translate([w2/2-15,0,0])
-            cube([w2,w1,w1], center=true);
+            rotate([0,0,90])
+            extention_base(w2, support=false);
 
             if (extra_stiff) {
                 w = 7;
-                translate([15,-15+w/2,20])
+
+                //translate([15,-15+w/2,20])
                 rotate([0,45,0])
-                cube([50,w,20], center=true);
+                translate([0,-15+w/2,25])
+                hull() {
+                    translate([0,0,20/2-1/2])
+                    cube([40,w,1], center=true);
 
-                translate([-15+w/2,15,20])
+                    translate([0,0,-20/2+1/2])
+                    cube([10,w,1], center=true);
+                }
+
                 rotate([-45,0,0])
-                cube([w,50,20], center=true);
+                translate([-15+w/2,0,25])
+                hull() {
+                    translate([0,0,20/2-1/2])
+                    cube([w,40,1], center=true);
 
-                translate([15,20,-15+w/2])
+                    translate([0,0,-20/2+1/2])
+                    cube([w,10,1], center=true);
+                }
+
                 rotate([0,0,-45])
-                cube([50,20,w], center=true);
+                translate([0,25,-15+w/2])
+                hull() {
+                    translate([0,20/2-1/2,0])
+                    cube([40,1,w], center=true);
+
+                    translate([0,-20/2+1/2,0])
+                    cube([10,1,w], center=true);
+                }
+
                 //translate([15,15,15]) sphere(d=15,$fn=40);
 
                 hull() {
@@ -109,25 +132,13 @@ module basic_corner(w=obj_leg+15) {
             male_dovetail(height=65);
 		}
 
-		wrap();
-
-		rotate([0,90,0])
         wrap();
 
-		rotate([-90,90,0])
+        rotate([0,90,0])
         wrap();
 
-		rotate([0,45,180])
-        translate([0,-w2+15,0])
-        tie_end();
-
-		rotate([0,45,90])
-        translate([0,-w2+15,0])
-        tie_end();
-
-		rotate([-90,0,45])
-        translate([0,-w2+15,0])
-        tie_end();
+        rotate([-90,90,0])
+        wrap();
 	}
 
 	module corner() {
