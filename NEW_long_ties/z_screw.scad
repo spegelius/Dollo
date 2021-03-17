@@ -16,6 +16,37 @@ tooth_mm = 1.9;
 thread_length = PI*z_screw_d;
 rise_angle = asin(z_step/thread_length);
 
+
+//test_motor_coupler();
+//debug_screw_housing();
+//debug_screw_center();
+//debug_gears();
+//debug_screw_roller();
+
+// 120 mm screw
+//z_screw(120, steps=100);
+
+// 10 mm screw
+//z_screw(10, steps=100);
+
+//z_screw_center();
+//z_screw_center_coupler();
+
+//side_roller();
+//screw_housing_bottom();
+//screw_housing_top();
+//side_roller_axle();
+//side_roller_axle_washer();
+//screw_housing_bolt();
+//screw_housing_bolt_side();
+
+//z_screw_motor_coupler(fast_render=true);
+//z_screw_motor_coupler(fast_render=false);
+//z_screw_motor_flex_coupler(fast_render=false);
+//z_screw_motor_flex_coupler(fast_render=true);
+//test_motor_coupler();
+
+
 module _screw_gear(h=10) {
     
     length = PI*(z_screw_d-1.35);
@@ -396,30 +427,4 @@ module debug_screw_roller() {
     }
 }
 
-//test_motor_coupler();
-//debug_screw_housing();
-//debug_screw_center();
-//debug_gears();
-//debug_screw_roller();
 
-// 120 mm screw
-//z_screw(120, steps=100);
-
-// 10 mm screw
-//z_screw(10, steps=100);
-
-//z_screw_center();
-//z_screw_center_coupler();
-//side_roller();
-//screw_housing_bottom();
-//screw_housing_top();
-//side_roller_axle();
-//side_roller_axle_washer();
-//screw_housing_bolt();
-screw_housing_bolt_side();
-
-//z_screw_motor_coupler(fast_render=true);
-//z_screw_motor_coupler(fast_render=false);
-//z_screw_motor_flex_coupler(fast_render=false);
-//z_screw_motor_flex_coupler(fast_render=true);
-//test_motor_coupler();
