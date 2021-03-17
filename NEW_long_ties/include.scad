@@ -139,19 +139,27 @@ module stagger_pins() {
 
 //////////////////      DOVE TAIL       //////////////////
 
-module male_dovetail(height, bridge_extra=0, center=false) {
+module male_dovetail(
+    height, bridge_extra=0, center=false) {
+
     module _male_dovetail() {
         union() {
-            dovetail_3d(male_dove_max_width,male_dove_min_width,male_dove_depth,height);
+            dovetail_3d(
+                male_dove_max_width, male_dove_min_width,
+                male_dove_depth, height);
 
             if (bridge_extra > 0) {
-                translate([-male_dove_max_width/2,male_dove_depth,0])
-                cube([male_dove_max_width,bridge_extra,height]);
+                translate(
+                    [-male_dove_max_width/2,
+                     male_dove_depth,0])
+                cube(
+                    [male_dove_max_width, bridge_extra,
+                     height]);
             }
         }
     }
     if (center) {
-        translate([0,0,-height/2])
+        translate([0, 0, -height/2])
         _male_dovetail();
     }
     _male_dovetail();
@@ -200,7 +208,7 @@ module wrap(units){
 	}
 }
 
-module _m_nut(d=6.5, id=3.3, h=2.4, cone=true, bridging=false) {
+module _m_nut(d=6.3, id=3.3, h=2.4, cone=true, bridging=false) {
     hull() {
         cylinder(d=d, h=h, $fn=6);
         if (cone) {
@@ -210,47 +218,71 @@ module _m_nut(d=6.5, id=3.3, h=2.4, cone=true, bridging=false) {
     }
     
     if (bridging) {
-        translate([0,0,h])
+        translate([0, 0, h])
         intersection() {
-            cube([10,id,0.4],center=true);
-            cylinder(d=d,h=0.5,center=true,$fn=6);
+            cube([10, id, 0.4], center=true);
+            cylinder(d=d, h=0.5, center=true, $fn=6);
         }
-        translate([0,0,h+0.2])
-        cube([id,id,0.4],center=true);
+        translate([0, 0, h + 0.2])
+        cube([id, id, 0.4], center=true);
     }
 }
 
-module _m_nut_tapering(d=6.5, id=3.3, h=2.4, cone=true, bridging=false) {
-    if (h>3) {
+module _m_nut_tapering(
+    d=6.5, id=3.3, h=2.4, cone=true, bridging=false) {
+
+    if (h > 3) {
         union() {
             hull() {
-                cylinder(d=d+0.5, h=0.01, $fn=6);
+                cylinder(d=d + 0.5, h=0.01, $fn=6);
 
-                translate([0,0,h-2.5])
-                _m_nut(d=d, id=id, h=0.1, cone=false, bridging=false);
+                translate([0, 0, h - 2.5])
+                _m_nut(d=d, id=id, h=0.1, cone=false,
+                    bridging=false);
             }
-            translate([0,0,h-2.5])
-            _m_nut(d=d, id=id, h=2.5, cone=cone, bridging=bridging);
+            translate([0, 0, h - 2.5])
+            _m_nut(d=d, id=id, h=2.5, cone=cone,
+                bridging=bridging);
         }
     } else {
-        _m_nut(d=d, id=id, h=h, cone=cone, bridging=bridging);
+        _m_nut(d=d, id=id, h=h, cone=cone,
+            bridging=bridging);
     }
 }
 
 module M3_nut(h=2.4, cone=true, bridging=false) {
-    _m_nut(d=6.5, id=3.3, h=h, cone=cone, bridging=bridging);
+    _m_nut(
+        d=6.3, id=3.3, h=h, cone=cone, bridging=bridging);
 }
 
 module M4_nut(h=3.2, cone=true, bridging=false) {
-    _m_nut(d=7.85, id=4.3, h=h, cone=cone, bridging=bridging);
+    _m_nut(
+        d=7.9, id=4.3, h=h, cone=cone, bridging=bridging);
+}
+
+module M5_nut(h=4.7, cone=true, bridging=false) {
+    _m_nut(
+        d=9, id=5.3, h=h, cone=cone, bridging=bridging);
+}
+
+module M8_nut(h=5.3, cone=true, bridging=false) {
+    _m_nut(
+        d=14.7, id=8.3, h=h, cone=cone, bridging=bridging);
 }
 
 module M3_nut_tapering(h=2.4, cone=true, bridging=false) {
-    _m_nut_tapering(d=6.5, id=3.3, h=h, cone=cone, bridging=bridging);
+    _m_nut_tapering(
+        d=6.3, id=3.3, h=h, cone=cone, bridging=bridging);
 }
 
 module M4_nut_tapering(h=3.2, cone=true, bridging=false) {
-    _m_nut_tapering(d=7.85, id=4.3, h=h, cone=cone, bridging=bridging);
+    _m_nut_tapering(
+        d=7.9, id=4.3, h=h, cone=cone, bridging=bridging);
+}
+
+module M5_nut_tapering(h=4.7, cone=true, bridging=false) {
+    _m_nut_tapering(
+        d=9, id=5.3, h=h, cone=cone, bridging=bridging);
 }
 
 //M3_nut();
@@ -258,15 +290,36 @@ module M4_nut_tapering(h=3.2, cone=true, bridging=false) {
 //M4_nut(cone=false, bridging=true);
 //M4_nut_tapering(5);
 
+module test_nuts() {
+    difference() {
+        cube([45, 15, 10], center=true);
 
-module M8_nut(h=5.3, cone=true) {
-    hull() {
-        cylinder(d = 15, h=h, $fn=6);
-        if (cone) {
-            translate([0,0,h-0.01]) cylinder(d=8.2, h=3.4, $fn=20);
+        translate([-45/2 + 5, -3, 0]) {
+            cylinder(d=3.3, center=true, h=15, $fn=20);
+
+            M3_nut(h=5);
+        }
+
+        translate([-45/2 + 12, 2.5, 0]) {
+            cylinder(d=4.3, center=true, h=15, $fn=25);
+
+            M4_nut(h=5);
+        }
+
+        translate([-45/2 + 21, -2, 0]) {
+            cylinder(d=5.3, center=true, h=15, $fn=30);
+
+            M5_nut(h=5);
+        }
+
+        translate([-45/2 + 35, 0, 0]) {
+            cylinder(d=8.3, center=true, h=15, $fn=30);
+
+            M8_nut(h=5);
         }
     }
 }
+//test_nuts();
 
 module elongated_nut(length=4, cone=true, bridging=false) {
     hull() {
@@ -603,11 +656,14 @@ module ridged_cylinder(d=10, h=15, r=1.5) {
     }
 }
 
-module _v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=100, depth=0) {
+module _v_thread(
+           thread_d=20, pitch=3, rounds=1,
+           direction=0, steps=100, depth=0) {
     scaling = (pitch + depth * 2) / pitch;
     echo(scaling);
 
-    module _v_thread_slice(d, h, angle=360, rotation=45) {
+    module _v_thread_slice(
+               d, h, angle=360, rotation=45) {
         _donut(d, h, angle=angle, rotation=0, $fn=angle)
         scale([scaling,1,1])
         rotate([0,0,45])
@@ -661,8 +717,9 @@ module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100, depth=0, chamf
             cylinder(d=screw_d-pitch/10, h=h, $fn=steps);
 
             if(chamfer) {
-                c_h = h+screw_d/2 - 1;
-                cylinder(d1=c_h*2, d2=0,h=c_h,$fn=40);
+                c_h = h + screw_d/2 - screw_d/15;
+
+                cylinder(d1=c_h*2, d2=0, h=c_h, $fn=40);
             }
         }
     }
@@ -673,12 +730,12 @@ module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100, depth=0, chamf
 //v_screw(h=10, screw_d=20, pitch=4, direction=1, steps=100,depth=1);
 
 
-module tube(d=10,h=10,wall=1,center=false) {
+module tube(d=10, h=10, wall=1, center=false) {
     difference() {
-        cylinder(d=d,h=h,center=center);
+        cylinder(d=d, h=h, center=center);
 
-        translate([0,0,-1/2])
-        cylinder(d=d-2*wall,h=h+2,center=center);
+        translate([0, 0, -1/2])
+        cylinder(d=d - 2*wall, h=h + 2, center=center);
     }
 }
 
