@@ -15,7 +15,7 @@ tip_size = 1.2;
 ////// VIEW //////
 
 // 50cm extention
-extention(50/30);
+//extention(50/30);
 //extention(50/30, tie_ends=false);
 //extention_center(length=50,stopper_position=50/2);
 
@@ -50,7 +50,7 @@ extention(50/30);
 
 //extention_side(units=units, supports=support);
 
-//extention_t();
+extention_t();
 
 //extention_glue_peg();
 
@@ -185,14 +185,17 @@ module extention_side(units=units, supports=support) {
         }
 
         if (supports) {
-            reduce = 4/units;
+            support_unit = units/floor(units)*30-4/floor(units);
+            x_off = 30/2-tip_size/2;
 
             translate([0,-l/2,0])
             for(i=[0:units]) {
-                translate([-30/2+tip_size/2,i*30+4/2-i*reduce,-30/2+20/2])
+                y_off = 4/2 + i*support_unit;
+
+                #translate([-x_off, y_off, -30/2+20/2])
                 cube([tip_size,4,20],center=true);
 
-                translate([30/2-tip_size/2,i*30+4/2-i*reduce,-30/2+20/2])
+                #translate([x_off, y_off, -30/2+20/2])
                 cube([tip_size,4,20],center=true);
             }
             translate([-30/2,-l/2,-3])
@@ -277,15 +280,33 @@ module extention_t(units1=units, units2=2, _offset=0, supports=support) {
     h = units1 * 30;
 
     union() {
-        translate([0,0,30/2])
-        extention_side(units=units1, supports=supports);
+        difference() {
+            translate([0,0,30/2])
+            extention_side(units=units1, supports=supports);
 
-        translate([0,_offset,(units2*30+6)/2+30-6])
-        rotate([90,0,0])
-        extention_base(units2*30+6, support=false);
+            translate([0,_offset,23])
+            cylinder(d=10,h=20,$fn=20);
 
-        translate([-30/2,-30/2,0])
-        cube([30,30,6]);
+            translate([0,_offset,25+5.5/2])
+            cube([30,8,5.5],center=true);
+
+            translate([0,_offset,25+5.5/2])
+            cube([8,30,5.5],center=true);
+        }
+
+        translate([0,_offset,(units2*30+7)/2+30-7])
+        difference() {
+            rotate([90,0,0])
+            extention_base(units2*30+7, support=false);
+
+            translate([0,-16,-(units2*30+7)/2+7])
+            rotate([-90,0,0])
+            male_dovetail(6);
+
+            translate([0,10,-(units2*30+7)/2+7])
+            rotate([-90,0,0])
+            male_dovetail(6);
+        }
     }
 }
 
