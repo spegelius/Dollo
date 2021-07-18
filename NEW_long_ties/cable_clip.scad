@@ -7,6 +7,15 @@ use <mockups.scad>;
 
 $fn=60;
 
+//clip_verylarge();
+//clip_large();
+clip_small();
+//cable_shroud_frame_mount();
+//cable_shroud_frame_clip();
+//cable_shroud_frame_clip2();
+//cable_shroud_motor_clip();
+//frame_spacer();
+
 module _clip(d=12) {
     rotate([90,180,0]) difference() {
         union() {
@@ -110,29 +119,36 @@ module _cable_shroud_motor_clip_body(h=12) {
 
     difference() {
         union() {
-            chamfered_cube_side(motor_side_length+7,
-                                motor_side_length+7,
-                                h, 4,center=true);
-            translate([0,-(motor_side_length+8)/2-20/2+13,0])
-            chamfered_cube_side(16.5+7, 20, h, 2,center=true);
+            chamfered_cube_side(
+                motor_side_length + 8,
+                motor_side_length + 8,
+                h, 4, center=true);
+
+            translate(
+                [0, -(motor_side_length + 8)/2 - 20/2 + 13, 0])
+            chamfered_cube_side(16.5 + 7, 20, h, 2, center=true);
         }
         difference() {
-            chamfered_cube_side(motor_side_length+slop,
-                                motor_side_length+slop,
-                                h+1, 2,center=true);
-            for(i=[0:3]) {
-                rotate([0,0,360/4*i]) {
-                    translate([motor_side_length/2+3/2-0.5,4,0])
-                    cylinder(d=3,h=h,center=true,$fn=20);
+            chamfered_cube_side(
+                motor_side_length + slop,
+                motor_side_length + slop,
+                h + 1, 2, center=true);
 
-                    translate([motor_side_length/2+3/2-0.5,-4,0])
-                    cylinder(d=3,h=h,center=true,$fn=20);
+            for(i=[0:3]) {
+                rotate([0, 0, 360/4*i]) {
+                    translate(
+                        [motor_side_length/2 + 3/2 - 0.5, 4, 0])
+                    cylinder(d=3, h=h, center=true, $fn=20);
+
+                    translate(
+                        [motor_side_length/2 + 3/2 - 0.5, -4, 0])
+                    cylinder(d=3, h=h, center=true, $fn=20);
                 }
             }
         }
 
-        translate([0,-(motor_side_length+slop)/2,0])
-        cube([16.5,15,h+1],center=true);
+        translate([0, -(motor_side_length + slop)/2, 0])
+        cube([16.5, 15, h + 1], center=true);
     }
 
 }
@@ -167,11 +183,3 @@ module debug() {
     frame_mockup();
 }
 
-//clip_verylarge();
-//clip_large();
-clip_small();
-//cable_shroud_frame_mount();
-//cable_shroud_frame_clip();
-//cable_shroud_frame_clip2();
-//cable_shroud_motor_clip();
-//frame_spacer();

@@ -3,32 +3,45 @@ include <include.scad>;
 include <globals.scad>;
 use <long_tie.scad>;
 use <mockups.scad>;
+use <extention.scad>;
 
 $fn=30;
+
+
+adapter_mks_sbase_box();
+//adapter_titan();
+//ramps_mount_adapter();
+//adapter_dove_m3_28();
+//adapter_dove_m3_15();
+//adapter_shy_rockabilly();
+//adapter_shy_rockabilly2();
+//adapter_shy_rockabilly3();
+//adapter_airtrippers_bowden_extruder();
+
 
 module _frame_clip(h=20) {
     intersection() {
         union() {
             difference() {
-                translate([0,-11.5,0])
-                cube([35,23,h],center=true);
+                translate([0, -11.5, 0])
+                cube([35, 23, h], center=true);
 
-                cube([30,30,60],center=true);
+                cube([30, 30, 60], center=true);
 
-                translate([0,-15,-30])
-                rotate([0,0,180])
+                translate([0, -15, -30])
+                rotate([0, 0, 180])
                 male_dovetail();
             }
-            translate([15,0,0])
-            rotate([0,0,5])
-            cube([4,5,h],center=true);
+            translate([15, 0, 0])
+            rotate([0, 0, 5])
+            cube([4, 5, h], center=true);
 
-            translate([-15,0,0])
-            rotate([0,0,-5])
-            cube([4,4.8,h],center=true);
+            translate([-15, 0, 0])
+            rotate([0, 0, -5])
+            cube([4, 4.8, h], center=true);
         }
-        translate([0,-11.5])
-        chamfered_cube(35,23,20,1,center=true);
+        translate([0, -11.5])
+        chamfered_cube(35, 23, 20, 1, center=true);
     }
 }
 
@@ -416,12 +429,3 @@ module adapter_airtrippers_bowden_extruder(pin_distance=61, pin_size=6.4) {
     }
 }
 
-//adapter_mks_sbase_box();
-adapter_titan();
-//ramps_mount_adapter();
-//adapter_dove_m3_28();
-//adapter_dove_m3_15();
-//adapter_shy_rockabilly();
-//adapter_shy_rockabilly2();
-//adapter_shy_rockabilly3();
-//adapter_airtrippers_bowden_extruder();
