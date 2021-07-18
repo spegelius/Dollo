@@ -212,7 +212,7 @@ module _m_nut(d=6.3, id=3.3, h=2.4, cone=true, bridging=false) {
     hull() {
         cylinder(d=d, h=h, $fn=6);
         if (cone) {
-            translate([0,0,h-0.01])
+            translate([0, 0, h - 0.01])
             cylinder(d=id, h=id/2, $fn=20);
         }
     }
@@ -220,7 +220,7 @@ module _m_nut(d=6.3, id=3.3, h=2.4, cone=true, bridging=false) {
     if (bridging) {
         translate([0, 0, h])
         intersection() {
-            cube([10, id, 0.4], center=true);
+            cube([2 * d, id, 0.4], center=true);
             cylinder(d=d, h=0.5, center=true, $fn=6);
         }
         translate([0, 0, h + 0.2])
@@ -265,6 +265,11 @@ module M5_nut(h=4.7, cone=true, bridging=false) {
         d=9, id=5.3, h=h, cone=cone, bridging=bridging);
 }
 
+module M6_nut(h=5.2, cone=true, bridging=false) {
+    _m_nut(
+        d=11.25, id=6.3, h=h, cone=cone, bridging=bridging);
+}
+
 module M8_nut(h=5.3, cone=true, bridging=false) {
     _m_nut(
         d=14.7, id=8.3, h=h, cone=cone, bridging=bridging);
@@ -285,6 +290,10 @@ module M5_nut_tapering(h=4.7, cone=true, bridging=false) {
         d=9, id=5.3, h=h, cone=cone, bridging=bridging);
 }
 
+module M8_nut_tapering(h=5.3, cone=true, bridging=false) {
+    _m_nut_tapering(
+        d=14.7, id=8.3, h=h, cone=cone, bridging=bridging);
+}
 //M3_nut();
 //M3_nut_tapering(5);
 //M4_nut(cone=false, bridging=true);
@@ -505,18 +514,19 @@ module rounded_cylinder(d, h, corner) {
 //rounded_cylinder(10,10,2,$fn=40);
 //donut(10,2,$fn=40);
 
-module chamfered_cylinder(d,h,chamfer,center=false) {
+module chamfered_cylinder(
+    d, h, chamfer, center=false) {
     module _chamfered_cylinder() {
         hull() {
-            translate([0,0,chamfer])
-            cylinder(d=d,h=h-2*chamfer);
+            translate([0, 0, chamfer])
+            cylinder(d=d, h=h - 2*chamfer);
 
-            cylinder(d=d-2*chamfer,h=h);
+            cylinder(d=d - 2*chamfer, h=h);
         }
     }
     
     if (center) {
-        translate([0,0,-h/2])
+        translate([0, 0, -h/2])
         _chamfered_cylinder();
     } else {
         _chamfered_cylinder();
