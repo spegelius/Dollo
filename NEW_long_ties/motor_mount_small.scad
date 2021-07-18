@@ -2,6 +2,7 @@ $fn = 30;
 include <globals.scad>;
 include <include.scad>;
 
+
 ////// VARIABLES //////
 frame_width = 35.5;
 tail_depth = 11;
@@ -31,38 +32,44 @@ do_motor_mount(bridges=true);
 ////// MODULES //////
 module y_mount_added(){    
     //base
-    translate([0,-5.75+rack_gap/2,-1])
-    rounded_cube(y=38.5+rack_gap*2, x=frame_width+35+1, z=4, center=true, corner=diameter);
+    translate([0, -5.75 + rack_gap/2, -1])
+    rounded_cube(
+        y=38.5 + rack_gap * 2, x=frame_width + 35 + 1,
+        z=4, center=true, corner=diameter);
     
     // lower slide
     slide_depth = 11;
-    slide_pos_y = frame_width-24.8+rack_gap;
+    slide_pos_y = frame_width - 24.9 + rack_gap;
     
     module slide() {
         difference() {
-            rotate([45,0,0])
-            rounded_cube(z=15, x=17, y=15, corner=2.5, center=true);
+            rotate([45, 0, 0])
+            rounded_cube(
+                z=15, x=17, y=15, corner=1, center=true);
 
-            translate([0,0,-8])
-            cube([60,30,30], center=true);
+            translate([0, 0, -8])
+            cube([60, 30, 30], center=true);
         }
     }
     
-    translate([-27.25,slide_pos_y,-4.55])
+    translate([-27, slide_pos_y, -4.55])
     slide();
 
-    translate([0,slide_pos_y,-4.55])
+    translate([0, slide_pos_y, -4.55])
     slide();
 
-    translate([27.25,slide_pos_y,-4.55])
+    translate([27, slide_pos_y, -4.55])
     slide();
     
-    translate([0,slide_pos_y-7.25,0.6])
-    rounded_cube(z=5, x=frame_width+35+1, y=22, corner=diameter,center=true);
+    translate([0, slide_pos_y - 6.85, 0.6])
+    rounded_cube(
+        z=5, x=frame_width + 35 + 1, y=22,
+        corner=diameter,center=true);
     
-    translate([0,slide_pos_y,0.05])
-    rounded_cube(z=6.1, x=30, y=28, corner=diameter, center=true);
-    
+    translate([0, slide_pos_y, 0.05])
+    rounded_cube(
+        z=6.1, x=30, y=28, corner=diameter, center=true);
+
     // towers
 
     //top tower
@@ -193,19 +200,19 @@ module y_mount_taken(bridges){
         // dove holes
 		rotate([90,0,-45])
         translate([-8,-3,-53+tail_depth])
-        male_dovetail(height=30);
+        male_dovetail(height=30, bridge_extra=0.2);
 
 		rotate([90,0,-45])
         translate([8,-3,-53+tail_depth])
-        male_dovetail(height=30);
+        male_dovetail(height=30, bridge_extra=0.2);
 
 		rotate([90,0,-45])
         translate([-8,-3,22-tail_depth])
-        male_dovetail(height=30);
+        male_dovetail(height=30, bridge_extra=0.2);
 
 		rotate([90,0,-45])
         translate([8,-3,22-tail_depth])
-        male_dovetail(height=30);
+        male_dovetail(height=30, bridge_extra=0.2);
 	}
 }
 
