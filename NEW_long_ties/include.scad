@@ -749,16 +749,18 @@ module tube(d=10, h=10, wall=1, center=false) {
     }
 }
 
-module chamfered_tube(d=10,h=10,wall=1,chamfer=1,center=false) {
+module chamfered_tube(
+    d=10, h=10, wall=1, chamfer=1, center=false) {
+
     difference() {
-        chamfered_cylinder(d,h,chamfer);
-        cylinder(d=d-wall*2,h=3*h,center=true);
+        chamfered_cylinder(d, h, chamfer);
+        cylinder(d=d - wall*2, h=3*h ,center=true);
 
-        translate([0,0,-10+chamfer])
-        chamfered_cylinder(d-wall*2+2*chamfer,10,chamfer);
+        translate([0, 0, -10 + chamfer])
+        chamfered_cylinder(d - wall*2 + 2*chamfer, 10, chamfer);
 
-        translate([0,0,h-chamfer])
-        chamfered_cylinder(d-wall*2+2*chamfer,10,chamfer);
+        translate([0, 0, h - chamfer])
+        chamfered_cylinder(d - wall*2 + 2*chamfer, 10, chamfer);
     }
 }
 //chamfered_tube(d=20,h=10,wall=3,chamfer=1,center=false);
