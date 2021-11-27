@@ -151,10 +151,12 @@ module male_dovetail(
             if (bridge_extra > 0) {
                 translate(
                     [-male_dove_max_width/2,
-                     male_dove_depth,0])
+                     male_dove_depth, 0]
+                )
                 cube(
                     [male_dove_max_width, bridge_extra,
-                     height]);
+                     height]
+                );
             }
         }
     }
@@ -167,33 +169,65 @@ module male_dovetail(
 
 //male_dovetail(5,bridge_extra=0.2);
 
-module dovetail_3d(max_width=11, min_width=5, depth=5, height=30) {
+module dovetail_3d(
+    max_width=11, min_width=5, depth=5, height=30) {
+
 	linear_extrude(height=height, convexity=2)
-		dovetail_2d(max_width,min_width,depth);
+	dovetail_2d(max_width, min_width, depth);
 }
 
 module dovetail_2d(max_width=11, min_width=5, depth=5) {
-	angle=atan((max_width/2-min_width/2)/depth);
+	angle=atan((max_width/2 - min_width/2)/depth);
 	//echo("angle: ", angle);
-	polygon(paths=[[0,1,2,3,0]], points=[[-min_width/2,0], [-max_width/2,depth], [max_width/2, depth], [min_width/2,0]]);
+	polygon(
+        paths=[[0, 1, 2, 3, 0]],
+        points=[
+            [-min_width/2,0],
+            [-max_width/2,depth],
+            [max_width/2, depth],
+            [min_width/2,0]
+        ]
+    );
 }
 
 //bow tie
-module tie_end(height){
-	rotate([0,0,0]) translate([0,-0.01,((obj_leg/2)/2)]) male_dovetail(height);
-	rotate([0,90,0]) translate([0,-0.01,((obj_leg/2)/2)]) male_dovetail(height);
-	rotate([0,180,0]) translate([0,-0.01,((obj_leg/2)/2)]) male_dovetail(height);
-	rotate([0,-90,0]) translate([0,-0.01,((obj_leg/2)/2)]) male_dovetail(height);
+module tie_end(height, bridge_extra=0){
+	translate([0, -0.01, (obj_leg/2)/2])
+    male_dovetail(height, bridge_extra);
+
+	rotate([0, 90, 0])
+    translate([0, -0.01, (obj_leg/2)/2])
+    male_dovetail(height, bridge_extra);
+
+	rotate([0, 180, 0])
+    translate([0, -0.01, (obj_leg/2)/2])
+    male_dovetail(height, bridge_extra);
+
+	rotate([0, -90, 0])
+    translate([0, -0.01, (obj_leg/2)/2])
+    male_dovetail(height, bridge_extra);
 }
 
 module bow_support(){
-	difference(){
-		intersection(){
-			translate([-15,0,-15]) cube([30,9,30]);
-			scale([0.95,0.97,0.95]) rotate([0,45,0]) tie_end();
-		}
-		cube([29.2,29.2,29.2], center=true);
-	}
+//	difference(){
+//		intersection(){
+//			translate([-15, 0, -15])
+//            cube([30, 9, 30]);
+//
+//			scale([0.95, 0.97, 0.95])
+//            rotate([0, 45, 0])
+//            tie_end();
+//		}
+//
+//		cube([29.2, 29.2, 29.2], center=true);
+//	}
+
+    rotate([-90, 0, 0])
+    for (i = [0:3]) {
+        rotate([0, 0, i*90])
+        translate([-30/2, -30/2, 5/2])
+        cylinder(h=5, d=6, center=true);
+    }
 }
 
 module wrap(units){
@@ -667,22 +701,27 @@ module ridged_cylinder(d=10, h=15, r=1.5) {
 }
 
 module _v_thread(
-           thread_d=20, pitch=3, rounds=1,
-           direction=0, steps=100, depth=0) {
+    thread_d=20, pitch=3, rounds=1,
+    direction=0, steps=100, depth=0
+) {
+
     scaling = (pitch + depth * 2) / pitch;
-    echo(scaling);
+    //echo(scaling);
 
     module _v_thread_slice(
-               d, h, angle=360, rotation=45) {
+        d, h, angle=360, rotation=45
+    ) {
+
         _donut(d, h, angle=angle, rotation=0, $fn=angle)
-        scale([scaling,1,1])
-        rotate([0,0,45])
-        square([h,h], center=true);
+
+        scale([scaling, 1, 1])
+        rotate([0, 0, 45])
+        square([h, h], center=true);
     }
 
     thread_length = PI*thread_d;
     rise_angle = asin(pitch/thread_length);
-    echo("Rise angle:", rise_angle);
+    //echo("Rise angle:", rise_angle);
 
     angle_step = 360 / steps;
 
@@ -690,41 +729,58 @@ module _v_thread(
 
     cube_w = sqrt((pitch*pitch)/2);
 
-    function get_z_pos(i) = direction == 0 ? z_step*i : -z_step*i+pitch*rounds;
-    function get_rise_angle() = direction == 0 ? rise_angle : -rise_angle;
+    function get_z_pos(i) = 
+        direction == 0 ? z_step*i :
+        -z_step*i + pitch*rounds;
+
+    function get_rise_angle() =
+        direction == 0 ? rise_angle : -rise_angle;
 
     _rounds = rounds * steps - 1;
     union() {
         for (i=[0:_rounds]) {
-            rotate([0,0,i*angle_step])
-            translate([0,0,get_z_pos(i)])
-            rotate([get_rise_angle(),0,0])
-            _v_thread_slice(thread_d, cube_w, angle_step*1.01);
+            rotate([0, 0, i*angle_step])
+            translate([0, 0, get_z_pos(i)])
+            rotate([get_rise_angle(), 0, 0])
+            _v_thread_slice(
+                thread_d, cube_w, angle_step*1.01
+            );
         }
     }
 }
 //_v_thread(thread_d=20, pitch=3, rounds=1, direction=0, steps=100, depth=2);
 
-module v_screw(h=10, screw_d=20, pitch=4, direction=0, steps=100, depth=0, chamfer=false) {
+module v_screw(
+    h=10, screw_d=20, pitch=4, direction=0,
+    steps=100, depth=0, chamfer=false
+) {
+
     rounds = h/pitch+1;
     d = screw_d - pitch;
 
-    // debug
-    //translate([0,0,5]) cylinder(d=screw_d, h=20);
+    // DEBUG
+    // translate([0, 0, 5])
+    // cylinder(d=screw_d, h=20);
 
     render(convexity = 10) {
         intersection() {
             union() {
-                translate([0,0,-pitch/2])
-                _v_thread(thread_d=d-2*depth,
+                translate([0, 0, -pitch/2])
+                _v_thread(thread_d=d - 2*depth,
                           pitch=pitch,
                           rounds=rounds,
                           direction=direction,
                           steps=steps,
                           depth=depth);
-                cylinder(d=d+pitch/10-2*depth, h=h, $fn=steps);
+
+                cylinder(
+                    d=d + pitch/10 - 2*depth,
+                    h=h, $fn=steps
+                );
             }
-            cylinder(d=screw_d-pitch/10, h=h, $fn=steps);
+            cylinder(
+                d=screw_d-pitch/10, h=h, $fn=steps
+            );
 
             if(chamfer) {
                 c_h = h + screw_d/2 - screw_d/15;
