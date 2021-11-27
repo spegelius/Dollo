@@ -14,7 +14,8 @@ extra_stiff = true;
 
 
 ////// VIEW //////
-full_corner();
+//full_corner();
+full_corner(side_support=true);
 
 //corner_90(extra_stiff=false);
 //corner_90(extra_stiff=true);
@@ -152,56 +153,103 @@ module basic_corner(w=obj_leg+15) {
     corner();
 };
 
-module full_corner(w=obj_leg, support=support, extra_stiff=extra_stiff){
+module full_corner(
+    w=obj_leg, support=support,
+    extra_stiff=extra_stiff, side_support=false) {
+
 	module support_pillars(){
-		translate([48-slot_translate/2,3,0])
-        cylinder(h=11,d=4);
+		translate([48 - slot_translate/2, 3, 0])
+        cylinder(h=11, d=4);
 
-		translate([48-slot_translate/2,-3,0])
-        cylinder(h=11,d=4);
+		translate([48 - slot_translate/2, -3, 0])
+        cylinder(h=11, d=4);
 
-		translate([39-slot_translate/2,18,24])
-        rotate([0,-40,0])
-        cylinder(h=5.2,d=4);
+		translate([39 - slot_translate/2, 18, 24])
+        rotate([0, -40, 0])
+        cylinder(h=5.2, d=4);
 
-		translate([39-slot_translate/2,-18,24])
-        rotate([0,-40,0])
-        cylinder(h=5.2,d=4);
+		translate([39 - slot_translate/2, -18, 24])
+        rotate([0, -40, 0])
+        cylinder(h=5.2, d=4);
 
         // Secondary center support pillar
-        translate([2.5,4,0])
-        cylinder(h=14.85,d=4);
+        translate([2.5, 4, 0])
+        cylinder(h=14.85, d=4);
 	}
 
-	if (support==true)
-	{
+	module supports() {
 		support_pillars();
 
-		rotate([0,0,(360/3)*2])
+		rotate([0, 0, (360/3)*2])
         support_pillars();
 
-		rotate([0,0,(360/3)*1])
+		rotate([0, 0, (360/3)*1])
         support_pillars();
 
         //center support
         difference() {
-            cylinder(h=17.4,d1=12,d2=2);
+            cylinder(h=17.4, d1=12, d2=2);
 
-            cylinder(h=16.4,d1=11,d2=1);
+            cylinder(h=16.4, d1=11, d2=1);
         }
 	}
-	difference(){
-		translate([0,0,0])
-        rotate([0,-35,0])
-        basic_corner(w);
+
+    module side_support() {
+        w = 0.5;
+
+        for (i = [0:2]) {
+            rotate([0, 0, i*360/3]) {
+
+                hull() {
+                    translate([18/2 + 14.4, -12.4, 0.1/2])
+                    cube([18, w, 0.1], center=true);
+
+                    translate([1/2 + 40.9, -12.4, 18.4])
+                    cube([1, w, 1], center=true);
+                }
+
+                hull() {
+                    translate([18/2 + 14.4, 12.4, 0.1/2])
+                    cube([18, w, 0.1], center=true);
+
+                    translate([1/2 + 40.9, 12.4, 18.4])
+                    cube([1, w, 1], center=true);
+                }
+
+                hull() {
+                    translate([8/2 + 35.8, 0, 0.1/2])
+                    cube([8, w, 0.1], center=true);
+
+                    translate([1/2 + 43.95, 0, 5.4])
+                    cube([1, w, 1], center=true);
+                }
+            }
+        }
+    }
+
+	difference() {
+        union() {
+            translate([0, 0, 0])
+            rotate([0, -35, 0])
+            basic_corner(w);
+
+            if (support) {
+                supports();
+            }
+
+            if (side_support) {
+                side_support();
+            }
+        
+        }
 
 		union(){
 			//cylinder(h=50, d=15);
 			//translate([-20,0,0]) cylinder(h=50, d=7);
 			//translate([10,17,0]) cylinder(h=50, d=7);
 			//translate([10,-17,0]) cylinder(h=50, d=7);
-			translate([0,0,-25])
-            cube([200,200,50], center=true);
+			translate([0, 0, -25])
+            cube([200, 200, 50], center=true);
 		}
 	}
 }
