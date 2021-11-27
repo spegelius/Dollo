@@ -221,12 +221,12 @@ module debug_axis_assembly() {
 
     %translate([0, -24.1, 13.1])
     rotate([-90, 0, 0])
-    do_motor_mount(bridges=false);
+    motor_mount(bridges=false, motor_side=false);
 
     %mirror([0, 1, 0])
     translate([0, -24.1, 13.1])
     rotate([-90, 0, 0])
-    do_motor_mount(bridges=false);
+    motor_mount(bridges=false);
 
     %translate([0, 21, 12.7])
     rotate([90, -8, 0])
