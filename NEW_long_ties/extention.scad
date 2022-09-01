@@ -31,6 +31,10 @@ tip_size = 1.2;
 //extention();
 //extention_center();
 
+// 140cm extention
+//extention(140/30);
+//extention_center(length=140, stopper_position=140/2);
+
 // 150cm extention
 //extention(5);
 //extention_center(length=150, stopper_position=150/2);
@@ -48,6 +52,10 @@ tip_size = 1.2;
 //    length=120/2 + 30, stopper_position=30
 //);
 
+extention_center(
+    length=140/2 + 30, stopper_position=30
+);
+
 //extention_center(
 //    length=150/2 + 30, stopper_position=30
 //);
@@ -61,7 +69,7 @@ tip_size = 1.2;
 
 //extention_side(units=units, supports=support);
 
-extention_t();
+//extention_t();
 
 //extention_glue_peg();
 
