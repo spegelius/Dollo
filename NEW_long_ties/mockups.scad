@@ -30,7 +30,6 @@ prox_sensor_washer_dia = 30;
 //mock_titan();
 //mock_5015_fan();
 
-
 ////// MODULES //////
 // LJ18A3-8-Z/BX
 module proximity_sensor(nut_position=30, nut_gap=10) {
@@ -108,28 +107,33 @@ echo("E3D heatsink h:", e3d_heatsink_h);
 
 module _e3d_heatsink() {
     color("LightGrey") {
-        cylinder(d1=12,d2=10,h=e3d_heatsink_h, $fn=50);
+        cylinder(d1=12, d2=10, h=e3d_heatsink_h, $fn=50);
 
         for (i = [0:10]) {
-            translate([0,0,i*e3d_heatsink_step])
+            translate([0, 0, i*e3d_heatsink_step])
             cylinder(d=22.3, h=1, $fn=50);
         }
-        translate([0,0,11*e3d_heatsink_step])
-        cylinder(d=16,h=1, $fn=50);
+        translate([0, 0, 11*e3d_heatsink_step])
+        cylinder(d=16, h=1, $fn=50);
     }
 }
 
-module _e3d_neck() {
+module _e3d_neck(threaded=false) {
+    $fn=50;
+
     color("LightGrey")
     union() {
-        $fn=50;
         cylinder(d=16, h=3);
 
-        translate([0,0,3])
-        cylinder(d=12, h=6);
+        cylinder(d=12, h=9);
 
-        translate([0,0,9])
-        cylinder(d=16, h=3.7);
+        if (threaded) {
+            translate([0, 0, 9])
+            cylinder(d=16, h=3.7);
+        } else {
+            translate([0, 0, 9])
+            cylinder(d=16, h=4.3);
+        }
     }
 }
 
@@ -149,13 +153,13 @@ module e3dv6() {
 module e3d_Volcano() {
     _e3d_nozzle();
 
-    translate([0,0,5])
+    translate([0, 0, 5])
     _e3dvolcano_heater_block();
 
-    translate([0,0,19.6+8.5])
+    translate([0, 0, 19.6 + 8.5])
     _e3d_heatsink();
 
-    translate([0,0,19.6+8.5+e3d_heatsink_h])
+    translate([0, 0, 19.6 + 8.5 + e3d_heatsink_h])
     _e3d_neck();
 }
 
@@ -898,3 +902,5 @@ module mock_5015_fan() {
     }
     
 }
+
+

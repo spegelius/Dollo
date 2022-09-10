@@ -60,7 +60,7 @@ module long_bow_tie_unscaled(length) {
                 bow_tie_master(length);
 
                 rotate([90, 0, 0])
-                cylinder(r=5.8, h=200);;
+                cylinder(r=5.8, h=length * 2);
             }
             translate([13, 5, 0])
             rotate([90, 0, 25])
@@ -113,14 +113,14 @@ module long_bow_tie(
 module split(length) {
     translate([0, 0, -length/2 - 1])
     linear_extrude(height=length + 2)
-    polygon(points=[[0,-1.4], [1,-1.4], [2,-5],
-                    [-2,-5], [-1,-1.4]]);
+    polygon(points=[[0, -1.4], [1, -1.4], [2, -5],
+                    [-2, -5], [-1, -1.4]]);
 }
 
-module long_bow_tie_split(length=length,
-                          scale_x=scale_x(),
-                          scale_z=scale_z(),
-                          middle=false) {
+module long_bow_tie_split(
+    length=length, scale_x=scale_x(),
+    scale_z=scale_z(), middle=false
+) {
 
     module _do_split() {
         rotate([90, 0, 0])
