@@ -13,21 +13,24 @@ include <mockups.scad>;
 
 ////// VARIABLES //////
 hotend_depth = 75;
-mounting_diamiter = 12 + slop/2;
+mounting_diamiter = 12;
 top_diamiter = 17;
 arm_thickness = 5;
 long_tie_len = .9*35;
-snap_location = 47-6.3+long_tie_len/2;
+snap_location = 47 - 6.3 + long_tie_len/2;
 natch_height = 6;
 
 $fn=60;
 
 ////// VIEW //////
 //view_proper();
+//debug_mount();
 //debug_radial_fan();
 
 do_mount();
+//do_mount(M4=true);
 //mount();
+//mount(M4=true);
 //clamp();
 
 //rotate([0, 180, 0])
@@ -55,7 +58,7 @@ module motor_mount_tie(height=15){
     long_tie(long_tie_len);
 }
 
-module y_mount_added(){
+module y_mount_added(M4=false){
     difference() {
         union() {
             motor_mount_tie();
@@ -79,11 +82,22 @@ module y_mount_added(){
                 25, 30, natch_height * 2
             ], center=true);
 
-            translate([
-                -4, -14.8, hotend_depth - 17.75
-            ])
-            rotate([-45, 0, 0])
-            cube([15, 32.0, 11], center=true);
+            if (M4) {
+                translate([
+                    -4, -14.8, hotend_depth - 17.75
+                ])
+                rotate([-45, 0, 0])
+                cube([15, 32.0, 11], center=true);
+
+                translate([-4, -8, hotend_depth - 16.75])
+                cube([15, 10, 10], center=true);
+            } else {
+                translate([
+                    -4, -14.8, hotend_depth - 17.75
+                ])
+                rotate([-45, 0, 0])
+                cube([15, 32.0, 11], center=true);
+            }
 
             translate([-4, -5, hotend_depth - 27])
             cube([
@@ -128,25 +142,41 @@ module dove_end() {
     }
 }
 
-module y_mount_taken(){
-    translate([0, -13, hotend_depth/2])
-    cylinder(h=70, d=mounting_diamiter);
+module y_mount_taken(M4=false){
+    // inner neck
+    translate([0, -13, hotend_depth/2 + 30])
+    cylinder(h=30, d=mounting_diamiter);
 
-    translate([0, -13, -1])
-    cylinder(h=70, d=top_diamiter);
+    if (M4) {
+        translate([0, -13, 63])
+        cylinder(h=6, d=top_diamiter);
+
+        translate([0, -13, 34])
+        cylinder(h=30, d=4.3);
+
+        translate([0, -13, 58.5])
+        cylinder(d=8.2, h=3.3, $fn=60);
+
+        translate([0, -13, 52.5])
+        cylinder(d=8.2, h=3.3, $fn=60);
+
+    } else {
+        translate([0, -13, -1])
+        cylinder(h=70, d=top_diamiter);
+    }
 
 	translate([0, -26, hotend_depth - natch_height])
     rotate([0, -90, 0])
-    cylinder(h=30, d=bolt_hole_dia, $fn=20);
+    cylinder(h=30, d=bolt_hole_dia, center=true, $fn=20);
 
 	translate([0, -2, hotend_depth-natch_height + 3])
     rotate([0, -90, 0])
-    cylinder(h=30, d=bolt_hole_dia, $fn=20);
+    cylinder(h=30, d=bolt_hole_dia, center=true, $fn=20);
 
     dove_end();
 }
 
-module mount(){
+module mount(M4=false){
 	difference(){
 		rotate([0, -90, 0]){
 			intersection(){
@@ -154,8 +184,8 @@ module mount(){
                 cube([15, 100, 100]);
 
 				difference(){
-                    y_mount_added();
-					y_mount_taken();
+                    y_mount_added(M4=M4);
+					y_mount_taken(M4=M4);
 				}
 			}
 			translate([
@@ -897,13 +927,13 @@ module fan_duct_radial_e3dvolcano(
     fan_duct_radial_supports();
 }
 
-module do_mount() {
+module do_mount(M4=false) {
     translate([0, 10, 25/2 - 1])
-    mount();
+    mount(M4=M4);
 
     translate([0, -65, 25/2 - 1])
     mirror([0, 1, 0])
-    mount();
+    mount(M4=M4);
 }
 
 module cable_pcb_mount() {
@@ -1086,6 +1116,14 @@ module view_proper() {
             );
         }
     }
+}
+
+module debug_mount() {
+    mount(M4=true);
+
+    translate([-127.6, -13, 0])
+    rotate([0, 90, 0])
+    e3dv6();
 }
 
 module debug_radial_fan() {
