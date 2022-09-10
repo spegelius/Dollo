@@ -389,30 +389,43 @@ module motor_shaft(h=10, extra_slop=0) {
 
 //motor_shaft(extra_slop=0.0,$fn=30);
 
-module motor_plate_holes(h=5, bolt_head_cones=false, center_chamfer=true) {
-    translate([0,0,-.5])
-    cylinder(d=motor_center_hole, h=h+1);
+module motor_plate_holes(
+    h=5, bolt_head_cones=false,
+    center_chamfer=true
+) {
+
+    translate([0, 0, -.5])
+    cylinder(d=motor_center_hole, h=h + 1);
 
     if (h > 2 && center_chamfer) {
-        translate([0,0,2])
+        translate([0, 0, 2])
         cylinder(d1=motor_center_hole,
-                 d2=motor_center_hole+(h-2),
-                 h=h-2+0.1);
+                 d2=motor_center_hole + (h - 2),
+                 h=h - 2 + 0.1);
     }
 
-    for (i=[0:3]) {
-        rotate([0,0,i*(360/4)]) {
-            translate([motor_bolt_hole_distance/2,
-                       motor_bolt_hole_distance/2,
-                       -0.01])
-            cylinder(d=bolt_hole_dia, h=h+1, $fn=20);
+    for (i=[0 : 3]) {
+        rotate([0, 0, i*(360/4)]) {
+            translate([
+                motor_bolt_hole_distance/2,
+                motor_bolt_hole_distance/2,
+                -0.01
+            ])
+            cylinder(
+                d=bolt_hole_dia, h=h + 1, $fn=20
+            );
 
             if (bolt_head_cones) {
-                translate([motor_bolt_hole_distance/2,
-                           motor_bolt_hole_distance/2,
-                           h-2])
-                cylinder(d1=bolt_hole_dia, d2=bolt_head_hole_dia, h=2.01, $fn=20);
-
+                translate([
+                    motor_bolt_hole_distance/2,
+                    motor_bolt_hole_distance/2,
+                    h - 2
+                ])
+                cylinder(
+                    d1=bolt_hole_dia,
+                    d2=bolt_head_hole_dia,
+                    h=2.01, $fn=20
+                );
             }
         }
     }
@@ -420,11 +433,13 @@ module motor_plate_holes(h=5, bolt_head_cones=false, center_chamfer=true) {
 
 module motor_plate(h=5, bolt_head_cones=false) {
     difference () {
-        translate([0,0,h/2])
-        chamfered_cube_side(motor_side_length,
-                            motor_side_length,
-                            h,5,center=true);
-            
+        translate([0, 0, h/2])
+        chamfered_cube_side(
+            motor_side_length,
+            motor_side_length,
+            h, 5, center=true
+        );
+
         motor_plate_holes(h, bolt_head_cones);
     }
 }
@@ -492,16 +507,18 @@ module rounded_cube(x,y,z,corner,center=false) {
     }
 }
 
-module rounded_cube_side(x,y,z,corner,center=false) {
-    _z = corner < 0 ? z : z+2*corner;
+module rounded_cube_side(x, y, z, corner, center=false) {
+    _z = corner < 0 ? z : z + 2*corner;
     _c = corner < 0 ? 0 : -corner;
+
     intersection() {
-        cube([x,y,z], center=center);
+        cube([x, y, z], center=center);
+
         if (!center) {
-            translate([0,0,_c])
-            rounded_cube(x,y,_z,corner,center);
+            translate([0, 0, _c])
+            rounded_cube(x, y, _z, corner, center);
         } else {
-            rounded_cube(x,y,_z,corner,center);
+            rounded_cube(x, y, _z, corner, center);
         }
     }
 }
@@ -541,8 +558,11 @@ module chamfered_cube_side(x,y,z, chamfer, center=false) {
 
 module rounded_cylinder(d, h, corner) {
     hull() {
-        translate([0,0,corner/2]) donut(d-corner,corner);
-        translate([0,0,h-corner/2]) donut(d-corner,corner);
+        translate([0, 0, corner/2])
+        donut(d - corner, corner);
+
+        translate([0, 0, h - corner/2])
+        donut(d - corner, corner);
     }
 }
 //rounded_cylinder(10,10,2,$fn=40);
@@ -804,6 +824,41 @@ module tube(d=10, h=10, wall=1, center=false) {
         cylinder(d=d - 2*wall, h=h + 2, center=center);
     }
 }
+
+module rounded_tube(d=10, h=10, wall=1, corner=0.2, center=false) {
+
+    function rt_corner() = corner >= wall ? wall : corner;
+
+    module _rtube_form() {
+        if (corner >= wall) {
+            donut(d - wall, wall);
+        } else {
+            union() {
+                donut(d - corner, corner);
+
+                donut(d - 2*wall + corner, corner);
+
+                translate([0, 0, -corner/2])
+                tube(d - corner, corner, wall - corner);
+            }
+        }
+    }
+
+    union() {
+        translate([0, 0, rt_corner()/2])
+        _rtube_form();
+
+        translate([0, 0, h - rt_corner()/2])
+        _rtube_form();
+
+        translate([0, 0, rt_corner()/2])
+        linear_extrude(h - rt_corner())
+        projection()
+        _rtube_form();
+    }
+}
+
+//rounded_tube(d=10, h=10, wall=1, corner=0.5, center=false, $fn=30);
 
 module chamfered_tube(
     d=10, h=10, wall=1, chamfer=1, center=false) {
