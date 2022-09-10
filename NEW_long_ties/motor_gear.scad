@@ -106,8 +106,7 @@ module motor_gear(nut_size=m3_nut_side,
                 }
 
                 // lower gear half
-                translate([0,0,11.8])
-                rotate([0,0,1.8])
+                translate([0, 0, 11.8])
                 gear (
                     mm_per_tooth    = rack_tooth,
                     number_of_teeth = 8,
@@ -120,9 +119,8 @@ module motor_gear(nut_size=m3_nut_side,
                 );
 
                 // upper gear half
-                translate([0,0,17.99])
-                mirror([0,1,0])
-                rotate([0,0,25.9808])
+                translate([0, 0, 17.99])
+                mirror([0, 0, 1])
                 gear (
                     mm_per_tooth    = rack_tooth,
                     number_of_teeth = 8,
