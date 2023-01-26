@@ -336,7 +336,7 @@ module z_screw_motor_coupler(fast_render=false) {
             translate([0,0,4]) cylinder(d=z_screw_d-0.5, h=31-4, $fn=50);
             translate([0,0,31]) _coupler_screw(fast_render);
         }
-        translate([0,0,-3]) motor_shaft(34, extra_slop=slop);
+        translate([0,0,-3]) motor_shaft(h=34, extra_slop=slop);
         translate([0,0,8]) rotate([-90,0,0]) cylinder(d=bolt_d,h=20);
         translate([0,8.5,8]) rotate([-90,0,0]) cylinder(d1=bolt_d, d2=8,h=5);
         

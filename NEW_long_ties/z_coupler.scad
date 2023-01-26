@@ -117,7 +117,7 @@ module rigid_leadscrew_coupler () {
 module motor_shaft_adapter() {
     difference() {
         ridged_cylinder(d=10, h=15, r=3);
-        motor_shaft(16, extra_slop=slop);
+        motor_shaft(h=16, extra_slop=slop);
         rotate([0, 0, 180])
         translate([-0.5, 0, 0])
         cube([1, 8, 15]);
