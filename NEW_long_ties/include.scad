@@ -2,122 +2,255 @@ include <globals.scad>;
 
 //////////////////      END SECTION       //////////////////
 
-	module added_pins(){
-		difference(){
-			union(){
-				translate([30/(15/4),obj_leg*leg_length,30/(15/4)]) pin();
-				translate([30/(15/4)+14.5,obj_leg*leg_length,30/(15/4)+14]) pin();
-			}
-			union(){
-							translate([30/(15/4)+13.5,obj_leg*leg_length-20,30/(15/4)+5])cube(size=[2,40,15]);
-							translate([30/(15/4)+7.5,obj_leg*leg_length-20,30/(15/4)+15])rotate([0,90,0]) cube(size=[2,40,15]);	
+module added_pins(){
+    difference(){
+        union(){
+            translate([
+                30/(15/4),
+                obj_leg*leg_length,
+                30/(15/4)
+            ])
+            pin();
 
-							translate([30/(15/4)-1,obj_leg*leg_length-20,30/(15/4)-8])cube(size=[2,40,15]);
-							translate([30/(15/4)-10,obj_leg*leg_length-20,30/(15/4)+1])rotate([0,90,0]) cube(size=[2,40,15]);
-			}
-		}
-	}
-	module taken_pins() {
-		translate([30/(15/4)+14,obj_leg*leg_length-10,30/(15/4)]) mirror_pin();
-		translate([30/(15/4),obj_leg*leg_length-10,30/(15/4)+15]) mirror_pin();
-	}
+            translate([
+                30/(15/4) + 14.5,
+                obj_leg*leg_length,
+                30/(15/4) + 14
+            ])
+            pin();
+        }
+        union() {
+            translate([
+                30/(15/4) + 13.5,
+                obj_leg*leg_length - 20,
+                30/(15/4) + 5
+            ])
+            cube(size=[2, 40, 15]);
+
+            translate([
+                30/(15/4) + 7.5,
+                obj_leg*leg_length - 20,
+                30/(15/4) + 15
+            ])
+            rotate([0, 90, 0])
+            cube(size=[2, 40, 15]);
+
+            translate([
+                30/(15/4) - 1,
+                obj_leg*leg_length - 20,
+                30/(15/4) - 8
+            ])
+            cube(size=[2,40,15]);
+
+            translate([
+                30/(15/4) - 10,
+                obj_leg*leg_length - 20,
+                30/(15/4) + 1
+            ])
+            rotate([0, 90, 0])
+            cube(size=[2, 40, 15]);
+        }
+    }
+}
+
+module taken_pins() {
+    translate([
+        30/(15/4) + 14,
+        obj_leg*leg_length - 10,
+        30/(15/4)
+    ])
+    mirror_pin();
+
+    translate([
+        30/(15/4),
+        obj_leg*leg_length - 10,
+        30/(15/4) + 15
+    ])
+    mirror_pin();
+}
 
 //////////////////      OTHER STUFF       //////////////////
 
-	module holes() {
-		rotate([0,0,90]) for(y=[0:other_holes])
-		translate([obj_leg+y*15,-15.5,7.5]) union() {
-			translate([7.5,0,15]) hole_up();
-			hole_down();
-		}
+module holes() {
+	rotate([0, 0, 90])
+    for(y = [0:other_holes])
+	translate([obj_leg + y*15, -15.5, 7.5])
+    union() {
+        translate([7.5, 0, 15])
+        hole_up();
+
+		hole_down();
 	}
-	module extend_holes() {
-	module top(){
-		rotate([0,0,90]) for(y=[0:other_holes+1])
-		translate([(30/4)+y*15,-15.5,7.5]) union() {
-			translate([7.5,0,15]) hole_up();
-		}
-	}
-	module bottom(){
-		rotate([0,0,90]) for(y=[0:other_holes+2])
-		translate([(30/4)+y*15,-15.5,7.5]) union() {
-			hole_down();
-		
 }
+
+module extend_holes() {
+
+	module top() {
+		rotate([0, 0, 90])
+        for(y = [0:other_holes+1])
+
+		translate([(30/4) + y*15, -15.5, 7.5])
+        union() {
+			translate([7.5, 0, 15])
+            hole_up();
+		}
 	}
+
+	module bottom() {
+		rotate([0, 0, 90])
+        for(y = [0:other_holes + 2])
+		translate([(30/4) + y*15, -15.5, 7.5])
+        union() {
+			hole_down();
+		}
+	}
+
 	union(){
 		top();
 		bottom();
 	}
-	}
+}
 
-	module hole() {
-		union() {
-			rotate([90, 90, 0]) cylinder(h=40, d=hole_pin_diameter, center=true);
-			translate([0,7.5,0]) sphere(d=hole_ball_size);
-			translate([0,-6,0]) sphere(d=hole_ball_size);
-		}
-	}
-	module hole_up() {
-		union() {
-			rotate([90, 90, 0]) cylinder(h=40, d=hole_pin_diameter, center=true);
-			translate([0,7.5,10]) cylinder(h=hole_pin_height, d=hole_pin_diameter, center=true);
-			translate([0,-6,10]) cylinder(h=hole_pin_height, d=hole_pin_diameter, center=true);
-			translate([0,7.5,0]) sphere(d=hole_ball_size);
-			translate([0,-6,0]) sphere(d=hole_ball_size);
-		}
-	}
-	module hole_down() {
-		union() {
-			rotate([90, 90, 0]) cylinder(h=40, d=hole_pin_diameter, center=true);
-			translate([0,7.5,-10]) cylinder(h=hole_pin_height, d=hole_pin_diameter, center=true);
-			translate([0,-6,-10]) cylinder(h=hole_pin_height, d=hole_pin_diameter, center=true);
-			translate([0,7.5,0]) sphere(d=hole_ball_size);
-			translate([0,-6,0]) sphere(d=hole_ball_size);
-		}
-	}
-	module pin() {
-		union() {
-			rotate([90, 90, 0]) cylinder(h=pin_height, d=pin_diameter, center=true);
-			translate([0,7.5,0]) sphere(d=ball_size);
-		}
-	}
+module hole() {
+	union() {
+        rotate([90, 90, 0])
+        cylinder(h=40, d=hole_pin_diameter, center=true);
 
-	module mirror_pin() {
-		rotate([90, 90, 0]) cylinder(h=hole_pin_height+small_number, d=hole_pin_diameter, center=true);
-		translate([0,-(pin_height-(ball_size/2)),0]) sphere(d=ball_size);
-	}
+        translate([0, 7.5, 0])
+        sphere(d=hole_ball_size);
+        translate([0, -6, 0])
+        sphere(d=hole_ball_size);
+    }
+}
+
+module hole_up() {
+    union() {
+        rotate([90, 90, 0])
+        cylinder(
+            h=40, d=hole_pin_diameter, center=true
+        );
+
+        translate([0, 7.5, 10])
+        cylinder(
+            h=hole_pin_height,
+            d=hole_pin_diameter,
+            center=true
+        );
+
+        translate([0, -6, 10])
+        cylinder(
+            h=hole_pin_height,
+            d=hole_pin_diameter,
+            center=true
+        );
+
+        translate([0, 7.5, 0])
+        sphere(d=hole_ball_size);
+
+        translate([0, -6, 0])
+        sphere(d=hole_ball_size);
+    }
+}
+
+module hole_down() {
+	union() {
+		rotate([90, 90, 0])
+        cylinder(
+            h=40, d=hole_pin_diameter, center=true
+        );
+
+        translate([0, 7.5, -10])
+        cylinder(
+            h=hole_pin_height,
+            d=hole_pin_diameter,
+            center=true
+        );
+
+        translate([0, -6, -10])
+        cylinder(
+            h=hole_pin_height,
+            d=hole_pin_diameter,
+            center=true
+        );
+
+        translate([0, 7.5, 0])
+        sphere(d=hole_ball_size);
+
+        translate([0, -6, 0])
+        sphere(d=hole_ball_size);
+    }
+}
+
+module pin() {
+	union() {
+		rotate([90, 90, 0])
+        cylinder(
+            h=pin_height, d=pin_diameter, center=true
+        );
+
+        translate([0, 7.5, 0])
+        sphere(d=ball_size);
+    }
+}
+
+module mirror_pin() {
+	rotate([90, 90, 0])
+    cylinder(
+        h=hole_pin_height + small_number,
+        d=hole_pin_diameter,
+        center=true
+    );
+
+    translate([
+        0, -(pin_height - (ball_size/2)), 0
+    ])
+    sphere(d=ball_size);
+}
 
 
 //////////////////      SOME RACK AND Z THINGS       //////////////////
 
 module z_holes() {
-    rotate([0,-90,0]) for(z=[0:z_hole_number])
-    translate([22.5+z*15,16,-12])
-        hole();
+    rotate([0, -90, 0])
+    for(z = [0:z_hole_number])
+    translate([22.5 + z*15, 16, -12])
+    hole();
 }
 
 module pin_cuts() {
 	union(){
-		cube(size=[2,10,40], center=true);
-		rotate([0,0,90]) cube(size=[2,10,40], center=true);
-	}
-}
-module pin_uncut() {
-	union(){
-		rotate([0, 0, 90]) cylinder(h=hole_pin_height, d=hole_pin_diameter, center=true);
-		translate([0,0,10]) sphere(d=ball_hole);
+		cube(size=[2, 10, 40], center=true);
+
+		rotate([0, 0, 90])
+        cube(size=[2, 10, 40], center=true);
 	}
 }
 
+module pin_uncut() {
+	union(){
+		rotate([0, 0, 90])
+        cylinder(
+            h=hole_pin_height,
+            d=hole_pin_diameter,
+            center=true
+        );
+
+		translate([0, 0, 10])
+        sphere(d=ball_hole);
+	}
+}
 
 module pin_out() {
 	union(){
-		rotate([0, 0, 90]) cylinder(h=pin_height, d=pin_diameter, center=true);
-		translate([0,0,10]) sphere(d= ball_size);
+		rotate([0, 0, 90])
+        cylinder(
+            h=pin_height, d=pin_diameter, center=true
+        );
+
+		translate([0, 0, 10])
+        sphere(d= ball_size);
 	}
 }
-
 
 module pins_z(){
 	difference() {
@@ -128,35 +261,53 @@ module pins_z(){
 //////////////////      RACK AND SLIDE     ///////////////////
 
 module straight_pins() {
-	for(z=[0:((((obj_leg*leg_length)*2)-(obj_leg*2))/3)/14.5]) rotate([-90,0,0]) translate([z*15,30/(15/4),14]) pins_z();
-	for(z=[0:((((obj_leg*leg_length)*2)-(obj_leg*2))/3)/14.5]) rotate([-90,0,0]) translate([z*15,30/(15/4)-14,14]) pins_z();
-}
-module stagger_pins() {
-	for(z=[0:((((obj_leg*leg_length)*2)-(obj_leg*2))/3)/14.5]) rotate([-90,0,0]) translate([z*15,30/(15/4),14]) pins_z();
-	for(z=[0:((((obj_leg*leg_length)*2)-(obj_leg*2))/3)/14.5]) rotate([-90,0,0]) translate([z*15+7,30/(15/4)-14,14]) pins_z();
+	for(z = [0:((((obj_leg*leg_length)*2) - (obj_leg*2))/3)/14.5])
+    rotate([-90, 0, 0])
+    translate([z*15, 30/(15/4), 14])
+    pins_z();
+
+	for(z=[0:((((obj_leg*leg_length)*2) - (obj_leg*2))/3)/14.5])
+    rotate([-90, 0, 0])
+    translate([z*15, 30/(15/4) - 14, 14])
+    pins_z();
 }
 
+module stagger_pins() {
+	for(z=[0:((((obj_leg*leg_length)*2) - (obj_leg*2))/3)/14.5])
+    rotate([-90, 0, 0])
+    translate([z*15, 30/(15/4), 14])
+    pins_z();
+
+	for(z=[0:((((obj_leg*leg_length)*2) - (obj_leg*2))/3)/14.5])
+    rotate([-90, 0, 0])
+    translate([z*15 + 7, 30/(15/4) - 14, 14])
+    pins_z();
+}
 
 //////////////////      DOVE TAIL       //////////////////
 
 module male_dovetail(
-    height, bridge_extra=0, center=false) {
+    height, bridge_extra=0, center=false
+) {
 
     module _male_dovetail() {
         union() {
             dovetail_3d(
-                male_dove_max_width, male_dove_min_width,
-                male_dove_depth, height);
+                male_dove_max_width,
+                male_dove_min_width,
+                male_dove_depth, height
+            );
 
             if (bridge_extra > 0) {
-                translate(
-                    [-male_dove_max_width/2,
-                     male_dove_depth, 0]
-                )
-                cube(
-                    [male_dove_max_width, bridge_extra,
-                     height]
-                );
+                translate([
+                    -male_dove_max_width/2,
+                    male_dove_depth, 0
+                ])
+                cube([
+                    male_dove_max_width,
+                    bridge_extra,
+                    height
+                ]);
             }
         }
     }
@@ -170,14 +321,19 @@ module male_dovetail(
 //male_dovetail(5,bridge_extra=0.2);
 
 module dovetail_3d(
-    max_width=11, min_width=5, depth=5, height=30) {
+    max_width=11, min_width=5, depth=5, height=30
+) {
 
 	linear_extrude(height=height, convexity=2)
 	dovetail_2d(max_width, min_width, depth);
 }
 
-module dovetail_2d(max_width=11, min_width=5, depth=5) {
+module dovetail_2d(
+    max_width=11, min_width=5, depth=5
+) {
+
 	angle=atan((max_width/2 - min_width/2)/depth);
+
 	//echo("angle: ", angle);
 	polygon(
         paths=[[0, 1, 2, 3, 0]],
@@ -231,18 +387,24 @@ module bow_support(){
 }
 
 module wrap(units){
-	for (y = [-1:units-2]) // two iterations, z = -1, z = 1
-	{
-		translate([15, (y*30)+15, 15]) {
-			for (r = [0:4]) // two iterations, z = -1, z = 1
-			{
-				rotate([0,r*90,0]) translate([0,15,15]) rotate([-90,0,0])male_dovetail(height=30);
+
+    // two iterations, z = -1, z = 1
+	for (y = [-1:units-2]) {
+        // two iterations, z = -1, z = 1
+		translate([15, (y*30) + 15, 15]) {
+			for (r = [0:4])	{
+				rotate([0, r*90, 0])
+                translate([0, 15, 15])
+                rotate([-90, 0, 0])
+                male_dovetail(height=30);
 			}
 		}
 	}
 }
 
-module _m_nut(d=6.3, id=3.3, h=2.4, cone=true, bridging=false) {
+module _m_nut(
+    d=6.3, id=3.3, h=2.4, cone=true, bridging=false
+) {
     hull() {
         cylinder(d=d, h=h, $fn=6);
         if (cone) {
@@ -263,7 +425,8 @@ module _m_nut(d=6.3, id=3.3, h=2.4, cone=true, bridging=false) {
 }
 
 module _m_nut_tapering(
-    d=6.5, id=3.3, h=2.4, cone=true, bridging=false) {
+    d=6.5, id=3.3, h=2.4, cone=true, bridging=false
+) {
 
     if (h > 3) {
         union() {
@@ -374,20 +537,25 @@ module elongated_nut(length=4, cone=true, bridging=false) {
     }
 }
 
-module motor_shaft(h=10, extra_slop=0) {
-    d = motor_shaft_hole_dia+extra_slop;
-    intersection() {
-        cylinder(d=d, h=h);
-        union() {
-            translate([0,-.5,h/2])
-            cube([d,d,h], center=true);
+module motor_shaft(
+    d=motor_shaft_hole_dia, h=10,
+    extra_slop=0, flat=0.5
+) {
 
-            cylinder(d=d, h=3.5);
+    _d = d + extra_slop;
+
+    intersection() {
+        cylinder(d=_d, h=h);
+        union() {
+            translate([0, -flat, h/2])
+            cube([_d, _d, h], center=true);
+
+            cylinder(d=_d, h=3.5);
         }
     }
 }
 
-//motor_shaft(extra_slop=0.0,$fn=30);
+//motor_shaft(extra_slop=0.0, $fn=30);
 
 module motor_plate_holes(
     h=5, bolt_head_cones=false,
