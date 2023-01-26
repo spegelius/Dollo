@@ -263,55 +263,99 @@ module mock_stepper_motor(geared=false, center=false) {
         difference() {
             union() {
                 intersection() {
-                    translate([0,0,motor_side_length/2])
-                    cube([motor_side_length,
-                          motor_height,motor_side_length], center=true);
+                    translate([0, 0, motor_side_length/2])
+                    cube([
+                        motor_side_length,
+                        motor_height, motor_side_length
+                    ], center=true);
 
-                    translate([0,0,motor_side_length/2])
-                    rotate([0,45,0])
-                    cube([54,40,54], center=true);
+                    translate([0, 0, motor_side_length/2])
+                    rotate([0, 45, 0])
+                    cube([54, 40, 54], center=true);
                 }
-                if (geared) {
-                    translate([0,40/2,motor_side_length/2])
-                    rotate([-90,0,0])
-                    cylinder(d=37.2, h=26.5);
 
-                    translate([0,40/2+26.5,motor_side_length/2])
-                    rotate([-90,0,0])
-                    motor_shaft(22, $fn=40);
+                if (geared) {
+                    translate([
+                        0, 40/2, motor_side_length/2
+                    ])
+                    rotate([-90, 0, 0])
+                    cylinder(d=36, h=27.5);
+
+                    translate([
+                        0, 40/2  + 27.5,
+                        motor_side_length/2
+                    ])
+                    rotate([-90, 0, 0])
+                    cylinder(d=22, h=2.2);
+
+                    translate([
+                        0, 40/2 + 27.5,
+                        motor_side_length/2
+                    ])
+                    rotate([-90, 0, 0])
+                    motor_shaft(d=8, h=20, flat=1, $fn=40);
                 } else {
-                    translate([0,40/2,motor_side_length/2])
-                    rotate([-90,0,0])
+                    translate([
+                        0, 40/2, motor_side_length/2
+                    ])
+                    rotate([-90, 0, 0])
                     cylinder(d=22, h=2);
 
-                    translate([0,40/2+2,motor_side_length/2])
-                    rotate([-90,0,0])
-                    motor_shaft(22, $fn=40);
+                    translate([
+                        0, 40/2 + 2,motor_side_length/2
+                    ])
+                    rotate([-90, 0, 0])
+                    motor_shaft(h=22, $fn=40);
                 }
+
                 // connector
-                translate([0,-motor_height/2+5/2+0.5,0])
-                cube([16,5,14],center=true);
+                translate([
+                    0, -motor_height/2 + 5/2 + 0.5, 0
+                ])
+                cube([16, 5, 14], center=true);
             }
-            translate([0,40/2,motor_side_length/2])
-            rotate([90,0,0])
+
+            translate([0, 40/2, motor_side_length/2])
+            rotate([90, 0, 0])
             for (i=[0:3]) {
-                rotate([0,0,i*(360/4)])
-                translate([motor_bolt_hole_distance/2,
-                           motor_bolt_hole_distance/2,-1])
+                rotate([0, 0, i*(360/4)])
+                translate([
+                    motor_bolt_hole_distance/2,
+                    motor_bolt_hole_distance/2, -1
+                ])
                 cylinder(d=bolt_hole_dia, 7, $fn=20);
+            }
+
+            if (geared) {
+                translate([
+                    0, 40/2 + 27.5,
+                    motor_side_length/2
+                ])
+                rotate([90, 0, 0])
+                for (i=[0:3]) {
+                    rotate([0, 0, i*(360/4)])
+                    translate([
+                        20/2,
+                        20/2, -1
+                    ])
+                    cylinder(d=bolt_hole_dia, 7, $fn=20);
+                }
             }
         }
     }
 
     if (center) {
-        translate([0,0,-motor_side_length/2])
+        translate([0, 0, -motor_side_length/2])
         _stepper_motor();
     } else {
         _stepper_motor();
     }
 }
 
-module frame_mockup(bed_angle=45, units_x=1, units_y=1, units_z=1, x_pos=0) {
+module frame_mockup(
+    bed_angle=45, units_x=1,
+    units_y=1, units_z=1, x_pos=0
+) {
     corner_side = 60;
     unit = 120;
     unit_len_x = units_x*unit;
@@ -324,151 +368,210 @@ module frame_mockup(bed_angle=45, units_x=1, units_y=1, units_z=1, x_pos=0) {
         render()
         difference() {
             union() {
-                cube([30,30,corner_side]);
-                cube([30,corner_side,30]);
-                cube([corner_side,30,30]);
+                cube([30, 30, corner_side]);
+                cube([30, corner_side, 30]);
+                cube([corner_side, 30, 30]);
             }
-            translate([15,-0.01,0])
-            male_dovetail(corner_side+1);
+            translate([15, -0.01, 0])
+            male_dovetail(corner_side + 1);
 
-            translate([-0.01,15,0])
-            rotate([0,0,-90])
-            male_dovetail(corner_side+1);
+            translate([-0.01, 15, 0])
+            rotate([0, 0, -90])
+            male_dovetail(corner_side + 1);
 
-            translate([15,30.01,0])
-            rotate([0,0,180])
-            male_dovetail(corner_side+1);
+            translate([15, 30.01, 0])
+            rotate([0, 0, 180])
+            male_dovetail(corner_side + 1);
 
-            translate([30.01,15,0])
-            rotate([0,0,90])
-            male_dovetail(corner_side+1);
+            translate([30.01, 15, 0])
+            rotate([0, 0, 90])
+            male_dovetail(corner_side + 1);
         }
     }
     
     module side(length) {
         render()
         difference() {
-            cube([30,30,length]);
-            translate([15,-0.01,0])
-            male_dovetail(corner_side+1);
+            cube([30, 30, length]);
+            translate([15, -0.01, 0])
+            male_dovetail(corner_side + 1);
 
-            translate([-0.01,15,0])
-            rotate([0,0,-90])
-            male_dovetail(length+1);
+            translate([-0.01, 15, 0])
+            rotate([0, 0, -90])
+            male_dovetail(length + 1);
 
-            translate([15,30.01,0])
-            rotate([0,0,180])
-            male_dovetail(length+1);
+            translate([15, 30.01, 0])
+            rotate([0, 0, 180])
+            male_dovetail(length + 1);
 
-            translate([30.01,15,0])
-            rotate([0,0,90])
-            male_dovetail(length+1);
+            translate([30.01, 15, 0])
+            rotate([0, 0, 90])
+            male_dovetail(length + 1);
         }
     }
-    
+
     %render()
-    translate([-unit_len_x/2,x_pos,z+30+43.5])
-    rotate([0,90,0])
+    translate([-unit_len_x/2, x_pos, z + 30 + 43.5])
+    rotate([0, 90, 0])
     side(unit_len_x);
-    
+
     // corners
-    %translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0])
+    %translate([
+        -corner_side - unit_len_x/2,
+        -corner_side - unit_len_y/2, 0
+    ])
     corner();
 
-    %mirror([1,0,0])
-    translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0])
+    %mirror([1, 0, 0])
+    translate([
+        -corner_side - unit_len_x/2,
+        -corner_side - unit_len_y/2, 0
+    ])
     corner();
 
-    %mirror([0,1,0])
-    translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0])
+    %mirror([0, 1, 0])
+    translate([
+        -corner_side - unit_len_x/2,
+        -corner_side - unit_len_y/2, 0
+    ])
     corner();
 
-    %mirror([0,1,0])
-    mirror([1,0,0])
-    translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0])
+    %mirror([0, 1, 0])
+    mirror([1, 0, 0])
+    translate([
+        -corner_side - unit_len_x/2,
+        -corner_side - unit_len_y/2, 0
+    ])
     corner();
-    
+
     // corners
-    translate([0,0,2*corner_side + unit_len_z])
-    mirror([0,0,1]) {
-        %translate([-corner_side-unit_len_x/2,
-        -corner_side-unit_len_y/2, 0])
+    translate([0, 0, 2*corner_side + unit_len_z])
+    mirror([0, 0, 1]) {
+        %translate([
+            -corner_side - unit_len_x/2,
+            -corner_side - unit_len_y/2, 0
+        ])
         corner();
 
-        %mirror([1,0,0])
-        translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0])
+        %mirror([1, 0, 0])
+        translate([
+            -corner_side - unit_len_x/2,
+            -corner_side - unit_len_y/2, 0
+        ])
         corner();
 
-        %mirror([0,1,0])
-        translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0])
+        %mirror([0, 1, 0])
+        translate([
+            -corner_side - unit_len_x/2,
+            -corner_side - unit_len_y/2, 0
+        ])
         corner();
 
-        %mirror([0,1,0])
-        mirror([1,0,0])
-        translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, 0])
+        %mirror([0, 1, 0])
+        mirror([1, 0, 0])
+        translate([
+            -corner_side - unit_len_x/2,
+            -corner_side - unit_len_y/2, 0
+        ])
         corner();
     }
 
     // sides
-    %translate([-corner_side-unit_len_x/2, unit_len_y/2, 0])
-    rotate([90,0,0])
+    %translate([
+        -corner_side - unit_len_x/2,
+        unit_len_y/2, 0
+    ])
+    rotate([90, 0, 0])
     side(unit_len_y);
 
-    %mirror([1,0,0])
-    translate([-corner_side-unit_len_x/2, unit_len_y/2, 0])
-    rotate([90,0,0])
+    %mirror([1, 0, 0])
+    translate([
+        -corner_side - unit_len_x/2,
+        unit_len_y/2, 0
+    ])
+    rotate([90, 0, 0])
     side(unit_len_y);
 
-    %rotate([0,0,90])
-    translate([-corner_side-unit_len_y/2, unit_len_x/2, 0])
-    rotate([90,0,0])
+    %rotate([0, 0, 90])
+    translate([
+        -corner_side - unit_len_y/2,
+        unit_len_x/2, 0
+    ])
+    rotate([90, 0, 0])
     side(unit_len_x);
 
-    %mirror([0,1,0])
-    %rotate([0,0,90])
-    translate([-corner_side-unit_len_y/2, unit_len_x/2, 0])
-    rotate([90,0,0])
+    %mirror([0, 1, 0])
+    %rotate([0, 0, 90])
+    translate([
+        -corner_side - unit_len_y/2,
+        unit_len_x/2, 0
+    ])
+    rotate([90, 0, 0])
     side(unit_len_x);
-    
+
     // sides
-    %translate([-corner_side-unit_len_x/2, unit_len_y/2, z])
-    rotate([90,0,0])
+    %translate([
+        -corner_side - unit_len_x/2,
+        unit_len_y/2, z
+    ])
+    rotate([90, 0, 0])
     side(unit_len_y);
 
-    %mirror([1,0,0])
-    translate([-corner_side-unit_len_x/2, unit_len_y/2, z])
-    rotate([90,0,0])
+    %mirror([1, 0, 0])
+    translate([
+        -corner_side - unit_len_x/2,
+        unit_len_y/2, z
+    ])
+    rotate([90, 0, 0])
     side(unit_len_y);
 
-    %rotate([0,0,90])
-    translate([-corner_side-unit_len_y/2, unit_len_x/2, z])
-    rotate([90,0,0])
+    %rotate([0, 0, 90])
+    translate([
+        -corner_side - unit_len_y/2,
+        unit_len_x/2, z
+    ])
+    rotate([90, 0, 0])
     side(unit_len_x);
 
-    %mirror([0,1,0])
-    %rotate([0,0,90])
-    translate([-corner_side-unit_len_y/2, unit_len_x/2, z])
-    rotate([90,0,0])
+    %mirror([0, 1, 0])
+    %rotate([0, 0, 90])
+    translate([
+        -corner_side - unit_len_y/2,
+        unit_len_x/2, z
+    ])
+    rotate([90, 0, 0])
     side(unit_len_x);
 
-    %translate([-corner_side-unit_len_x/2,-corner_side-unit_len_y/2, corner_side])
+    %translate([
+        -corner_side - unit_len_x/2,
+        -corner_side - unit_len_y/2,
+        corner_side
+    ])
     side(unit_len_z);
 
-    %mirror([1,0,0])
-    translate([-corner_side-unit_len_x/2, -corner_side-unit_len_y/2, corner_side])
+    %mirror([1, 0, 0])
+    translate([
+        -corner_side - unit_len_x/2,
+        -corner_side - unit_len_y/2,
+        corner_side
+    ])
     side(unit_len_z);
 
-    %mirror([0,1,0])
-    translate([-corner_side-unit_len_x/2,
-               -corner_side-unit_len_y/2,
-               corner_side])
+    %mirror([0, 1, 0])
+    translate([
+        -corner_side-unit_len_x/2,
+        -corner_side-unit_len_y/2,
+        corner_side
+    ])
     side(unit_len_z);
 
-    %mirror([0,1,0])
-    mirror([1,0,0])
-    translate([-corner_side-unit_len_x/2,
-               -corner_side-unit_len_y/2,
-               corner_side])
+    %mirror([0, 1, 0])
+    mirror([1, 0, 0])
+    translate([
+        -corner_side-unit_len_x/2,
+        -corner_side-unit_len_y/2,
+        corner_side
+    ])
     side(unit_len_z);
 }
 
