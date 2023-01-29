@@ -211,22 +211,22 @@ module full_corner(
             rotate([0, 0, i*360/3]) {
 
                 hull() {
-                    translate([18/2 + 15.4, -12.35, 0.1/2])
+                    translate([18/2 + 15, -12.35, 0.1/2])
                     cube([18, w, 0.1], center=true);
 
-                    translate([1/2 + 42, -12.35, 18.4])
+                    translate([1/2 + 41.6, -12.35, 18.4])
                     cube([1, w, 1], center=true);
                 }
 
                 hull() {
-                    translate([18/2 + 15.4, 12.35, 0.1/2])
+                    translate([18/2 + 15, 12.35, 0.1/2])
                     cube([18, w, 0.1], center=true);
 
-                    translate([1/2 + 42, 12.35, 18.4])
+                    translate([1/2 + 41.6, 12.35, 18.4])
                     cube([1, w, 1], center=true);
                 }
 
-                hull() {
+                #hull() {
                     translate([8/2 + 35.8, 0, 0.1/2])
                     cube([8, w, 0.1], center=true);
 
