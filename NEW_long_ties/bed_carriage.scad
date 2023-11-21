@@ -72,7 +72,7 @@ rail_offset = 38;
 
 //bed_attachment_inner();
 
-//bed_adjustment_nut();
+bed_adjustment_nut();
 
 //bed_attachment_spring_screw();
 //bed_attachment_spring_nut();
@@ -902,60 +902,86 @@ module bed_attachment_inner() {
             difference() {
                 union() {
                     intersection() {
-                        translate([0,0,30/2])
-                        cube([120,20,30], center=true);
+                        translate([0, 0, 30/2])
+                        cube(
+                            [120, 20, 30],
+                            center=true
+                        );
 
-                        translate([0,0,-28.3])
-                        rotate([0,45,0])
-                        cube([120,30,120], center=true);
+                        translate([0, 0, -28.3])
+                        rotate([0, 45, 0])
+                        cube(
+                            [120, 30, 120],
+                            center=true
+                        );
                     }
                 }
-                translate([0,0,90/2+20])
-                rotate([90,0,0])
-                cylinder(d=90,h=30,$fn=50,center=true);
-                
-                translate([0,250/2+10,0])
-                rotate([10,0,0])
-                cylinder(d=250,h=60,$fn=100);
+                translate([0, 0, 90/2 + 20])
+                rotate([90, 0, 0])
+                cylinder(
+                    d=90, h=30, $fn=50,
+                    center=true
+                );
 
-                translate([0,-250/2-10,0])
-                rotate([-10,0,0])
-                cylinder(d=250,h=60,$fn=100);
+                translate([0, 250/2 + 10, 0])
+                rotate([10, 0, 0])
+                cylinder(d=250, h=60, $fn=100);
+
+                translate([0, -250/2 - 10, 0])
+                rotate([-10, 0, 0])
+                cylinder(d=250, h=60, $fn=100);
             }
-            hull() {
-                translate([0,0,6.35])
-                rotate([-90,0,0])
-                cylinder(d=10,h=20,center=true,$fn=30);
 
-                translate([0,0,1/2])
-                cube([10,16,1],center=true);
+            hull() {
+                translate([0, 0, 6.35])
+                rotate([-90,0,0])
+                cylinder(
+                    d=10, h=20, center=true, $fn=30
+                );
+
+                translate([0, 0, 1/2])
+                cube([10, 16, 1], center=true);
             }
         }
 
-        translate([0,0,6.35])
-        rotate([-90,0,0])
-        cylinder(d1=3.4,d2=4.2,h=21,center=true,$fn=30);
+        translate([0, 0, 6.35])
+        rotate([-90, 0, 0])
+        cylinder(
+            d1=3.4, d2=4.2, h=21,
+            center=true, $fn=30
+        );
 
-        translate([0,-10,6.35])
-        rotate([90,0,0])
-        cylinder(d1=8, d2=11,h=2,center=true,$fn=30);
+        translate([0, -10, 6.35])
+        rotate([90, 0, 0])
+        cylinder(
+            d1=8, d2=11, h=2,
+            center=true, $fn=30
+        );
 
-        translate([0,10,6.35])
-        rotate([90,0,0])
-        cylinder(d1=10,d2=7,h=2,center=true,$fn=30);
-        
-        translate([0,0,-28.25])
-        rotate([0,-45,0])
-        translate([120/2,0,-100/2])
-        rotate([0,0,90]) male_dovetail(100);
-        
-        translate([0,0,-28.25])
-        rotate([0,45,0])
-        translate([-120/2,0,-100/2])
-        rotate([0,0,-90]) male_dovetail(100);
-        
-        translate([30,-10+0.49,1])
-        rotate([90,0,0])
+        // bottom hole indent
+        translate([0, 10, 6.35])
+        rotate([90, 0, 0])
+        cylinder(
+            d1=11, d2=8, h=2,
+            center=true, $fn=30
+        );
+
+        // dovetail grooves
+        translate([0, 0, -28.25])
+        rotate([0, -45, 0])
+        translate([120/2, 0, -100/2])
+        rotate([0, 0, 90])
+        male_dovetail(100);
+
+        translate([0, 0, -28.25])
+        rotate([0, 45, 0])
+        translate([-120/2, 0, -100/2])
+        rotate([0, 0, -90])
+        male_dovetail(100);
+
+        // orientation text
+        translate([30, -10 + 0.49, 1])
+        rotate([90, 0, 0])
         linear_extrude(0.5)
         text("TOP", size=6);
     }
@@ -990,21 +1016,30 @@ module bed_screw_extention(support=true, hx=2.5, hy=0) {
 
 module bed_adjustment_nut() {
     nubs = 14;
+
     difference() {
         union() {
-            cylinder(d=6.9, h=10,$fn=30);
-            intersection() {
-                for(i=[0:nubs-1]) {
-                    rotate([0,0,360/nubs*i])
-                    translate([12,0,6/2])
-                    sphere(d=8,$fn=30);
-                }
-                cylinder(d=34,h=6,$fn=30);
+            hull() {
+                cylinder(d=7.9, h=11,$fn=30);
+                cylinder(d=9.5, h=9.4,$fn=30);
             }
-            cylinder(d=24,h=6,$fn=30);
+
+            intersection() {
+                for(i=[0:nubs - 1]) {
+                    rotate([0, 0, 360/nubs*i])
+                    translate([12, 0, 6/2])
+                    sphere(d=8, $fn=30);
+                }
+
+                cylinder(d=34, h=6, $fn=30);
+            }
+            cylinder(d=24, h=6, $fn=30);
         }
-        M3_nut();
-        cylinder(d=3.2,h=12,$fn=20);
+
+        translate([0, 0, -0.1])
+        M3_nut_tapering(8.1, cone=false, bridging=true);
+
+        cylinder(d=3.3, h=12, $fn=20);
     }
 }
 
