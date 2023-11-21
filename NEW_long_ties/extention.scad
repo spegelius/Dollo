@@ -41,7 +41,7 @@ tip_size = 1.2;
 
 // 180cm extention
 //extention(6);
-//extention_center(length=180, stopper_position=180/2);
+extention_center(length=180, stopper_position=180/2);
 
 // centers for corner
 //extention_center(
@@ -52,9 +52,9 @@ tip_size = 1.2;
 //    length=120/2 + 30, stopper_position=30
 //);
 
-extention_center(
-    length=140/2 + 30, stopper_position=30
-);
+//extention_center(
+//    length=140/2 + 30, stopper_position=30
+//);
 
 //extention_center(
 //    length=150/2 + 30, stopper_position=30
@@ -67,11 +67,14 @@ extention_center(
 // center 120cm / 60cm
 //extention_center(length=180/2 + 60, stopper_position=60);
 
+// 120mm side extention
 //extention_side(units=units, supports=support);
 
 //extention_t();
 
 //extention_glue_peg();
+
+
 
 ////// MODULES //////
 module extention_base(length, support=true, tie_ends=true) {
@@ -80,13 +83,15 @@ module extention_base(length, support=true, tie_ends=true) {
 
 	module added(){
         union() {
-            cube([30,length,30],center=true);
+            cube([30, length, 30], center=true);
 
             if (!tie_ends) {
                 for(i = [0:3]) {
-                    rotate([0,i*90,0])
-                    translate([30/2-4.5,length/2,30/2-4.5])
-                    cube([4.9,2,4.9],center=true);
+                    rotate([0, i*90, 0])
+                    translate([
+                        30/2 - 4.5, length/2, 30/2 - 4.5
+                    ])
+                    cube([4.9, 2, 4.9], center=true);
                 }
             }
         }
@@ -111,7 +116,9 @@ module extention_base(length, support=true, tie_ends=true) {
                         cube([0.1, 14, 0.1], center=true);
                     }
 
-                    translate([30/2 - 4.5, -length/2, 30/2 - 4.5])
+                    translate([
+                        30/2 - 4.5, -length/2, 30/2 - 4.5
+                    ])
                     hull() {
                         cube([5, 2.4, 5], center=true);
                         cube([0.1, 5, 0.1], center=true);
@@ -194,18 +201,33 @@ module extention(
 }
 
 module extention_side(units=units, supports=support) {
+
     l = units*30;
 
     union() {
         difference() {
             extention_base(l, support=false);
 
+            // dove grooves tuning
             translate([0, 0, -30/2 + 5 + 0.2/2])
-            cube([male_dove_max_width, l + 1, 0.2], center=true);
+            cube([
+                male_dove_max_width, l + 1, 0.23
+            ], center=true);
+
+            translate([30/2, (l + 1)/2, 0.15])
+            rotate([90, -90, 0])
+            male_dovetail(l + 1);
+
+            translate([-30/2, (l + 1)/2, 0.15])
+            rotate([90, 90, 0])
+            male_dovetail(l + 1);
+
         }
 
         if (supports) {
-            support_unit = units/floor(units)*30 - 4/floor(units);
+            support_unit =
+                units/floor(units)*30 - 4/floor(units);
+
             x_off = 30/2 - tip_size/2;
 
             translate([0, -l/2, 0])
@@ -230,10 +252,14 @@ module extention_side(units=units, supports=support) {
             translate([30/2 - 4/2, l/2 - 5/2, -30/2 + 0.2/2])
             cube([4, 5, 0.2], center=true);
 
-            translate([-30/2 + 4/2, -l/2 + 5/2, -30/2 + 0.2/2])
+            translate([
+                -30/2 + 4/2, -l/2 + 5/2, -30/2 + 0.2/2
+            ])
             cube([4, 5, 0.2], center=true);
 
-            translate([30/2 - 4/2, -l/2 + 5/2, -30/2 + 0.2/2])
+            translate([
+                30/2 - 4/2, -l/2 + 5/2, -30/2 + 0.2/2
+            ])
             cube([4, 5, 0.2], center=true);
         }
     }
@@ -301,7 +327,8 @@ module extention_center(length=120, stopper_position=60) {
 }
 
 module extention_t(
-    units1=units, units2=2, _offset=0, supports=support) {
+    units1=units, units2=2, _offset=0, supports=support
+) {
 
     h = units1 * 30;
 
@@ -316,8 +343,33 @@ module extention_t(
             translate([0, _offset, 25 + 5.5/2])
             cube([30, 8, 5.5], center=true);
 
-            translate([0,_offset, 25 + 5.5/2])
+            translate([0, _offset, 25 + 5.5/2])
             cube([8, 30, 5.5], center=true);
+
+            translate([0, _offset - 30/2, -1])
+            male_dovetail(35);
+
+            translate([0, _offset - 30/2, 5])
+            hull() {
+                male_dovetail(2);
+
+                translate([0, 5/2, 0.2/2])
+                cube([8, 5, 0.2], center=true);
+            }
+
+            translate([0, _offset + 30/2, -1])
+            rotate([0, 0, 180])
+            male_dovetail(35);
+
+            translate([0, _offset + 30/2, 5])
+            rotate([0, 0, 180])
+            hull() {
+                male_dovetail(2);
+
+                translate([0, 5/2, 0.2/2])
+                cube([8, 5, 0.2], center=true);
+            }
+
         }
 
         translate([

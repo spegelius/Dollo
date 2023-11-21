@@ -69,11 +69,11 @@ motor_shaft_dia = 5;
 motor_shaft_hole_dia = 5;
 
 // bolts etc.
-bolt_hole_dia = 3+2*slop;
+bolt_hole_dia = 3 + 2*slop;
 bolt_head_hole_dia = 6.2;
 
-m4_bolt_hole_dia = 4+2*slop;
-m4_bolt_head_hole_dia = 6.8+2*slop;
+m4_bolt_hole_dia = 4 + 2*slop;
+m4_bolt_head_hole_dia = 6.8 + 2*slop;
 
 m3_nut_side = 5.65;
 m3_nut_height = 2.3;
@@ -82,20 +82,21 @@ m4_nut_height = 3.1;
 
 // threaded rod
 lifter_rod_diam = 9.86;
-hole_threaded_rod = lifter_rod_diam+2*slop;
+hole_threaded_rod = lifter_rod_diam + 2*slop;
 
 // for the extensions
-metal_rod_size = 9;
+// metal_rod_size = 9;
+metal_rod_size = 8.3; // metric
 
 // z screw
 z_screw_d = 25;
 
 // stabilizer
-pin_bolt_dia = 12-2*slop;
-pin_bolt_dia_minus = 12+2*slop;
+pin_bolt_dia = 12 - 2*slop;
+pin_bolt_dia_minus = 12 + 2*slop;
 
-clip_bolt_dia = 10-2*slop;
-clip_bolt_dia_minus = 10+2*slop;
+clip_bolt_dia = 10 - 2*slop;
+clip_bolt_dia_minus = 10 + 2*slop;
 
 // rack
 rack_teeth_angle = 30;

@@ -18,10 +18,14 @@ extra_stiff = true;
 //full_corner(support=true);
 //full_corner(support=false, extra_stiff=true);
 //full_corner(support=true, extra_stiff=true);
-full_corner(
-    support=true, extra_stiff=true,
-    side_support=true
-);
+//full_corner(
+//    support=true, extra_stiff=true,
+//    side_support=true
+//);
+//full_corner(
+//    w=45, support=true, extra_stiff=true,
+//    side_support=true
+//);
 
 //corner_90(extra_stiff=false);
 //corner_90(extra_stiff=true);
@@ -29,7 +33,7 @@ full_corner(
 // for bed carriage
 //corner_90(corner_len=20, extra_stiff=false);
 //corner_90(corner_len=20, extra_stiff=true);
-//corner_90(corner_len=70, extra_stiff=true);
+corner_90(corner_len=70, extra_stiff=true);
 
 
 ////// MODULES //////
@@ -157,7 +161,7 @@ module basic_corner(
 			taken();
 		}
 	};
-    //added();
+
 	rotate([45, 0, 0])
     corner();
 };
@@ -167,34 +171,102 @@ module full_corner(
     extra_stiff=false, side_support=false
 ) {
 
-	module support_pillars(){
-		translate([48 - slot_translate/2, 3, 0])
-        cylinder(h=11, d=4);
+    // wonky math for rotation angle
+    ry = atan(1/sqrt(2));
+    echo(ry);
 
-		translate([48 - slot_translate/2, -3, 0])
-        cylinder(h=11, d=4);
+    // for supports
+    sw = 0.5;
+    wx = cos(ry) * (w + obj_leg);
+    wz = sin(ry) * (w + obj_leg);
+    echo (wx);
+    echo (wz);
 
-		translate([39 - slot_translate/2, 18, 24])
-        rotate([0, -40, 0])
-        cylinder(h=5.2, d=4);
+	module dove_supports(){
 
-		translate([39 - slot_translate/2, -18, 24])
-        rotate([0, -40, 0])
-        cylinder(h=5.2, d=4);
+        union() {
+            hull() {
+                translate([
+                    wx - 6, -3.9, 0
+                ])
+                cylinder(d=sw, h=wz - 23.8, $fn=20);
 
-        // Secondary center support pillar
-        translate([2.5, 4, 0])
-        cylinder(h=14.85, d=4);
+                translate([
+                    wx - 1.5, -2.5, 0
+                ])
+                cylinder(d=sw, h=wz - 23.8, $fn=20);
+            }
+
+            hull() {
+                translate([
+                    wx - 6, 3.9, 0
+                ])
+                cylinder(d=sw, h=wz - 23.8, $fn=20);
+
+                translate([
+                    wx - 1.5, 2.5, 0
+                ])
+                cylinder(d=sw, h=wz - 23.8, $fn=20);
+            }
+
+            hull() {
+                translate([
+                    wx - 1.5, -2.5, 0
+                ])
+                cylinder(d=sw, h=wz - 23.8, $fn=20);
+
+                translate([
+                    wx - 1.5, 2.5, 0
+                ])
+                cylinder(d=sw, h=wz - 23.8, $fn=20);
+            }
+        }
+
+        hull() {
+            translate([
+                wx - 16, -17.5, wz - 12
+            ])
+            cylinder(d=sw, h=0.1, $fn=20);
+
+            translate([
+                wx - 18.4, -17.1, wz - 8.3
+            ])
+            cylinder(d=sw, h=0.1, $fn=20);
+
+            translate([
+                wx - 13.7, -18.5, wz - 6.7
+            ])
+            cylinder(d=sw, h=0.1, $fn=20);
+        }
+
+        hull() {
+            translate([
+                wx - 16, 17.5, wz - 12
+            ])
+            cylinder(d=sw, h=0.1, $fn=20);
+
+            translate([
+                wx - 18.4, 17.1, wz - 8.3
+            ])
+            cylinder(d=sw, h=0.1, $fn=20);
+
+            translate([
+                wx - 13.7, 18.5, wz - 6.7
+            ])
+            cylinder(d=sw, h=0.1, $fn=20);
+        }
 	}
 
 	module supports() {
-		support_pillars();
+        for (i = [0:2]) {
+            rotate([0, 0, (360/3)*i])
+            dove_supports();
 
-		rotate([0, 0, (360/3)*2])
-        support_pillars();
-
-		rotate([0, 0, (360/3)*1])
-        support_pillars();
+            // Secondary center support pillar
+            rotate([0, 0, (360/3)*i])
+            translate([2.5, 4, 0])
+            cylinder(h=14.85, d=4);
+        }
 
         //center support
         difference() {
@@ -205,40 +277,55 @@ module full_corner(
 	}
 
     module side_support() {
-        w = 0.5;
+
 
         for (i = [0:2]) {
             rotate([0, 0, i*360/3]) {
 
                 hull() {
-                    translate([18/2 + 15, -12.35, 0.1/2])
-                    cube([18, w, 0.1], center=true);
+                    translate([
+                        (wx - 34)/2 + 15, -12.35, 0.1/2
+                    ])
+                    cube([
+                        wx - 34, sw, 0.1], center=true
+                    );
 
-                    translate([1/2 + 41.6, -12.35, 18.4])
-                    cube([1, w, 1], center=true);
+                    translate([
+                        1/2 + wx - 7.5,
+                        -12.35, wz - 16.2
+                    ])
+                    cube([1, sw, 1], center=true);
                 }
 
                 hull() {
-                    translate([18/2 + 15, 12.35, 0.1/2])
-                    cube([18, w, 0.1], center=true);
+                    translate([
+                        (wx - 34)/2 + 15, 12.35, 0.1/2
+                    ])
+                    cube([
+                        wx - 34, sw, 0.1], center=true
+                    );
 
-                    translate([1/2 + 41.6, 12.35, 18.4])
-                    cube([1, w, 1], center=true);
+                    translate([
+                        1/2 + wx - 7.5,
+                        12.35, wz - 16.2
+                    ])
+                    cube([1, sw, 1], center=true);
                 }
 
-                #hull() {
-                    translate([8/2 + 35.8, 0, 0.1/2])
-                    cube([8, w, 0.1], center=true);
+                hull() {
+                    translate([
+                        (wx - 44)/2 + 36.4, 0, 0.1/2
+                    ])
+                    cube([
+                        wx - 44, sw, 0.1
+                    ], center=true);
 
-                    translate([1/2 + 43.95, 0, 5.4])
-                    cube([1, w, 1], center=true);
+                    translate([1/2 + wx - 5, 0, wz - 29.2])
+                    cube([1, sw, 1], center=true);
                 }
             }
         }
     }
-
-    // wonky math
-    ry = atan(1/sqrt(2));
     
 	difference() {
         union() {
@@ -257,10 +344,6 @@ module full_corner(
         }
 
 		union(){
-			//cylinder(h=50, d=15);
-			//translate([-20,0,0]) cylinder(h=50, d=7);
-			//translate([10,17,0]) cylinder(h=50, d=7);
-			//translate([10,-17,0]) cylinder(h=50, d=7);
 			translate([0, 0, -25])
             cube([200, 200, 50], center=true);
 		}
