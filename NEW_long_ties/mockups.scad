@@ -9,8 +9,8 @@ prox_sensor_washer_dia = 30;
 
 
 ////// VIEW //////
-//mock_stepper_motor(false);
-//mock_stepper_motor(true);
+//mock_stepper_motor(geared=false);
+//mock_stepper_motor(geared=true);
 
 //mechanical_endstop();
 
@@ -29,6 +29,7 @@ prox_sensor_washer_dia = 30;
 //mock_SSR_75_DD();
 //mock_titan();
 //mock_5015_fan();
+
 
 ////// MODULES //////
 // LJ18A3-8-Z/BX
@@ -704,60 +705,92 @@ module mks_sbase_mockup() {
 
 //S-240-12
 module mock_PSU_240W() {
-    w = 111;
+    w = 110.2;
     h = 199;
     d = 50;
     
     color("silver")
     difference() {
-        cube([w,h,d]);
+        cube([w, h, d]);
 
-        translate([-1.4,-1,24])
-        cube([w,12,d]);
+        translate([-1.4, -1, 24])
+        cube([w, 12, d]);
 
-        translate([-1,-1,8.3])
-        cube([13,12,d]);
+        translate([-1, -1, 8.3])
+        cube([13, 12, d]);
 
-        translate([w-1.4-9.3,-1,1.4])
-        cube([9.3,12,d]);
+        translate([w - 1.4 - 9.3, -1, 1.4])
+        cube([9.3, 12, d]);
 
-        translate([7,5])
-        cylinder(d=3.2,h=10,$fn=30);
+        translate([7, 5])
+        cylinder(d=3.2, h=10, $fn=30);
 
-        translate([w-6,5])
-        cylinder(d=4.2,h=10,$fn=30);
+        translate([w - 6, 5])
+        cylinder(d=4.2, h=10, $fn=30);
 
-        translate([w+1,19.5,d/2])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w + 1, 19.5, d/2])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([w+1,19.5+150.7,12])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w + 1, 19.5 + 150.7, 12])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([w+1,19.5+150.7,d-13])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w + 1, 19.5 + 150.7, d - 13])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([10,61,-0.1])
-        cylinder(d=3,h=10,$fn=20);
+        translate([10, 61, -0.1])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([w-15,61,-0.1])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w - 15, 61, -0.1])
+        cylinder(d=3, h=10, $fn=20);
         
-        translate([10,61+126,-0.1])
-        cylinder(d=3,h=10,$fn=20);
+        translate([10, 61 + 126, -0.1])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([w-15,61+126,-0.1])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w - 15, 61 + 126, -0.1])
+        cylinder(d=3, h=10, $fn=20);
         
-        translate([w,6,d-6.5])
-        rotate([0,90,0])
-        cylinder(d=4,h=5,center=true,$fn=30);
+        translate([w, 6, d - 6.5])
+        rotate([0, 90, 0])
+        cylinder(d=4, h=5, center=true, $fn=30);
 
-        translate([w,6,d-16.5])
-        rotate([0,90,0])
-        cylinder(d=4,h=5,center=true,$fn=30);
+        translate([w, 6, d - 16.5])
+        rotate([0, 90, 0])
+        cylinder(d=4, h=5, center=true, $fn=30);
+
+        // cover grill holes side
+        for (j = [0:3]) {
+            for (i = [0:15]) {
+                translate([0, 21 + i*10.65, 26 + j*6])
+                rotate([0, 90, 0])
+                cylinder(d=4, h=20, center=true, $fn=30);
+            }
+        }
+
+        for (j = [0:4]) {
+            for (i = [0:15]) {
+                translate([0, 26.325 + i*10.65, 23 + j*6])
+                rotate([0, 90, 0])
+                cylinder(d=4, h=20, center=true, $fn=30);
+            }
+        }
+
+        // cover grill holes top
+        for (j = [0:17] ) {
+            for (i = [0:15]) {
+                translate([1 + j*6, 21 + i*10.65, d + 9])
+                cylinder(d=4, h=20, center=true, $fn=30);
+            }
+        }
+
+        for (j = [0:17] ) {
+            for (i = [0:15]) {
+                translate([4 + j*6, 26.325 + i*10.65, d + 9])
+                cylinder(d=4, h=20, center=true, $fn=30);
+            }
+        }
     }
 }
 
@@ -980,11 +1013,11 @@ module mock_titan() {
 module mock_pulley_GT2_16t() {
     difference() {
         union() {
-            cylinder(d=13,h=6,$fn=30);
-            cylinder(d=10,h=14,$fn=30);
+            cylinder(d=13, h=6, $fn=30);
+            cylinder(d=10, h=14, $fn=30);
 
-            translate([0,0,13])
-            cylinder(d=13,h=1,$fn=30);
+            translate([0, 0, 13])
+            cylinder(d=13, h=1, $fn=30);
         }
     }
 }
@@ -993,17 +1026,17 @@ module mock_5015_fan() {
     union() {
         import("../../_downloaded/50mm_Radial_fan/50mm_fan.stl");
 
-        translate([-0.5,1.5+11/2,8.5-2.5+2.5/2])
-        cube([2,11,2.5],center=true);
+        translate([
+            -0.5, 1.5 + 11/2, 8.5 - 2.5 + 2.5/2
+        ])
+        cube([2, 11, 2.5], center=true);
 
-        translate([26.5,2,8.5-2.5+2.5/2])
-        cube([10,2.5,2.5],center=true);
+        translate([26.5, 2, 8.5 - 2.5 + 2.5/2])
+        cube([10, 2.5, 2.5], center=true);
 
-        translate([36.5,49.8,8.5-2.5+2.5/2])
-        rotate([0,0,-22])
-        cube([10,2.5,2.5],center=true);
+        translate([36.5, 49.8, 8.5 - 2.5 + 2.5/2])
+        rotate([0, 0, -22])
+        cube([10, 2.5, 2.5], center=true);
     }
     
 }
-
-
