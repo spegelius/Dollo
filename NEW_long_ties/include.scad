@@ -1097,3 +1097,10 @@ module hexagon_form(
         }
     }
 }
+
+module holee(slop, h) {
+    linear_extrude(h)
+        offset(delta=slop)
+        projection(cut=true)
+        children();
+}
