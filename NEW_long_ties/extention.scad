@@ -28,7 +28,7 @@ tip_size = 1.2;
 //extention_center(length=90, stopper_position=90/2);
 
 // 120cm extention
-//extention();
+extention();
 //extention_center();
 
 // 140cm extention
@@ -41,7 +41,7 @@ tip_size = 1.2;
 
 // 180cm extention
 //extention(6);
-extention_center(length=180, stopper_position=180/2);
+//extention_center(length=180, stopper_position=180/2);
 
 // centers for corner
 //extention_center(
@@ -110,10 +110,15 @@ module extention_base(length, support=true, tie_ends=true) {
         } else {
             for(i = [0:3]) {
                 rotate([0, i*90, 0]) {
-                    translate([30/2 - 4, -length/2, 30/2 - 4])
+                    translate([
+                        30/2 - 4, -length/2, 30/2 - 4
+                    ])
                     hull() {
                         cube([4, 10, 4], center=true);
-                        cube([0.1, 14, 0.1], center=true);
+                        cube(
+                            [0.1, 14, 0.1],
+                            center=true
+                        );
                     }
 
                     translate([
@@ -124,10 +129,15 @@ module extention_base(length, support=true, tie_ends=true) {
                         cube([0.1, 5, 0.1], center=true);
                     }
 
-                    translate([30/2 - 4, length/2, 30/2 - 4])
+                    translate([
+                        30/2 - 4, length/2, 30/2 - 4
+                    ])
                     hull() {
                         cube([4, 10, 4], center=true);
-                        cube([0.1, 14, 0.1], center=true);
+                        cube(
+                            [0.1, 14, 0.1],
+                            center=true
+                        );
                     }
                 }
             }
@@ -146,8 +156,8 @@ module extention_base(length, support=true, tie_ends=true) {
         cylinder(d1=center_d + 1, d2=center_d, h=0.5, $fn=15);
 
         translate([0, -1, 0]){
-            for (r = [0:4]) // two iterations, z = -1, z = 1
-            {
+            // two iterations, z = -1, z = 1
+            for (r = [0:3]) {
                 rotate([0, r*90, 0])
                 translate([0, -length/2, 15.01])
                 rotate([-90, 0, 0])

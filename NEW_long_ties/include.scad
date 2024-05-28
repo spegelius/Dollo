@@ -339,9 +339,9 @@ module dovetail_2d(
         paths=[[0, 1, 2, 3, 0]],
         points=[
             [-min_width/2,0],
-            [-max_width/2,depth],
+            [-max_width/2, depth],
             [max_width/2, depth],
-            [min_width/2,0]
+            [min_width/2, 0]
         ]
     );
 }
