@@ -468,7 +468,7 @@ module M6_nut(h=5.2, cone=true, bridging=false) {
         d=11.25, id=6.3, h=h, cone=cone, bridging=bridging);
 }
 
-module M8_nut(h=5.3, cone=true, bridging=false) {
+module M8_nut(h=5.5, cone=true, bridging=false) {
     _m_nut(
         d=14.7, id=8.3, h=h, cone=cone, bridging=bridging);
 }
@@ -1006,6 +1006,14 @@ module v_screw(
         }
     }
 }
+
+module M8_thread(h, chamfer=false) {
+    v_screw(
+        h=h, screw_d=8, pitch=1.25, direction=0,
+        steps=70, depth=0.25, chamfer=false
+    );
+}
+//M8_thread(10);
 
 //v_screw(h=10, screw_d=20, pitch=4, direction=1, steps=100);
 //translate([20,0,0])
