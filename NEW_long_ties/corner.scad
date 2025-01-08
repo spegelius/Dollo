@@ -7,8 +7,8 @@ use <extention.scad>;
 //if you can do pretty far over hangs, like an SLA printer or something then take this off by setting it to false.
 support = true;
 slot_translate = .5;
-rod_size = .5;
 cube_outset = 0.001;
+center_d = metal_rod_size;
 
 extra_stiff = true;
 
@@ -33,12 +33,18 @@ extra_stiff = true;
 // for bed carriage
 //corner_90(corner_len=20, extra_stiff=false);
 //corner_90(corner_len=20, extra_stiff=true);
-corner_90(corner_len=70, extra_stiff=true);
+//corner_90(corner_len=70, extra_stiff=true);
+
+corner_90(
+    corner_len=20, extra_stiff=true,
+    center_d=6.3
+);
 
 
 ////// MODULES //////
 module basic_corner(
-    w=obj_leg + 15, extra_stiff=false
+    w=obj_leg + 15, extra_stiff=false,
+    center_d=center_d
 ) {
 
     w1 = obj_leg + cube_outset;
@@ -49,14 +55,23 @@ module basic_corner(
         union() {
             translate([0, 0, w2/2 - 15])
             rotate([90, 0, 0])
-            extention_base(w2, support=false);
+            extention_base(
+                w2, support=false,
+                center_d=center_d
+            );
 
             translate([0, w2/2 - 15, 0])
-            extention_base(w2, support=false);
+            extention_base(
+                w2, support=false,
+                center_d=center_d
+            );
 
             translate([w2/2 - 15, 0, 0])
             rotate([0, 0, 90])
-            extention_base(w2, support=false);
+            extention_base(
+                w2, support=false,
+                center_d=center_d
+            );
 
             if (extra_stiff) {
                 w = 7;
@@ -168,19 +183,20 @@ module basic_corner(
 
 module full_corner(
     w=obj_leg, support=false,
-    extra_stiff=false, side_support=false
+    extra_stiff=false, side_support=false,
+    center_d=center_d
 ) {
 
     // wonky math for rotation angle
     ry = atan(1/sqrt(2));
-    echo(ry);
+    //echo(ry);
 
     // for supports
     sw = 0.5;
     wx = cos(ry) * (w + obj_leg);
     wz = sin(ry) * (w + obj_leg);
-    echo (wx);
-    echo (wz);
+    //echo (wx);
+    //echo (wz);
 
 	module dove_supports(){
 
@@ -331,7 +347,10 @@ module full_corner(
         union() {
             translate([0, 0, 0])
             rotate([0, -ry, 0])
-            basic_corner(w, extra_stiff=extra_stiff);
+            basic_corner(
+                w, extra_stiff=extra_stiff,
+                center_d=center_d
+            );
 
             if (support) {
                 supports();
@@ -350,7 +369,10 @@ module full_corner(
 	}
 }
 
-module corner_90(corner_len=30, extra_stiff=false, support=support) {
+module corner_90(
+    corner_len=30, extra_stiff=false,
+    center_d=center_d, support=support
+) {
 
     l = corner_len + 40;    
 
@@ -358,7 +380,8 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
         parts = ceil(l/30);
         diff = l%30;
         
-        function get_diff(diff) = diff > 0 ? 30-diff : 0;
+        function get_diff(diff) =
+            diff > 0 ? 30-diff : 0;
         
         intersection() {
             rotate([0, 45, 0])
@@ -366,7 +389,9 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
                 30/2 - 17, 0,
                 (parts*30)/2 - 23 - get_diff(diff)
             ])
-            extention(parts);
+            extention(
+                parts, center_d=center_d
+            );
 
             translate([0, -40/2, 0])
             cube([100, 40, 100]);
@@ -399,12 +424,16 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
 
                 if (s_h > 30) {
                     h2 = s_h-5;
-                    translate([0, -30/2 + 7/2,22 + h2/2])
+                    translate([
+                        0, -30/2 + 7/2,22 + h2/2
+                    ])
                     chamfered_cube_side(
                         10, 7, h2, 3, center=true
                     );
                     
-                    translate([0, 30/2 - 7/2, 22 + h2/2])
+                    translate([
+                        0, 30/2 - 7/2, 22 + h2/2
+                    ])
                     chamfered_cube_side(
                         10, 7, h2, 3, center=true
                     );
@@ -434,11 +463,17 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
 
         rotate([0, 45, 0])
         translate([-2, 0, 0])
-        cylinder(d=23, h=34, $fn=30, center=true);
+        cylinder(
+            d=center_d + 15, h=center_d + 26,
+            $fn=30, center=true
+        );
 
         rotate([0, -45, 0])
         translate([2, 0, 0])
-        cylinder(d=23, h=34, $fn=30, center=true);
+        cylinder(
+            d=center_d + 15,h=center_d + 26,
+            $fn=30, center=true
+        );
 
         translate([13, 30/2 + 0.01, -10])
         rotate([0, 45, 180])
@@ -455,15 +490,6 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
         translate([12.83, -30/2, -10])
         rotate([0, -45, 0])
         male_dovetail(20);
-
-        translate([12.83, 0, -10])
-        rotate([0, -45, 0])
-        rotate([0, 0, 180])
-        cylinder(d=metal_rod_size, h=20, $fn=15);
-
-        translate([-12.83, 0, -10])
-        rotate([0, 45, 0])
-        cylinder(d=metal_rod_size, h=20, $fn=15);
 
         translate([0, 0, 16])
         hull() {
@@ -483,13 +509,13 @@ module corner_90(corner_len=30, extra_stiff=false, support=support) {
         translate([0, -30/2, 0])
         cylinder(d=4, h=7.5);
     }
-    %rotate([0, 45, 0])
-    translate([-2, 0, 11.8])
-    M8_nut(cone=false);
-
-    %rotate([0, -45, 0])
-    translate([2, 0, 11.8])
-    M8_nut(cone=false);
+//    %rotate([0, 45, 0])
+//    translate([-2, 0, 11.8])
+//    M8_nut(cone=false);
+//
+//    %rotate([0, -45, 0])
+//    translate([2, 0, 11.8])
+//    M8_nut(cone=false);
 }
 
 module debug_90() {
