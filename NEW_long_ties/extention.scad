@@ -28,11 +28,13 @@ tip_size = 1.2;
 //extention_center(length=90, stopper_position=90/2);
 
 // 120cm extention
-extention();
+//extention();
+//extention(center_d=9);
 //extention_center();
 
 // 140cm extention
 //extention(140/30);
+//extention(140/30, center_d=9);
 //extention_center(length=140, stopper_position=140/2);
 
 // 150cm extention
@@ -51,6 +53,11 @@ extention();
 //extention_center(
 //    length=120/2 + 30, stopper_position=30
 //);
+
+extention_center(
+    length=120/2 + 30, stopper_position=30, center_d=9
+);
+
 
 //extention_center(
 //    length=140/2 + 30, stopper_position=30
@@ -71,13 +78,17 @@ extention();
 //extention_side(units=units, supports=support);
 
 //extention_t();
+//extention_t(units1=3, units2=1);
+//extention_t(units1=3, units2=1, center_d=9);
 
 //extention_glue_peg();
 
 
 
 ////// MODULES //////
-module extention_base(length, support=true, tie_ends=true) {
+module extention_base(
+    length, support=true, tie_ends=true, center_d=center_d
+) {
 
     function bridge_extra() = support ? 0.2 : 0;
 
@@ -202,21 +213,28 @@ module extention_base(length, support=true, tie_ends=true) {
 
 
 module extention(
-    units=units, support=support, tie_ends=true) {
+    units=units, support=support,
+    tie_ends=true, center_d=center_d
+) {
 
     rotate([90, 0, 0])
     extention_base(
-        units*30, support=support, tie_ends=tie_ends
+        units*30, support=support,
+        tie_ends=tie_ends, center_d=center_d
     );
 }
 
-module extention_side(units=units, supports=support) {
+module extention_side(
+    units=units, supports=support, center_d=center_d
+) {
 
     l = units*30;
 
     union() {
         difference() {
-            extention_base(l, support=false);
+            extention_base(
+                l, support=false, center_d=center_d
+            );
 
             // dove grooves tuning
             translate([0, 0, -30/2 + 5 + 0.2/2])
@@ -275,8 +293,10 @@ module extention_side(units=units, supports=support) {
     }
 }
 
-module extention_center(length=120, stopper_position=60) {
-    wall = 0.8;
+module extention_center(
+    length=120, stopper_position=60, center_d=center_d
+) {
+    wall = 1;
     d = center_d - slop;
     l = length - 1;
 
@@ -337,7 +357,8 @@ module extention_center(length=120, stopper_position=60) {
 }
 
 module extention_t(
-    units1=units, units2=2, _offset=0, supports=support
+    units1=units, units2=2, _offset=0,
+    supports=support, center_d=center_d
 ) {
 
     h = units1 * 30;
@@ -345,7 +366,10 @@ module extention_t(
     union() {
         difference() {
             translate([0, 0, 30/2])
-            extention_side(units=units1, supports=supports);
+            extention_side(
+                units=units1, supports=supports,
+                center_d=center_d
+            );
 
             translate([0, _offset, 23])
             cylinder(d=10, h=20, $fn=20);
@@ -388,7 +412,8 @@ module extention_t(
         difference() {
             rotate([90, 0, 0])
             extention_base(
-                units2*30 + 7, support=false
+                units2*30 + 7, support=false,
+                center_d=center_d
             );
 
             translate([
