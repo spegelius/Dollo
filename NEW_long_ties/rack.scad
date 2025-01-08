@@ -5,6 +5,7 @@ use <motor_mount_small.scad>;
 use <motor_gear.scad>;
 use <long_tie.scad>;
 use <long_bow_tie.scad>;
+use <mockups.scad>;
 
 
 ////// VARIABLES //////
@@ -24,8 +25,8 @@ dove_scale_x = 1;
 dove_scale_y = 0.98;
 
 ////// VIEW //////
+assembly_rack();
 //debug_join();
-debug_axis_assembly();
 //debug_rack_gear();
 
 //do_rack(fast_render=false);
@@ -41,12 +42,15 @@ debug_axis_assembly();
 module _herringbone_rack(length) {
     herringbone_rack(
         l=length, h=rack_h, w=10, 
-        tooth_size=rack_tooth, CA=rack_teeth_angle);
+        tooth_size=rack_tooth, CA=rack_teeth_angle
+    );
 }
 
 module tie_taken(){
-    translate(
-        [-(total_length + 20)/2, 0, tail_depth - 0.01])
+    translate([
+        -(total_length + 20)/2, 0,
+        tail_depth - 0.01
+    ])
     rotate([90, 0, 90])
     male_dovetail(height=total_length + 20, bridge_extra=0.2);
 
@@ -78,21 +82,31 @@ module rack_main(units=units, fast_render=false) {
         difference(){
             union() {
                 translate([0, 0, -0.5])
-                cube([total_length + 20, 36, 7], center=true);
+                cube(
+                    [total_length + 20, 36, 7],
+                    center=true
+                );
 
                 translate([0, -9, 4])
                 rounded_cube(
                     total_length + 20, 18, 7.25,
-                    diameter, center=true,$fn=20);
+                    diameter, center=true,$fn=20
+                );
             }
             // side grooves
             translate([0, -25.8, 0])
             rotate([45, 0, 0])
-            cube([total_length + 25, 15, 15], center=true);
+            cube(
+                [total_length + 25, 15, 15],
+                center=true
+            );
 
             translate([0, 25.8, 0])
             rotate([45, 0, 0])
-            cube([total_length + 25, 15, 15], center=true);
+            cube(
+                [total_length + 25, 15, 15],
+                center=true
+            );
         }
     }
 }
@@ -100,6 +114,7 @@ module rack_main(units=units, fast_render=false) {
 // pin for locking the male dovetail
 module dove_pin(length=5, width=3) {
     cylinder(d=2.5, h=length, $fn=30);
+
     translate([0, 0, length/2])
     cube([1.5, width, length], center=true);
 }
@@ -119,15 +134,19 @@ module do_rack(units=units, fast_render=false) {
     difference() {
         union(){
             intersection(){
-                rack_main(units=units, fast_render=fast_render);
+                rack_main(
+                    units=units,
+                    fast_render=fast_render
+                );
 
-                difference(){
-                    union(){
+                difference() {
+                    union() {
                         translate([0, 0, 6])
                         rounded_cube(
                             total_length - slop,
                             40, 20, diameter,
-                            center=true, $fn=20);
+                            center=true, $fn=20
+                        );
 
                         translate([
                             -total_length/2 - head_offset + slop,
@@ -216,25 +235,30 @@ module debug_join() {
     _herringbone_rack(35);
 }
 
-module debug_axis_assembly() {
+module assembly_rack() {
+    render()
     do_rack();
 
-    %translate([0, -24.1, 13.1])
-    rotate([-90, 0, 0])
-    motor_mount(bridges=false, motor_side=false);
+    color("lightgrey")
+    assembly_motor_mount();
 
-    %mirror([0, 1, 0])
-    translate([0, -24.1, 13.1])
-    rotate([-90, 0, 0])
-    motor_mount(bridges=false);
-
-    %translate([0, 21, 12.7])
+    color("darkslategrey")
+    render()
+    translate([0, 21, 12.7])
     rotate([90, -8, 0])
     motor_gear();
 
+    color("lightgrey")
+    render()
     translate([20, -9, 5.1])
     rotate([0, 0, 90])
     do_tie();
+
+    color("slategrey")
+    render()
+    translate([0, 44, 12.7])
+    rotate([0, -45, 180])
+    mock_stepper_motor(geared=false, center=true);
 }
 
 module debug_rack_gear() {
