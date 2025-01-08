@@ -16,9 +16,22 @@ $fn=30;
 //adapter_shy_rockabilly();
 //adapter_shy_rockabilly2();
 //adapter_shy_rockabilly2_m3();
-adapter_shy_rockabilly3();
+//adapter_shy_rockabilly3();
 //adapter_airtrippers_bowden_extruder();
+//adapter_tl_smoother();
 
+
+module _adapter_mount_thread(h=10) {
+
+    v_screw(
+        h=h,
+        screw_d=10.3,
+        pitch=1.3,
+        direction=0,
+        steps=50,
+        depth=0.3
+    );
+}
 
 module _frame_clip(h=20) {
     intersection() {
@@ -47,33 +60,69 @@ module _frame_clip(h=20) {
 }
 
 module adapter_mks_sbase_box() {
-    
-    h = 20;
+
+    l = 125;
 
     difference() {
+        translate([0, 0, 6/2])
         union() {
-            _frame_clip(h);
+            cube([67, l - 18, 6], center=true);
 
-            translate([-80,-18,-10])
-            rotate([90,0,0])
-            chamfered_cube_side(70,10,5,3);
+            translate([-65/2, l/2 - 10, 0])
+            cylinder(d=8, h=6, center=true, $fn=40);
 
-            translate([-24,-20,-10])
-            hull() {
-                rotate([0,0,35])
-                cube([10,1,5]);
+            translate([65/2, l/2 - 10, 0])
+            cylinder(d=8, h=6, center=true, $fn=40);
 
-                translate([7.5,1/2,0])
-                cylinder(d=1,h=5);
+            translate([-65/2, -l/2 + 10, 0])
+            cylinder(d=8, h=6, center=true, $fn=40);
+
+            translate([65/2, -l/2 + 10, 0])
+            cylinder(d=8, h=6, center=true, $fn=40);
+        }
+
+        intersection() {
+            difference() {
+                cube([67 - 7, l - 18 - 7, 20], center=true);
+
+                translate([5.65, 32, 0])
+                cylinder(d=14, h=30, center=true, $fn=30);
+
+                translate([-5.65, -26.5, 0])
+                cylinder(d=14, h=30, center=true, $fn=30);
+            }
+
+            translate([-219.55, -228, 0])
+            for(j = [0:39]) {
+                translate([0, j*13])
+                rotate([0, 0, -60])
+                for (i = [0:39]) {
+                    translate([0, i*13])
+                    cylinder(
+                        d=13, h=60,
+                        center=true, $fn=6
+                    );
+                }
             }
         }
-        translate([-10,-24,-5])
-        rotate([-90,0,0])
-        cylinder(d=2.8,h=8,$fn=20);
 
-        translate([-75,-24,-5])
-        rotate([-90,0,0])
-        cylinder(d=2.8,h=8,$fn=20);
+        translate([-65/2, l/2 - 10, 0])
+        cylinder(d=2.8, h=20, center=true, $fn=40);
+
+        translate([65/2, l/2 - 10, 0])
+        cylinder(d=2.8, h=20, center=true, $fn=40);
+
+        translate([-65/2, -l/2 + 10, 0])
+        cylinder(d=2.8, h=20, center=true, $fn=40);
+
+        translate([65/2, -l/2 + 10, 0])
+        cylinder(d=2.8, h=20, center=true, $fn=40);
+
+        translate([5.65, 32, -1])
+        _adapter_mount_thread();
+
+        translate([-5.65, -26.5, -1])
+        _adapter_mount_thread();
     }
 }
 
@@ -81,27 +130,29 @@ module adapter_titan() {
     
     module _titan_body() {
         hull() {
-            translate([-46.5/2+1/2,-4/2,30/2])
-            cube([1.5,40.5,30],center=true);
+            translate([-46.5/2 + 1/2, -4/2, 30/2])
+            cube([1.5, 40.5, 30], center=true);
 
-            translate([-46.5/2+1/2+4,0,30/2])
-            cube([1.5,44.5,30],center=true);
+            translate([-46.5/2 + 1/2 + 4, 0, 30/2])
+            cube([1.5, 44.5, 30], center=true);
 
-            translate([46.5/2-1/2,10/2,30/2])
-            cube([1.5,34.5,30],center=true);
+            translate([46.5/2 - 1/2, 10/2, 30/2])
+            cube([1.5, 34.5, 30], center=true);
 
-            translate([46.5/2-16/2,-44/2+16/2,0])
-            cylinder(d=16.5,h=30,$fn=80);
+            translate([46.5/2 - 16/2, -44/2 + 16/2, 0])
+            cylinder(d=16.5, h=30, $fn=80);
         }
-        translate([-46.5/2+7+27/2,44/2-7-27/2,0]) {
-            for(i=[0:3]) {
-                rotate([0,0,360/4*i])
-                translate([motor_bolt_hole_distance/2,
-                       -motor_bolt_hole_distance/2,
-                       0])
-                cylinder(d=3.5,h=100,center=true,$fn=30);
+        translate([-46.5/2 + 7 + 27.2/2, 44/2 - 7 - 27.2/2, 0]) {
+            for(i = [0:3]) {
+                rotate([0, 0, 360/4*i])
+                translate([
+                    motor_bolt_hole_distance/2,
+                    -motor_bolt_hole_distance/2,
+                    0
+                ])
+                cylinder(d=3.8, h=100, center=true, $fn=30);
             }
-            cylinder(d=27,h=100,center=true,$fn=40);
+            cylinder(d=23.5, h=100, center=true, $fn=40);
         }
     }
 
@@ -109,65 +160,69 @@ module adapter_titan() {
         difference() {
             union() {
                 hull() {
-                    cube([32,32,6]);
+                    cube([32, 32, 6]);
                 
-                    translate([41,5,0])
-                    rotate([0,0,5])
-                    cube([50,48,6]);
+                    translate([41, 5, 0])
+                    rotate([0, 0, 5])
+                    cube([50, 48, 6]);
                 }
-                cube([32,32,20]);
+                cube([32, 32, 20]);
 
+                // extra pillar
                 hull() {
-                    translate([35,36,0])
-                    cube([6,10,1]);
+                    translate([35, 36, 0])
+                    cube([6, 10, 1]);
 
-                    translate([32-6,32-6,20-1])
-                    cube([6,6,1]);
-
+                    translate([32 - 6, 32 - 6, 20 - 1])
+                    cube([6, 6, 1]);
                 }
             }
 
-            translate([-1,-1,-1])
-            cube([32-8+1,32-8+1,22]);
+            // extension hole
+            translate([-1, -1, -1])
+            cube([32 - 8 + 1, 32 - 8 + 1, 22]);
 
-            translate([32-8,32-8-15,0])
-            rotate([0,0,-90])
+            // dovetails
+            translate([32 - 8, 32 - 8 - 15, 0])
+            rotate([0, 0, -90])
             male_dovetail(height=80);
 
-            translate([32-8-15,32-8,0])
-            rotate([0,0,0]) male_dovetail(height=80);
+            translate([32 - 8 - 15, 32 - 8, 0])
+            rotate([0, 0, 0])
+            male_dovetail(height=80);
 
-            translate([64,31,33])
-            rotate([0,180,5])
+            // titan body
+            translate([64, 31, 33.8])
+            rotate([0, 180, 5])
             _titan_body();
 
-            translate([88,52,-1])
-            rotate([0,0,45+5])
-            cube([10,10,10]);
+            translate([88, 52, -1])
+            rotate([0, 0, 45 + 5])
+            cube([10, 10, 10]);
         }
     }
 
     _mount();
 
-    %translate([64,31,33])
-    rotate([0,180,5])
+    %translate([64, 31, 33])
+    rotate([0, 180, 5])
     mock_titan();
 }
 
 module ramps_mount_adapter() {
     module ear() {
         hull() {
-            translate([0,0,0])
-            cube([5,15,0.1]);
+            translate([0, 0, 0])
+            cube([5, 15, 0.1]);
 
-            translate([20,7.5,0])
-            cylinder(d=15,h=0.1);
+            translate([20, 7.5, 0])
+            cylinder(d=15, h=0.1);
 
-            translate([0,3.5,3.9])
-            cube([5,8,0.1]);
+            translate([0, 3.5, 3.9])
+            cube([5, 8, 0.1]);
 
-            translate([20,7.5,3.9])
-            cylinder(d=8,h=0.1);
+            translate([20, 7.5, 3.9])
+            cylinder(d=8, h=0.1);
         }
     }
 
@@ -176,19 +231,19 @@ module ramps_mount_adapter() {
             hull() {
                 ear();
 
-                mirror([1,0,0])
+                mirror([1, 0, 0])
                 ear();
             }
-            translate([20,7.5,0])
-            cylinder(d=bolt_hole_dia,h=7);
+            translate([20, 7.5, 0])
+            cylinder(d=bolt_hole_dia, h=7);
 
-            translate([20,7.5,1.8])
+            translate([20, 7.5, 1.8])
             M3_nut();
 
-            translate([-20,7.5,0])
-            cylinder(d=bolt_hole_dia,h=7);
+            translate([-20, 7.5, 0])
+            cylinder(d=bolt_hole_dia, h=7);
 
-            translate([-20,7.5,1.8])
+            translate([-20, 7.5, 1.8])
             M3_nut();
         }
     }
@@ -197,17 +252,17 @@ module ramps_mount_adapter() {
     // drill holes to the box and use 3mm screws & nuts
     difference() {
         union() {
-            translate([0,3.5,0])
-            cube([20, box_length-27, 7.5]);
+            translate([0, 3.5, 0])
+            cube([20, box_length - 27, 7.5]);
 
-            translate([10, box_length-20-15, 0])
+            translate([10, box_length - 20 - 15, 0])
             ears();
 
             translate([10, 0, 0])
             ears();
         }
         translate([10, 0, 7.5])
-        rotate([-90,0,0])
+        rotate([-90, 0, 0])
         male_dovetail(box_length);
     }
 }
@@ -494,11 +549,106 @@ module airtrippers_fixing_plate(pin_distance, pin_size) {
 
 }
 
-module adapter_airtrippers_bowden_extruder(pin_distance=61, pin_size=6.4) {
+module adapter_airtrippers_bowden_extruder(
+    pin_distance=61, pin_size=6.4
+) {
     difference() {
-        translate([0,0,-11]) rotate([0,90,0]) airtrippers_fixing_plate(pin_distance, pin_size);
-        translate([10,40,0]) rotate([90,0,0]) male_dovetail(height=80);
-        translate([40,-27,0]) rotate([90,0,-90]) male_dovetail(height=80);
+        translate([0, 0, -11])
+        rotate([0, 90, 0])
+        airtrippers_fixing_plate(pin_distance, pin_size);
+
+        translate([10, 40, 0])
+        rotate([90, 0, 0])
+        male_dovetail(height=80);
+
+        translate([40, -27, 0])
+        rotate([90, 0, -90])
+        male_dovetail(height=80);
     }
 }
 
+module adapter_tl_smoother() {
+    %translate([0, 0, 7])
+    mock_tl_smoother();
+
+    difference() {
+        union() {
+            rounded_cube_side(
+                32, 42, 6, 6, center=true, $fn=40
+            );
+
+            translate([22/2, 32/2, 10/2 - 6/2])
+            cylinder(d=7, 10, center=true, $fn=30);
+
+            translate([-22/2, 32/2, 10/2 - 6/2])
+            cylinder(d=7, 10, center=true, $fn=30);
+
+            translate([22/2, -32/2, 10/2 - 6/2])
+            cylinder(d=7, 10, center=true, $fn=30);
+
+            translate([-22/2, -32/2, 10/2 - 6/2])
+            cylinder(d=7, 10, center=true, $fn=30);
+        }
+
+        difference() {
+            rounded_cube_side(
+                26, 36, 7, 3, center=true, $fn=40
+            );
+            cylinder(d=15, h=20, center=true, $fn=40);
+
+            translate([22/2, 32/2, 0])
+            cylinder(d=9, 25, center=true, $fn=30);
+
+            translate([-22/2, 32/2, 0])
+            cylinder(d=9, 25, center=true, $fn=30);
+
+            translate([22/2, -32/2, 0])
+            cylinder(d=9, 25, center=true, $fn=30);
+
+            translate([-22/2, -32/2, 0])
+            cylinder(d=9, 25, center=true, $fn=30);
+
+            cube([40, 3, 20], center=true);
+            cube([3, 40, 20], center=true);
+
+            hull() {
+                translate([22/2, 32/2, 0])
+                cylinder(
+                    d=2, h=20, center=true, $fn=30
+                );
+
+                translate([-22/2, -32/2, 0])
+                cylinder(
+                    d=2, h=20, center=true, $fn=30
+                );
+            }
+
+            hull() {
+                translate([-22/2, 32/2, 0])
+                cylinder(
+                    d=2, h=20, center=true, $fn=30
+                );
+
+                translate([22/2, -32/2, 0])
+                cylinder(
+                    d=2, h=20, center=true, $fn=30
+                );
+            }
+        }
+
+        translate([0, 0, -4])
+        _adapter_mount_thread();
+
+        translate([22/2, 32/2, 0])
+        cylinder(d=2.7, 25, center=true, $fn=30);
+
+        translate([-22/2, 32/2, 0])
+        cylinder(d=2.7, 25, center=true, $fn=30);
+
+        translate([22/2, -32/2, 0])
+        cylinder(d=2.7, 25, center=true, $fn=30);
+
+        translate([-22/2, -32/2, 0])
+        cylinder(d=2.7, 25, center=true, $fn=30);
+    }
+}
