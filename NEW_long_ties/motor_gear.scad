@@ -32,14 +32,20 @@ function get_twist(obj_height, twist_ratio) = (twist_ratio == 1) ? 1 : obj_heigh
 
 // deprecated
 module gear_master(obj_height, twist_ratio){
+
 	module rightGear(twist, obj_height) {
 		rotate([0, 0, -25]) {
 			translate([0, 0, obj_height/4])
-			linear_extrude(height=obj_height/2,
-                           center=true,
-                           twist=twist,
-                           convexity = 10)
-			import(file="small_gear.dxf", layer="Layer_1");
+			linear_extrude(
+                height=obj_height/2,
+                center=true,
+                twist=twist,
+                convexity = 10
+             )
+			import(
+                file="small_gear.dxf",
+                layer="Layer_1"
+            );
 
 			circle(r = 1);
 		}
@@ -51,7 +57,7 @@ module gear_master(obj_height, twist_ratio){
             union() {
                 rightGear(twist, obj_height);
 
-                mirror([0,0,1])
+                mirror([0, 0, 1])
                 rightGear(twist, obj_height);
             }
         }
@@ -71,114 +77,136 @@ module gear_master(obj_height, twist_ratio){
 
 // shaft hole
 module hole(obj_height) {
-    cylinder(d=shaft, h=obj_height*2.1, center=true);
+    cylinder(
+        d=shaft, h=obj_height*2.1,
+        center=true, $fn=50
+    );
 }
 
 module bolt_hole(bolt_size, obj_height) {
 
     rotate([0,90,0])
-    cylinder(d=bolt_size, h=20, center=true);
+    cylinder(
+        d=bolt_size, h=20, center=true, $fn=50
+    );
 
-    translate([18/2-2.3,0,0])
-    rotate([0,90,0])
-    cylinder(d1=3,d2=7.8,h=2.4,$fn=30);
+    translate([18/2 - 2.3, 0, 0])
+    rotate([0, 90, 0])
+    cylinder(d1=3, d2=7.8, h=2.4, $fn=50);
 
-    translate([-18/2+2.3,0,0])
-    rotate([0,-90,0])
-    cylinder(d1=3,d2=7.8,h=2.4,$fn=30);
+    translate([-18/2 + 2.3, 0, 0])
+    rotate([0, -90, 0])
+    cylinder(d1=3, d2=7.8, h=2.4, $fn=50);
 }
 
 
-module motor_gear(nut_size=m3_nut_side,
-                  nut_height=m3_nut_height,
-                  bolt_size=bolt_hole_dia,
-                  shaft_slop=0) {
+module motor_gear(
+    nut_size=m3_nut_side, nut_height=m3_nut_height,
+    bolt_size=bolt_hole_dia, shaft_slop=0
+) {
 
     difference() {
         difference() {
             union() {
                 // bottom body
                 hull() {
-                    translate([0,0,1])
-                    cylinder(d=18, h=6.61);
+                    translate([0, 0, 1])
+                    cylinder(d=18, h=6.61, $fn=50);
 
-                    cylinder(d=16, h=8.61);
+                    cylinder(d=16, h=8.61, $fn=50);
                 }
 
                 // lower gear half
                 translate([0, 0, 11.8])
                 gear (
-                    mm_per_tooth    = rack_tooth,
+                    mm_per_tooth = rack_tooth,
                     number_of_teeth = 8,
-                    thickness       = 6.4,
-                    hole_diameter   = 2,
-                    twist           = 6.4/twist_constant,
-                    teeth_to_hide   = 0,
-                    pressure_angle  = 19,
-                    backlash        = 0
+                    thickness = 6.4,
+                    hole_diameter = 2,
+                    twist = 6.4/twist_constant,
+                    teeth_to_hide = 0,
+                    pressure_angle = 19,
+                    backlash = 0
                 );
 
                 // upper gear half
                 translate([0, 0, 17.99])
                 mirror([0, 0, 1])
                 gear (
-                    mm_per_tooth    = rack_tooth,
+                    mm_per_tooth = rack_tooth,
                     number_of_teeth = 8,
-                    thickness       = 6,
-                    hole_diameter   = 2,
-                    twist           = twist,
-                    teeth_to_hide   = 0,
-                    pressure_angle  = 19,
-                    backlash        = 0
+                    thickness = 6,
+                    hole_diameter = 2,
+                    twist = twist,
+                    teeth_to_hide = 0,
+                    pressure_angle = 19,
+                    backlash = 0
                 );
 
                 // internal body
-                translate([0,0,7])
-                cylinder(d=motor_shaft_hole_dia+4.6, h=13.99);
+                translate([0, 0, 7])
+                cylinder(
+                    d=motor_shaft_hole_dia + 4.6,
+                    h=13.99, $fn=50
+                );
 
                 // smol internal body
-                translate([0,0,7])
-                cylinder(d=motor_shaft_hole_dia+3, h=14.99);
+                translate([0, 0, 7])
+                cylinder(
+                    d=motor_shaft_hole_dia + 3,
+                    h=14.99, $fn=50
+                );
             }
-            translate([0,0,-0.1])
-            rotate([0,0,-90])
-            motor_shaft(h=22, extra_slop=shaft_slop);
+            translate([0, 0, -0.1])
+            rotate([0, 0, -90])
+            motor_shaft(
+                h=22, extra_slop=shaft_slop, $fn=50
+            );
 
-            cylinder(d1=5.6,d2=5,h=0.6,$fn=40);
+            cylinder(d1=5.6, d2=5, h=0.6, $fn=50);
 
             union() {
                 difference() {
-                    translate([0,0,21.5])
-                    cylinder(h=3, d=20, center=true);
+                    translate([0, 0, 21.5])
+                    cylinder(
+                        h=3, d=20,
+                        center=true, $fn=50
+                    );
 
-                    translate([0,0,20.5])
-                    cylinder(h=2+0.05, d1=20, d2=8, center=true);
+                    translate([0, 0, 20.5])
+                    cylinder(
+                        h=2 + 0.05, d1=20,
+                        d2=8, center=true, $fn=50
+                    );
                 }
             }
         }
-        translate([0,0,5])
-        bolt_hole(bolt_size-0.15, 21);
+        translate([0, 0, 5])
+        bolt_hole(bolt_size - 0.15, 21);
 
-        translate([shaft/2+0.8,0,4/2+1])
-        rotate([0,90,0])
+        translate([shaft/2 + 0.8, 0, 4/2 + 1])
+        rotate([0, 90, 0])
         elongated_nut(4, cone=false);
 
-        translate([-shaft/2-0.8-nut_height,0,4/2+1])
-        rotate([0,90,0])
+        translate([
+            -shaft/2 - 0.8 - nut_height,
+            0, 4/2 + 1
+        ])
+        rotate([0, 90, 0])
         elongated_nut(4, cone=false);
     }
 }
 
 module debug() {
-    rotate([90,0,0])
+    rotate([90, 0, 0])
     mock_stepper_motor(center=true);
 
-    translate([0,0,22])
+    translate([0, 0, 22])
     intersection() {
-        rotate([0,0,90])
+        rotate([0, 0, 90])
         motor_gear(shaft_slop=0.1);
 
-        translate([30/2,0,30/2])
-        cube([30,30,30],center=true);
+        translate([30/2, 0, 30/2])
+        cube([30, 30, 30], center=true);
     }
 }
