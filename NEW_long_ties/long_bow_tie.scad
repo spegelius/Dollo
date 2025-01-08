@@ -17,11 +17,14 @@ _offset = 0;
 
 //long_bow_tie();
 //long_bow_tie(25);
-//long_bow_tie_half(length);
+
+long_bow_tie_half(length);
 //long_bow_tie_half(30);
-//long_bow_tie_split(length);
-long_bow_tie_split(30);
 //long_bow_tie_half_split(length);
+
+//long_bow_tie_split(length);
+//long_bow_tie_split(30);
+
 
 
 module bow_tie_master(length){
@@ -29,7 +32,8 @@ module bow_tie_master(length){
         male_dove_max_width,
         male_dove_min_width,
         male_dove_depth,
-        length);
+        length
+    );
 }
 
 module long_bow_tie_unscaled(length) {
@@ -155,7 +159,9 @@ module long_bow_tie_half(
         long_bow_tie(length, middle=middle);
 
         translate([0, -length/2, -24/2])
-        cube([8, length, 24]);
+        chamfered_cube(
+            13, length, 24, 1
+        );
     }
 }
 
