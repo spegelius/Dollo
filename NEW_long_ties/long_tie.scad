@@ -12,10 +12,19 @@ scale_x = scale_x();
 scale_z = scale_z();
 length = 50;
 
+
+//long_tie(length);
+//long_tie_half(length);
+long_tie_half(20);
+//long_tie_half(30);
+//long_tie_half(40);
+//long_tie_split(length);
+
+
 module long_tie(length=length) {
     translate([0, 0, scaled_male_dove_depth()])
     rotate([0, 180, 0])
-    difference(){
+    difference() {
         long_bow_tie(length, scale_x=scale_x, scale_z=scale_z);
 
         translate([
@@ -48,7 +57,3 @@ module long_tie_half(length=length) {
         cube([5, length, 5]);
     }
 }
-
-//long_tie(length);
-long_tie_half(length);
-//long_tie_split(length);
