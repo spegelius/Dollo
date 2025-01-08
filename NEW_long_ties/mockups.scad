@@ -2,10 +2,13 @@
 include <globals.scad>;
 use <include.scad>;
 
-
 ////// VARIABLES //////
 prox_sensor_dia = 18;
 prox_sensor_washer_dia = 30;
+
+atx_psu_width = 150 + 2*slop;
+atx_psu_height = 86 + 2*slop;
+
 
 
 ////// VIEW //////
@@ -19,8 +22,8 @@ prox_sensor_washer_dia = 30;
 //e3dv6();
 //e3d_Volcano();
 //prometheus();
-//frame_mockup(0, 3, 2, 4, x_pos=10);
 //bed_mk2();
+bed_340_300();
 //mks_sbase_mockup();
 //mock_PSU_240W();
 //mock_PSU_360W();
@@ -29,7 +32,8 @@ prox_sensor_washer_dia = 30;
 //mock_SSR_75_DD();
 //mock_titan();
 //mock_5015_fan();
-
+//mock_atx_psu();
+//mock_tl_smoother();
 
 ////// MODULES //////
 // LJ18A3-8-Z/BX
@@ -46,45 +50,45 @@ module proximity_sensor(nut_position=30, nut_gap=10) {
     color("Orange")
     cylinder(d=16.32, h=8.9, $fn=50);
 
-    translate([0,0,8.9])
+    translate([0, 0, 8.9])
     color("Silver")
     cylinder(d=prox_sensor_dia, h=47.1, $fn=50);
 
-    translate([0,0,8.9+47.1])
+    translate([0, 0, 8.9 + 47.1])
     color("LightGrey")
     cylinder(d=17, h=13.8, $fn=50);
 
-    translate([0,0,nut_position])
+    translate([0, 0, nut_position])
     mount_nut();
 
     color("LightGrey")
-    translate([0,0,nut_position+3])
-    cylinder(d=prox_sensor_washer_dia,h=1.5);
+    translate([0, 0, nut_position + 3])
+    cylinder(d=prox_sensor_washer_dia, h=1.5);
 
-    translate([0,0,nut_position+3+1.5+1.5+nut_gap])
+    translate([0, 0, nut_position + 3 + 1.5 + 1.5 + nut_gap])
     mount_nut();
 
     color("LightGrey")
-    translate([0,0,nut_position+3+1.5+nut_gap])
-    cylinder(d=prox_sensor_washer_dia,h=1.5);
+    translate([0, 0, nut_position + 3 + 1.5 + nut_gap])
+    cylinder(d=prox_sensor_washer_dia, h=1.5);
 }
 
 module _e3d_nozzle() {
     cylinder(d1=1, d2=3.5, h=2, $fn=30);
 
-    translate([0,0,2])
-    cylinder(d=7,h=2.5, $fn=6);
+    translate([0, 0, 2])
+    cylinder(d=7, h=2.5, $fn=6);
 
-    translate([0,0,4.5])
-    cylinder(d=4,h=2, $fn=30);
+    translate([0, 0, 4.5])
+    cylinder(d=4, h=2, $fn=30);
 }
 
 module _e3dv6_heater_block() {
     color("LightGrey") {
         translate([-8, -8, 0])
-        chamfered_cube(16,23,11.5,0.5);
+        chamfered_cube(16, 23, 11.5, 0.5);
 
-        cylinder(d=5,h=15, $fn=30);
+        cylinder(d=5, h=15, $fn=30);
     }
 }
 
@@ -92,13 +96,15 @@ module _e3dvolcano_heater_block() {
     color("LightGrey")
     difference() {
         union() {
-            translate([-4.5, -(24-15.5), 0])
-            chamfered_cube(2*5.75,24,20,0.5);
+            translate([-4.5, -(24 - 15.5), 0])
+            chamfered_cube(2*5.75, 24, 20, 0.5);
 
-            cylinder(d=5,h=23.5, $fn=30);
+            cylinder(d=5, h=23.5, $fn=30);
         }
-        translate([0,10/2+15.5-8,-10/2+1])
-        rounded_cube(20,10,10,1,center=true,$fn=20);
+        translate([0, 10/2 + 15.5 - 8, -10/2 + 1])
+        rounded_cube(
+            20, 10, 10, 1, center=true, $fn=20
+        );
     }
 }
 
@@ -108,7 +114,9 @@ echo("E3D heatsink h:", e3d_heatsink_h);
 
 module _e3d_heatsink() {
     color("LightGrey") {
-        cylinder(d1=12, d2=10, h=e3d_heatsink_h, $fn=50);
+        cylinder(
+            d1=12, d2=10, h=e3d_heatsink_h, $fn=50
+        );
 
         for (i = [0:10]) {
             translate([0, 0, i*e3d_heatsink_step])
@@ -183,25 +191,25 @@ module prometheus() {
     module heater_block() {
         color("LightGrey") {
             translate([-8, -8, 0])
-            cube([16,23,11.5]);
+            cube([16, 23, 11.5]);
 
-            cylinder(d=5,h=15, $fn=30);
+            cylinder(d=5, h=15, $fn=30);
         }
     }
     
     module heatsink() {
         intersection() {
             color("LightGrey") {
-                cylinder(d=10,h=28, $fn=50);
+                cylinder(d=10, h=28, $fn=50);
                 for (i = [0:9]) {
-                    translate([0,0,i*2.5])
+                    translate([0, 0, i*2.5])
                     cylinder(r=15, h=1, $fn=50);
                 }
-                translate([0,0,25])
-                cylinder(d=16,h=1, $fn=50);
+                translate([0, 0, 25])
+                cylinder(d=16, h=1, $fn=50);
             }
-            translate([0,0,40/2])
-            cube([30,20,40], center=true);
+            translate([0, 0, 40/2])
+            cube([30, 20, 40], center=true);
         }
     }
     
@@ -210,22 +218,22 @@ module prometheus() {
             $fn=50;
             cylinder(d=16, h=3);
 
-            translate([0,0,3])
+            translate([0, 0, 3])
             cylinder(d=12, h=6);
 
-            translate([0,0,9])
+            translate([0, 0, 9])
             cylinder(d=16, h=3.7);
         }
     }
     nozzle();
 
-    translate([0,0,5])
+    translate([0, 0, 5])
     heater_block();
 
-    translate([0,0,18])
+    translate([0, 0, 18])
     heatsink();
 
-    translate([0,0,62.3-16.7])
+    translate([0, 0, 62.3 - 16.7])
     neck();
 }
 
@@ -241,36 +249,42 @@ module mechanical_endstop() {
         translate([20-5, 3, -0.1])
         cylinder(d=2, h=7, $fn=20);
     }
-    translate([0,11,1])
-    rotate([0,0,15])
+    translate([0, 11, 1])
+    rotate([0, 0, 15])
     color("grey")
-    cube([19,0.5,4]);
+    cube([19, 0.5, 4]);
 
-    translate([1.5,-4,1])
-    color("grey")
-    cube([0.5, 4, 4]);
-
-    translate([10.5,-4,1])
+    translate([1.5, -4, 1])
     color("grey")
     cube([0.5, 4, 4]);
 
-    translate([20-1.5,-4,1])
+    translate([10.5, -4, 1])
+    color("grey")
+    cube([0.5, 4, 4]);
+
+    translate([20 - 1.5, -4, 1])
     color("grey")
     cube([0.5, 4, 4]);
 }
 
-module mock_stepper_motor(geared=false, center=false) {
+module mock_stepper_motor(
+    geared=false, center=false
+) {
     module _stepper_motor() {
         difference() {
             union() {
                 intersection() {
-                    translate([0, 0, motor_side_length/2])
+                    translate([
+                        0, 0, motor_side_length/2
+                    ])
                     cube([
                         motor_side_length,
                         motor_height, motor_side_length
                     ], center=true);
 
-                    translate([0, 0, motor_side_length/2])
+                    translate([
+                        0, 0, motor_side_length/2
+                    ])
                     rotate([0, 45, 0])
                     cube([54, 40, 54], center=true);
                 }
@@ -294,7 +308,9 @@ module mock_stepper_motor(geared=false, center=false) {
                         motor_side_length/2
                     ])
                     rotate([-90, 0, 0])
-                    motor_shaft(d=8, h=20, flat=1, $fn=40);
+                    motor_shaft(
+                        d=8, h=20, flat=1, $fn=40
+                    );
                 } else {
                     translate([
                         0, 40/2, motor_side_length/2
@@ -339,7 +355,9 @@ module mock_stepper_motor(geared=false, center=false) {
                         20/2,
                         20/2, -1
                     ])
-                    cylinder(d=bolt_hole_dia, 7, $fn=20);
+                    cylinder(
+                        d=bolt_hole_dia, 7, $fn=20
+                    );
                 }
             }
         }
@@ -353,249 +371,34 @@ module mock_stepper_motor(geared=false, center=false) {
     }
 }
 
-module frame_mockup(
-    bed_angle=45, units_x=1,
-    units_y=1, units_z=1, x_pos=0
-) {
-    corner_side = 60;
-    unit = 120;
-    unit_len_x = units_x*unit;
-    unit_len_y = units_y*unit;
-    unit_len_z = units_z*unit;
-    z = 2*corner_side + unit_len_z - 30;
-    echo(z);
-    
-    module corner() {
-        render()
-        difference() {
-            union() {
-                cube([30, 30, corner_side]);
-                cube([30, corner_side, 30]);
-                cube([corner_side, 30, 30]);
-            }
-            translate([15, -0.01, 0])
-            male_dovetail(corner_side + 1);
-
-            translate([-0.01, 15, 0])
-            rotate([0, 0, -90])
-            male_dovetail(corner_side + 1);
-
-            translate([15, 30.01, 0])
-            rotate([0, 0, 180])
-            male_dovetail(corner_side + 1);
-
-            translate([30.01, 15, 0])
-            rotate([0, 0, 90])
-            male_dovetail(corner_side + 1);
-        }
-    }
-    
-    module side(length) {
-        render()
-        difference() {
-            cube([30, 30, length]);
-            translate([15, -0.01, 0])
-            male_dovetail(corner_side + 1);
-
-            translate([-0.01, 15, 0])
-            rotate([0, 0, -90])
-            male_dovetail(length + 1);
-
-            translate([15, 30.01, 0])
-            rotate([0, 0, 180])
-            male_dovetail(length + 1);
-
-            translate([30.01, 15, 0])
-            rotate([0, 0, 90])
-            male_dovetail(length + 1);
-        }
-    }
-
-    %render()
-    translate([-unit_len_x/2, x_pos, z + 30 + 43.5])
-    rotate([0, 90, 0])
-    side(unit_len_x);
-
-    // corners
-    %translate([
-        -corner_side - unit_len_x/2,
-        -corner_side - unit_len_y/2, 0
-    ])
-    corner();
-
-    %mirror([1, 0, 0])
-    translate([
-        -corner_side - unit_len_x/2,
-        -corner_side - unit_len_y/2, 0
-    ])
-    corner();
-
-    %mirror([0, 1, 0])
-    translate([
-        -corner_side - unit_len_x/2,
-        -corner_side - unit_len_y/2, 0
-    ])
-    corner();
-
-    %mirror([0, 1, 0])
-    mirror([1, 0, 0])
-    translate([
-        -corner_side - unit_len_x/2,
-        -corner_side - unit_len_y/2, 0
-    ])
-    corner();
-
-    // corners
-    translate([0, 0, 2*corner_side + unit_len_z])
-    mirror([0, 0, 1]) {
-        %translate([
-            -corner_side - unit_len_x/2,
-            -corner_side - unit_len_y/2, 0
-        ])
-        corner();
-
-        %mirror([1, 0, 0])
-        translate([
-            -corner_side - unit_len_x/2,
-            -corner_side - unit_len_y/2, 0
-        ])
-        corner();
-
-        %mirror([0, 1, 0])
-        translate([
-            -corner_side - unit_len_x/2,
-            -corner_side - unit_len_y/2, 0
-        ])
-        corner();
-
-        %mirror([0, 1, 0])
-        mirror([1, 0, 0])
-        translate([
-            -corner_side - unit_len_x/2,
-            -corner_side - unit_len_y/2, 0
-        ])
-        corner();
-    }
-
-    // sides
-    %translate([
-        -corner_side - unit_len_x/2,
-        unit_len_y/2, 0
-    ])
-    rotate([90, 0, 0])
-    side(unit_len_y);
-
-    %mirror([1, 0, 0])
-    translate([
-        -corner_side - unit_len_x/2,
-        unit_len_y/2, 0
-    ])
-    rotate([90, 0, 0])
-    side(unit_len_y);
-
-    %rotate([0, 0, 90])
-    translate([
-        -corner_side - unit_len_y/2,
-        unit_len_x/2, 0
-    ])
-    rotate([90, 0, 0])
-    side(unit_len_x);
-
-    %mirror([0, 1, 0])
-    %rotate([0, 0, 90])
-    translate([
-        -corner_side - unit_len_y/2,
-        unit_len_x/2, 0
-    ])
-    rotate([90, 0, 0])
-    side(unit_len_x);
-
-    // sides
-    %translate([
-        -corner_side - unit_len_x/2,
-        unit_len_y/2, z
-    ])
-    rotate([90, 0, 0])
-    side(unit_len_y);
-
-    %mirror([1, 0, 0])
-    translate([
-        -corner_side - unit_len_x/2,
-        unit_len_y/2, z
-    ])
-    rotate([90, 0, 0])
-    side(unit_len_y);
-
-    %rotate([0, 0, 90])
-    translate([
-        -corner_side - unit_len_y/2,
-        unit_len_x/2, z
-    ])
-    rotate([90, 0, 0])
-    side(unit_len_x);
-
-    %mirror([0, 1, 0])
-    %rotate([0, 0, 90])
-    translate([
-        -corner_side - unit_len_y/2,
-        unit_len_x/2, z
-    ])
-    rotate([90, 0, 0])
-    side(unit_len_x);
-
-    %translate([
-        -corner_side - unit_len_x/2,
-        -corner_side - unit_len_y/2,
-        corner_side
-    ])
-    side(unit_len_z);
-
-    %mirror([1, 0, 0])
-    translate([
-        -corner_side - unit_len_x/2,
-        -corner_side - unit_len_y/2,
-        corner_side
-    ])
-    side(unit_len_z);
-
-    %mirror([0, 1, 0])
-    translate([
-        -corner_side-unit_len_x/2,
-        -corner_side-unit_len_y/2,
-        corner_side
-    ])
-    side(unit_len_z);
-
-    %mirror([0, 1, 0])
-    mirror([1, 0, 0])
-    translate([
-        -corner_side-unit_len_x/2,
-        -corner_side-unit_len_y/2,
-        corner_side
-    ])
-    side(unit_len_z);
-}
-
 module bed_mk2(bed_angle=0) {
     // bed mk2
     bed_w = 214;
     hole_distance = 209;
 
     difference() {
-        rotate([0,0,bed_angle])
-        cube([bed_w,bed_w,1], center=true);
+        rotate([0, 0, bed_angle])
+        cube([bed_w, bed_w, 1], center=true);
 
-        translate([-hole_distance/2,-hole_distance/2,0])
-        cylinder(d=3,h=2,center=true,$fn=20);
+        translate([
+            -hole_distance/2, -hole_distance/2, 0
+        ])
+        cylinder(d=3, h=2, center=true, $fn=20);
 
-        translate([hole_distance/2,-hole_distance/2,0])
-        cylinder(d=3,h=2,center=true,$fn=20);
+        translate([
+            hole_distance/2, -hole_distance/2, 0
+        ])
+        cylinder(d=3, h=2, center=true, $fn=20);
 
-        translate([hole_distance/2,hole_distance/2,0])
-        cylinder(d=3,h=2,center=true,$fn=20);
+        translate([
+            hole_distance/2, hole_distance/2, 0
+        ])
+        cylinder(d=3, h=2, center=true, $fn=20);
 
-        translate([-hole_distance/2,hole_distance/2,0])
-        cylinder(d=3,h=2,center=true,$fn=20);
+        translate([
+            -hole_distance/2, hole_distance/2, 0
+        ])
+        cylinder(d=3, h=2, center=true, $fn=20);
     }
 }
 
@@ -605,20 +408,28 @@ module bed_mk3_300(bed_angle=0) {
     hole_distance = 325;
 
     difference() {
-        rotate([0,0,bed_angle])
-        cube([bed_w,bed_w,1], center=true);
+        rotate([0, 0, bed_angle])
+        cube([bed_w, bed_w, 1], center=true);
 
-        translate([-hole_distance/2,-hole_distance/2,0])
-        cylinder(d=3,h=2,center=true,$fn=20);
+        translate([
+            -hole_distance/2, -hole_distance/2, 0
+        ])
+        cylinder(d=3, h=2, center=true, $fn=20);
 
-        translate([hole_distance/2,-hole_distance/2,0])
-        cylinder(d=3,h=2,center=true,$fn=20);
+        translate([
+            hole_distance/2, -hole_distance/2, 0
+        ])
+        cylinder(d=3, h=2, center=true, $fn=20);
 
-        translate([hole_distance/2,hole_distance/2,0])
-        cylinder(d=3,h=2,center=true,$fn=20);
+        translate([
+            hole_distance/2, hole_distance/2, 0
+        ])
+        cylinder(d=3, h=2, center=true, $fn=20);
 
-        translate([-hole_distance/2,hole_distance/2,0])
-        cylinder(d=3,h=2,center=true,$fn=20);
+        translate([
+            -hole_distance/2, hole_distance/2, 0
+        ])
+        cylinder(d=3, h=2, center=true, $fn=20);
     }
 }
 
@@ -628,54 +439,50 @@ module bed_340(bed_angle=0) {
     hole_distance = 335;
 
     difference() {
-        rotate([0,0,bed_angle])
-        cube([bed_w,bed_w,1], center=true);
+        rotate([0, 0, bed_angle])
+        cube([bed_w, bed_w, 3], center=true);
 
-        translate([-hole_distance/2,-hole_distance/2,0])
-        cylinder(d=3,h=2,center=true,$fn=20);
+        translate([
+            -hole_distance/2, -hole_distance/2, 0
+        ])
+        cylinder(d=3, h=2, center=true, $fn=20);
 
-        translate([hole_distance/2,-hole_distance/2,0])
-        cylinder(d=3,h=2,center=true,$fn=20);
+        translate([
+            hole_distance/2, -hole_distance/2, 0
+        ])
+        cylinder(d=3, h=2, center=true, $fn=20);
 
-        translate([hole_distance/2,hole_distance/2,0])
-        cylinder(d=3,h=2,center=true,$fn=20);
+        translate([
+            hole_distance/2, hole_distance/2, 0
+        ])
+        cylinder(d=3, h=2, center=true, $fn=20);
 
-        translate([-hole_distance/2,hole_distance/2,0])
-        cylinder(d=3,h=2,center=true,$fn=20);
+        translate([
+            -hole_distance/2, hole_distance/2, 0
+        ])
+        cylinder(d=3, h=2, center=true, $fn=20);
     }
 }
 
 module bed_340_300() {
-    // bed mk2
+    // Custom bed, holes match Creality K1 Max bed
     bed_w = 340;
     bed_l = 300;
 
     difference() {
-        cube([bed_w,bed_l,3], center=true);
+        cube([bed_w, bed_l, 3], center=true);
 
-        translate([-bed_w/2+8/2,-bed_l/2+8/2,0])
-        cylinder(d=3,h=8,center=true,$fn=20);
+        translate([-200/2, -bed_l/2 + 23, 0])
+        cylinder(d=4, h=8, center=true, $fn=20);
 
-        translate([bed_w/2-8/2,-bed_l/2+8/2,0])
-        cylinder(d=3,h=8,center=true,$fn=20);
+        translate([200/2, -bed_l/2 + 23, 0])
+        cylinder(d=4, h=8, center=true, $fn=20);
 
-        translate([-bed_w/2+8/2,bed_l/2-8/2,0])
-        cylinder(d=3,h=8,center=true,$fn=20);
+        translate([-260/2, bed_l/2 - 27, 0])
+        cylinder(d=4, h=8, center=true, $fn=20);
 
-        translate([bed_w/2-8/2,bed_l/2-8/2,0])
-        cylinder(d=3,h=8,center=true,$fn=20);
-        
-        translate([-bed_w/2+8/2,0,0])
-        cylinder(d=3,h=8,center=true,$fn=20);
-        
-        translate([bed_w/2-8/2,0,0])
-        cylinder(d=3,h=8,center=true,$fn=20);
-        
-        translate([0,-bed_l/2+5/2,0])
-        cylinder(d=3,h=8,center=true,$fn=20);
-        
-        translate([0,bed_l/2-5/2,0])
-        cylinder(d=3,h=8,center=true,$fn=20);
+        translate([260/2, bed_l/2 - 27, 0])
+        cylinder(d=4, h=8, center=true, $fn=20);
     }
 }
 
@@ -689,17 +496,17 @@ module mks_sbase_mockup() {
             rounded_cube_side(w, l, h, 2);
         }
 
-        translate([4,4,0])
-        cylinder(d=3.6,h=5,center=true,$fn=20);
+        translate([4, 4, 0])
+        cylinder(d=3.6, h=5, center=true, $fn=20);
 
-        translate([w-4,4,0])
-        cylinder(d=3.6,h=5,center=true,$fn=20);
+        translate([w - 4, 4, 0])
+        cylinder(d=3.6, h=5, center=true, $fn=20);
 
-        translate([w-4,l-4,0])
-        cylinder(d=3.6,h=5,center=true,$fn=20);
+        translate([w - 4, l - 4, 0])
+        cylinder(d=3.6, h=5, center=true, $fn=20);
 
-        translate([4,l-4,0])
-        cylinder(d=3.6,h=5,center=true,$fn=20);
+        translate([4, l - 4, 0])
+        cylinder(d=3.6, h=5, center=true, $fn=20);
     }
 }
 
@@ -765,30 +572,44 @@ module mock_PSU_240W() {
             for (i = [0:15]) {
                 translate([0, 21 + i*10.65, 26 + j*6])
                 rotate([0, 90, 0])
-                cylinder(d=4, h=20, center=true, $fn=30);
+                cylinder(
+                    d=4, h=20, center=true, $fn=30
+                );
             }
         }
 
         for (j = [0:4]) {
             for (i = [0:15]) {
-                translate([0, 26.325 + i*10.65, 23 + j*6])
+                translate([
+                    0, 26.325 + i*10.65, 23 + j*6
+                ])
                 rotate([0, 90, 0])
-                cylinder(d=4, h=20, center=true, $fn=30);
+                cylinder(
+                    d=4, h=20, center=true, $fn=30
+                );
             }
         }
 
         // cover grill holes top
         for (j = [0:17] ) {
             for (i = [0:15]) {
-                translate([1 + j*6, 21 + i*10.65, d + 9])
-                cylinder(d=4, h=20, center=true, $fn=30);
+                translate([
+                    1 + j*6, 21 + i*10.65, d + 9
+                ])
+                cylinder(
+                    d=4, h=20, center=true, $fn=30
+                );
             }
         }
 
         for (j = [0:17] ) {
             for (i = [0:15]) {
-                translate([4 + j*6, 26.325 + i*10.65, d + 9])
-                cylinder(d=4, h=20, center=true, $fn=30);
+                translate([
+                    4 + j*6, 26.325 + i*10.65, d + 9
+                ])
+                cylinder(
+                    d=4, h=20, center=true, $fn=30
+                );
             }
         }
     }
@@ -855,15 +676,15 @@ module mock_PSU_600W() {
     
     color("silver")
     difference() {
-        cube([w,h,d]);
+        cube([w, h, d]);
 
-        translate([1.4,-1,24])
-        cube([w-2*1.4,21,d]);
+        translate([1.4, -1, 24])
+        cube([w - 2*1.4, 21, d]);
 
-        translate([1.4,-1,7.5])
-        cube([18,21,d]);
+        translate([1.4, -1, 7.5])
+        cube([18, 21, d]);
 
-        translate([w-1.4-5,-1,7.5])
+        translate([w - 1.4 - 5, -1, 7.5])
         cube([5,21,d]);
 
         translate([w+1,32.5,11])
@@ -907,105 +728,139 @@ module mock_PSU_600W() {
 module mock_SSR_75_DD() {
     difference() {
         union() {
-            translate([0,0,3/2])
-            cube([45.5,63,3],center=true);
+            translate([0, 0, 3/2])
+            cube([45.5, 63, 3], center=true);
 
-            translate([0,0,23/2])
-            cube([45.5,60,23],center=true);
+            translate([0, 0, 23/2])
+            cube([45.5, 60, 23], center=true);
 
-            translate([0,63/2-2/2,4.7/2])
-            cube([10,2,4.7],center=true);
+            translate([0, 63/2 - 2/2, 4.7/2])
+            cube([10, 2, 4.7], center=true);
 
-            translate([0,-63/2+2/2,4.7/2])
-            cube([10,2,4.7],center=true);
+            translate([0, -63/2 + 2/2, 4.7/2])
+            cube([10, 2, 4.7], center=true);
         }
 
-        translate([0,60/2,25/2+4.7])
+        translate([0, 60/2, 25/2 + 4.7])
         hull() {
-            cube([10,1,25],center=true);
+            cube([10, 1, 25], center=true);
 
-            translate([0,-6,0])
-            cylinder(d=10,h=25,center=true,$fn=40);
+            translate([0, -6, 0])
+            cylinder(
+                d=10, h=25, center=true, $fn=40
+            );
         }
 
-        translate([0,-60/2,25/2+4.7])
+        translate([0, -60/2, 25/2 + 4.7])
         hull() {
-            cube([10,1,25],center=true);
+            cube([10, 1, 25], center=true);
 
-            translate([0,6,0])
-            cylinder(d=10,h=25,center=true,$fn=40);
+            translate([0, 6, 0])
+            cylinder(
+                d=10, h=25, center=true, $fn=40
+            );
         }
 
-        translate([0,63/2-9,0])
+        translate([0, 63/2 - 9, 0])
         hull() {
-            cylinder(d=4.2,h=10,center=true,$fn=40);
+            cylinder(
+                d=4.2, h=10, center=true, $fn=40);
 
-            translate([0,3,0])
-            cylinder(d=4.2,h=10,center=true,$fn=40);
+            translate([0, 3, 0])
+            cylinder(
+                d=4.2, h=10, center=true, $fn=40
+            );
         }
 
-        translate([0,-63/2+8,0])
-        cylinder(d=4.2,h=10,center=true,$fn=40);
+        translate([0, -63/2 + 8, 0])
+        cylinder(d=4.2, h=10, center=true, $fn=40);
 
-        translate([45.5/2-2.4-12.5/2,60/2-13/2,16+8/2])
-        cube([12.5,13,8],center=true);
+        translate([
+            45.5/2 - 2.4-12.5/2,
+            60/2 - 13/2, 16 + 8/2
+        ])
+        cube([12.5, 13, 8], center=true);
 
-        translate([-45.5/2+2.4+12.5/2,60/2-13/2,16+8/2])
-        cube([12.5,13,8],center=true);
+        translate([
+            -45.5/2 + 2.4 + 12.5/2,
+            60/2 - 13/2, 16 + 8/2
+        ])
+        cube([12.5, 13, 8], center=true);
 
-        translate([-45.5/2+3.4+10.5/2,-60/2+12/2,16+8/2])
-        cube([10.5,12,8],center=true);
+        translate([
+            -45.5/2 + 3.4 + 10.5/2,
+            -60/2 + 12/2, 16 + 8/2
+        ])
+        cube([10.5, 12, 8], center=true);
 
-        translate([45.5/2-3.4-10.5/2,-60/2+12/2,16+8/2])
-        cube([10.5,12,8],center=true);
+        translate([
+            45.5/2 - 3.4 - 10.5/2,
+            -60/2 + 12/2, 16 + 8/2
+        ])
+        cube([10.5, 12, 8],center=true);
     }
 
-    translate([45.5/2-8.65,60/2-6.5,0])
-    cylinder(d=7,h=22,$fn=40);
+    translate([45.5/2 - 8.65, 60/2 - 6.5, 0])
+    cylinder(d=7, h=22, $fn=40);
 
-    translate([-45.5/2+8.65,60/2-6.5,0])
-    cylinder(d=7,h=22,$fn=40);
-    
-    translate([45.5/2-8.65,-60/2+6,0])
-    cylinder(d=7,h=22,$fn=40);
+    translate([-45.5/2 + 8.65, 60/2 - 6.5, 0])
+    cylinder(d=7, h=22, $fn=40);
 
-    translate([-45.5/2+8.65,-60/2+6,0])
-    cylinder(d=7,h=22,$fn=40);
+    translate([45.5/2 - 8.65, -60/2 + 6, 0])
+    cylinder(d=7, h=22, $fn=40);
+
+    translate([-45.5/2 + 8.65, -60/2 + 6, 0])
+    cylinder(d=7, h=22, $fn=40);
 }
 
 module mock_titan() {
+    w = 46.5;
+    l = 44.1;
 
     difference() {
         union() {
             hull() {
-                translate([-46.5/2+1/2,-4/2,30/2])
-                cube([1,40,30],center=true);
+                translate([-w/2 + 1/2, -4/2, 30/2])
+                cube([1, 40, 30], center=true);
 
-                translate([-46.5/2+1/2+4,0,30/2])
-                cube([1,44,30],center=true);
+                translate([-w/2 + 1/2 + 4, 0, 30/2])
+                cube([1, l, 30], center=true);
 
-                translate([46.5/2-1/2,10/2,30/2])
-                cube([1,34,30],center=true);
+                translate([w/2 - 1/2, 10/2, 30/2])
+                cube([1, 34, 30], center=true);
 
-                translate([46.5/2-16/2,-44/2+16/2,0])
-                cylinder(d=16,h=30,$fn=80);
+                translate([w/2 - 16/2, -l/2 + 16/2, 0])
+                cylinder(d=16, h=30, $fn=80);
             }
-            translate([-46.5/2+7+27/2,44/2-7-27/2,0])
-            translate([motor_bolt_hole_distance/2,
-                       -motor_bolt_hole_distance/2,
-                       30-5-4])
-            cylinder(d=34,h=4,$fn=40);
+            translate([
+                -w/2 + 7 + 27.2/2,
+                l/2 - 7 - 27.2/2, 0
+            ])
+            translate([
+                motor_bolt_hole_distance/2,
+                -motor_bolt_hole_distance/2,
+                30 - 5 - 4
+            ])
+            cylinder(d=34, h=4, $fn=40);
         }
-        translate([-46.5/2+7+27/2,44/2-7-27/2,0])
-        cylinder(d=27,h=100,center=true,$fn=40);
+        translate([
+            -46.5/2 + 7 + 27.2/2,
+            44/2 - 7 - 27.2/2, 0
+        ])
+        cylinder(d=27, h=100, center=true, $fn=40);
 
-        translate([-46.5/2+7+27/2,44/2-7-27/2,0])
-        for(i=[0:3]) {
-            rotate([0,0,360/4*i])
-            translate([motor_bolt_hole_distance/2,
-                   -motor_bolt_hole_distance/2,
-                   0])
-            cylinder(d=3,h=100,center=true,$fn=30);
+        translate([
+            -46.5/2 + 7 + 27.2/2,
+            44/2 - 7 - 27.2/2, 0
+        ])
+        for(i = [0:3]) {
+            rotate([0, 0, 360/4*i])
+            translate([
+                motor_bolt_hole_distance/2,
+                -motor_bolt_hole_distance/2,
+                0
+            ])
+            cylinder(d=3, h=100, center=true, $fn=30);
         }
     }
 }
@@ -1038,5 +893,95 @@ module mock_5015_fan() {
         rotate([0, 0, -22])
         cube([10, 2.5, 2.5], center=true);
     }
-    
+}
+
+module minus_atx_psu_holes(hole=3.2) {
+    difference() {
+        children();
+        translate([-138/2, 0, 6])
+        rotate([-90, 0, 0])
+        cylinder(d=hole, h=5, $fn=30);
+
+        translate([138/2, 0, 6])
+        rotate([-90, 0, 0])
+        cylinder(d=hole, h=5, $fn=30);
+
+        translate([138/2, 0, 6 + 64])
+        rotate([-90, 0, 0])
+        cylinder(d=hole, h=5, $fn=30);
+
+        translate([-150/2 + 30, 0, atx_psu_height - 6])
+        rotate([-90, 0, 0])
+        cylinder(d=hole, h=5, $fn=30);
+    }
+}
+
+module mock_atx_psu(holes=true, slop=0) {
+    w = atx_psu_width;
+    h = atx_psu_height;
+
+    color("grey") {
+        if (holes) {
+            minus_atx_psu_holes() {
+                translate([-w/2, 0.01, 0])
+                cube([w, 140, h]);
+            }
+        } else {
+            translate([-w/2, 0, 0])
+            cube([w, 140, h]);
+        }
+    }
+}
+
+// Aliexpress smoother PCB
+module mock_tl_smoother() {
+
+    module _diode() {
+        color("black")
+        translate([0, 0, 2.4/2])
+        cube([5.8, 6.6, 2.4], center=true);
+
+        color("grey")
+        translate([0, 0, 1.4/2])
+        cube([3.2, 8, 1.4], center=true);
+    }
+
+    difference() {
+        union() {
+            translate([0, 0, 1.5/2])
+            cube([29.5, 39.5, 1.5], center=true);
+
+            spacing_x = 27/4;
+            for(i=[0:3]) {
+                translate([
+                    -27/2 + 5.8/2 + i*spacing_x,
+                    18.3/2 - 6.6/2, 1.5
+                ])
+                _diode();
+
+                translate([
+                    -27/2 + 5.8/2 + i*spacing_x,
+                    -18.3/2 + 6.6/2, 1.5
+                ])
+                _diode();
+            }
+
+            translate([0, 39.5/2 - 5.8/2, 8.5/2])
+            cube([12.4, 5.8, 8.5], center=true);
+
+            translate([0, -39.5/2 + 5.8/2, 8.5/2])
+            cube([12.4, 5.8, 8.5], center=true);
+        }
+        translate([22/2, 32/2, 0])
+        cylinder(d=3.8, 5, center=true, $fn=30);
+
+        translate([-22/2, 32/2, 0])
+        cylinder(d=3.8, 5, center=true, $fn=30);
+
+        translate([22/2, -32/2, 0])
+        cylinder(d=3.8, 5, center=true, $fn=30);
+
+        translate([-22/2, -32/2, 0])
+        cylinder(d=3.8, 5, center=true, $fn=30);
+    }
 }
