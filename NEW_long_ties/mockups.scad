@@ -23,7 +23,7 @@ atx_psu_height = 86 + 2*slop;
 //e3d_Volcano();
 //prometheus();
 //bed_mk2();
-bed_340_300();
+//bed_340_300();
 //mks_sbase_mockup();
 //mock_PSU_240W();
 //mock_PSU_360W();
