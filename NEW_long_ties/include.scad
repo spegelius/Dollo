@@ -287,7 +287,7 @@ module stagger_pins() {
 //////////////////      DOVE TAIL       //////////////////
 
 module male_dovetail(
-    height, bridge_extra=0, center=false
+    height=100, bridge_extra=0, center=false
 ) {
 
     module _male_dovetail() {
@@ -692,46 +692,79 @@ module rounded_cube_side(x, y, z, corner, center=false) {
     }
 }
 
-module chamfered_cube(x,y,z, chamfer, center=false) {
+module chamfered_cube(
+    x, y, z, chamfer, center=false
+) {
 
     hull() {
         if (center) {
-            cube([x, y-2*chamfer,z-2*chamfer], center=center);
-            cube([x-2*chamfer,y,z-2*chamfer], center=center);
-            cube([x-2*chamfer,y-2*chamfer,z], center=center);
+            cube([
+                x, y - 2*chamfer, z - 2*chamfer
+            ], center=center);
+
+            cube([
+                x - 2*chamfer, y, z - 2*chamfer
+            ], center=center);
+
+            cube([
+                x - 2*chamfer, y - 2*chamfer, z
+            ], center=center);
         } else {
-            translate([0,chamfer,chamfer])
-            cube([x, y-2*chamfer,z-2*chamfer], center=center);
+            translate([0, chamfer, chamfer])
+            cube(
+                [x, y - 2*chamfer, z - 2*chamfer],
+                center=center
+            );
 
-            translate([chamfer,0,chamfer])
-            cube([x-2*chamfer,y,z-2*chamfer], center=center);
+            translate([chamfer, 0, chamfer])
+            cube(
+                [x - 2*chamfer, y, z - 2*chamfer],
+                center=center
+            );
 
-            translate([chamfer,chamfer,0])
-            cube([x-2*chamfer,y-2*chamfer,z], center=center);
+            translate([chamfer, chamfer, 0])
+            cube(
+                [x - 2*chamfer, y - 2*chamfer, z],
+                center=center
+            );
         }
     }
 }
 
-module chamfered_cube_side(x,y,z, chamfer, center=false) {
+module chamfered_cube_side(
+    x, y, z, chamfer, center=false
+) {
 
     hull() {
         if (center) {
-            cube([x, y-2*chamfer,z], center=center);
-            cube([x-2*chamfer,y,z], center=center);
+            cube([x, y - 2*chamfer, z], center=center);
+            cube([x - 2*chamfer, y, z], center=center);
         } else {
-            translate([0,chamfer,0]) cube([x, y-2*chamfer,z], center=center);
-            translate([chamfer,00]) cube([x-2*chamfer,y,z], center=center);
+            translate([0, chamfer, 0])
+            cube([x, y - 2*chamfer, z], center=center);
+
+            translate([chamfer, 0, 0])
+            cube([x - 2*chamfer, y, z], center=center);
         }
     }
 }
 
-module rounded_cylinder(d, h, corner) {
-    hull() {
-        translate([0, 0, corner/2])
-        donut(d - corner, corner);
+module rounded_cylinder(d, h, corner, center=false) {
+    module _rc() {
+        hull() {
+            translate([0, 0, corner/2])
+            donut(d - corner, corner);
 
-        translate([0, 0, h - corner/2])
-        donut(d - corner, corner);
+            translate([0, 0, h - corner/2])
+            donut(d - corner, corner);
+        }
+    }
+
+    if (center) {
+        translate([0, 0, -h/2])
+        _rc();
+    } else {
+        _rc();
     }
 }
 //rounded_cylinder(10,10,2,$fn=40);
@@ -889,15 +922,19 @@ module pyramid(w, cap=0) {
     h = w/2;
     module _pyramid() {
         hull() {
-            translate([0,0,0.01/2]) cube([w,w,0.01], center=true);
-            translate([0,0,h-0.01]) cube([0.01,0.01,0.01]);
+            translate([0, 0, 0.01/2])
+            cube([w, w, 0.01], center=true);
+
+            translate([0, 0, h - 0.01])
+            cube([0.01, 0.01, 0.01]);
         }
     }
 
     if (cap > 0) {
         intersection() {
             _pyramid();
-            translate([0,0,(h-cap)/2]) cube([w,w,h-cap], center=true);
+            translate([0, 0, (h - cap)/2])
+            cube([w, w, h - cap], center=true);
         }
     } else {
         _pyramid();
@@ -1001,7 +1038,7 @@ module v_screw(
             if(chamfer) {
                 c_h = h + screw_d/2 - screw_d/15;
 
-                cylinder(d1=c_h*2, d2=0, h=c_h, $fn=40);
+                cylinder(d1=c_h*2, d2=0, h=c_h, $fn=steps);
             }
         }
     }
