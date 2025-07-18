@@ -1149,3 +1149,15 @@ module holee(slop, h) {
         projection(cut=true)
         children();
 }
+
+module adapter_mount_thread(h=10) {
+
+    v_screw(
+        h=h,
+        screw_d=10.3,
+        pitch=1.3,
+        direction=0,
+        steps=50,
+        depth=0.3
+    );
+}

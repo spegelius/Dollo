@@ -73,9 +73,15 @@ FAST=true;
 //corner_stabilizer_inner(side=150);
 
 //middle_panel(360);
-middle_panel(480);
+//middle_panel(480);
 
 //stabilizer_attachment_bolt();
+//stabilizer_attachment_bolt(22);
+//stabilizer_attachment_bolt(19);
+//stabilizer_attachment_bolt(18);
+
+//rod_stabilizer();
+rod_stabilizer_nut();
 
 
 module view_proper_3_3_4_old() {
@@ -1371,9 +1377,10 @@ module middle_panel(frame_width) {
     }
 }
 
-module stabilizer_attachment_bolt() {
+module stabilizer_attachment_bolt(h=16) {
     difference() {
         union() {
+            // head
             intersection() {
                 hexagon(12.9, 4);
                 chamfered_cylinder(
@@ -1381,11 +1388,13 @@ module stabilizer_attachment_bolt() {
                 );
             }
 
+            // smooth portion
             chamfered_cylinder(
-                10, 4 + 5, 0.6, $fn=40
+                10, h - 7, 0.6, $fn=40
             );
 
-            translate([0, 0, 8.9])
+            // thread
+            translate([0, 0, h - 7.1])
             v_screw(
                 h=6.5,
                 screw_d=9.9,
@@ -1397,7 +1406,137 @@ module stabilizer_attachment_bolt() {
             );
         }
 
+        // inner hex hole
         translate([0, 0, -1])
         hexagon(4.3, 100);
+    }
+}
+
+module _groove(d=10.2, h=15, angle=26) {
+    intersection() {
+        tube(39*2 + d, h, d, center=true, $fn=80);
+
+        union() {
+            rotate([0, 0, angle/2])
+            translate([0, 39, 0])
+            cylinder(d=d, h=h, center=true, $fn=50);
+
+            rotate([0, 0, -angle/2])
+            translate([0, 39, 0])
+            cylinder(d=d, h=h, center=true, $fn=50);
+
+            hull() {
+            
+                cylinder(d=0.1, h=h, center=true, $fn=10);
+
+                translate([0, 39 + d/2, 0])
+                cube([2*PI*(39 + d/2)*angle/360, 1, h], center=true);
+            }
+        }
+    }
+}
+
+module rod_stabilizer() {
+    %translate([11.4, -47, 0])
+    rotate([0, 180, 0])
+    corner_stabilizer();
+
+    %translate([-39, 3.5, -30/2 - 6])
+    rotate([-90, 0, 45])
+    extention(support=false);
+
+    %translate([0, -10, 15])
+    rotate([-90, 0, 0])
+    cylinder(d=8, h=200, $fn=30);
+
+
+
+    //!_groove();
+
+    difference() {
+        // main body
+        union() {
+            intersection() {
+                hull() {
+                    translate([0, 30/2 - 15/2, 6/2])
+                    rounded_cube_side(
+                        30, 30, 6, 4, center=true, $fn=30
+                    );
+
+                    rotate([0, 0, 18])
+                    translate([0, 39, 0])
+                    cylinder(d=20, h=6, $fn=30);
+
+                    rotate([0, 0, -18])
+                    translate([0, 39, 0])
+                    cylinder(d=20, h=6, $fn=30);
+
+                    translate([0, 33, 0])
+                    cylinder(d=35, h=6, $fn=30);
+                }
+
+                cylinder(d=98, h=20, center=true, $fn=80);
+            }
+            // rod part
+            hull() {
+                translate([0, 30/2 - 15/2, 6/2])
+                rounded_cube_side(
+                    30, 30, 6, 4, center=true, $fn=30
+                );
+
+                translate([0, 20/2, 15])
+                rotate([90, 0, 0])
+                rounded_cylinder(
+                    20, 25, 4, center=true, $fn=40
+                );
+
+                translate([0, 23, 0])
+                cylinder(d=15, h=6, $fn=30);
+            }
+        }
+
+        translate([0, 0, -3])
+        adapter_mount_thread();
+
+        _groove();
+
+        translate([0, 0, 10/2 + 3])
+        _groove(d=15, h=10, angle=36);
+
+        translate([0, 0, 15])
+        rotate([-90, 0, 0])
+        cylinder(d=8.3, h=100, center=true, $fn=30);
+
+        translate([0, -12.4, 15])
+        rotate([-90, 0, 0])
+        cylinder(d=17, h=20, center=true, $fn=30);
+
+        translate([0, 32.5, 15])
+        rotate([-90, 0, 0])
+        cylinder(d=17, h=20, center=true, $fn=30);
+
+    }
+
+// debug
+//    #cylinder(d=10, h=15, $fn=30);
+//
+//    #translate([0, 39, 0])
+//    cylinder(d=10, h=15, $fn=30);
+
+    //#tube(89, 15, 11, $fn=80);
+}
+
+module rod_stabilizer_nut() {
+    difference() {
+        union() {
+            translate([0, 0, 5/2])
+            _groove(d=14.7, angle=8, h=5);
+
+//            translate([0, 0, 11/2])
+//            _groove(d=10.7, angle=4, h=11);
+        }
+
+        translate([0, 39, -1])
+        adapter_mount_thread();
     }
 }

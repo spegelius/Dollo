@@ -5,8 +5,13 @@ use <long_tie.scad>;
 use <mockups.scad>;
 use <extention.scad>;
 
+use <../../PCParts/common.scad>;
+
+
 $fn=30;
 
+
+//debug_adapter_SSR_1048ZD3();
 
 //adapter_mks_sbase_box();
 //adapter_titan();
@@ -19,19 +24,9 @@ $fn=30;
 //adapter_shy_rockabilly3();
 //adapter_airtrippers_bowden_extruder();
 //adapter_tl_smoother();
+//adapter_SSR_1048ZD3();
+adapter_SSR_1048ZD3_cover();
 
-
-module _adapter_mount_thread(h=10) {
-
-    v_screw(
-        h=h,
-        screw_d=10.3,
-        pitch=1.3,
-        direction=0,
-        steps=50,
-        depth=0.3
-    );
-}
 
 module _frame_clip(h=20) {
     intersection() {
@@ -57,6 +52,14 @@ module _frame_clip(h=20) {
         translate([0, -11.5])
         chamfered_cube(35, 23, 20, 1, center=true);
     }
+}
+
+module debug_adapter_SSR_1048ZD3() {
+    adapter_SSR_1048ZD3();
+
+    %translate([0, 0, 6 + 46])
+    rotate([180, 0, 0])
+    adapter_SSR_1048ZD3_cover();
 }
 
 module adapter_mks_sbase_box() {
@@ -119,10 +122,10 @@ module adapter_mks_sbase_box() {
         cylinder(d=2.8, h=20, center=true, $fn=40);
 
         translate([5.65, 32, -1])
-        _adapter_mount_thread();
+        adapter_mount_thread();
 
         translate([-5.65, -26.5, -1])
-        _adapter_mount_thread();
+        adapter_mount_thread();
     }
 }
 
@@ -637,7 +640,7 @@ module adapter_tl_smoother() {
         }
 
         translate([0, 0, -4])
-        _adapter_mount_thread();
+        adapter_mount_thread();
 
         translate([22/2, 32/2, 0])
         cylinder(d=2.7, 25, center=true, $fn=30);
@@ -650,5 +653,290 @@ module adapter_tl_smoother() {
 
         translate([-22/2, -32/2, 0])
         cylinder(d=2.7, 25, center=true, $fn=30);
+    }
+}
+
+module adapter_SSR_1048ZD3() {
+    %translate([-23, 0, 17])
+    mock_SSR_1048zZD3();
+
+    %translate([24, 0, 6])
+    mock_liitinrima_medium(4);
+
+//    %translate([24, -20, 6])
+//    mock_liitinrima_big(3);
+
+
+    w = 100;
+    l = 90;
+    corner = 12;
+
+    module _main() {
+        difference() {
+            translate([0, 0, 6/2])
+            rounded_cube_side(
+                w, l, 6, corner, center=true, $fn=50
+            );
+
+            intersection() {
+                difference() {
+                    rounded_cube_side(
+                        w - 6, l - 6, 60, corner - 6, center=true
+                    );
+
+                    translate([-22.65, 26, 0])
+                    cylinder(d=14, h=30, center=true, $fn=30);
+
+                    translate([-22.65, -26, 0])
+                    cylinder(d=14, h=30, center=true, $fn=30);
+
+                    translate([33.3, 19.5, 0])
+                    cylinder(d=14, h=30, center=true, $fn=30);
+
+                    translate([-34.3, -19.5, 0])
+                    cylinder(d=14, h=30, center=true, $fn=30);
+                }
+
+                translate([-214.4, -227.5, 0])
+                for(j = [0:39]) {
+                    translate([0, j*13])
+                    rotate([0, 0, -60])
+                    for (i = [0:39]) {
+                        translate([0, i*13])
+                        cylinder(
+                            d=13, h=60,
+                            center=true, $fn=6
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    difference() {
+        union() {
+            _main();
+
+            // corners
+            translate([-w/2 + corner/2, l/2 - corner/2, 0])
+            cylinder(d=corner, h=6);
+
+            translate([w/2 - corner/2, l/2 - corner/2, 0])
+            cylinder(d=corner, h=6);
+
+            translate([-w/2 + corner/2, -l/2 + corner/2, 0])
+            cylinder(d=corner, h=6);
+
+            translate([w/2 - corner/2, -l/2 + corner/2, 0])
+            cylinder(d=corner, h=6);
+
+            // SSR mount studs
+            hull() {
+                translate([-20, 24, 0])
+                cylinder(d=10, h=17);
+
+                translate([-26, 24, 0])
+                cylinder(d=10, h=17);
+
+                translate([-23, 26, 0])
+                cylinder(d=10, h=17);
+            }
+
+            hull() {
+                translate([-20, -24, 0])
+                cylinder(d=10, h=17);
+
+                translate([-26, -24, 0])
+                cylinder(d=10, h=17);
+
+                translate([-23, -26, 0])
+                cylinder(d=10, h=17);
+            }
+
+            // liitinrima mount base
+            translate([w/2 - 46/2, 0, 6/2])
+            cube([46, 15, 6], center=true);
+
+            // cable mount bases
+            translate([23, -l/2 + 15/2, 6/2])
+            cube([30, 14.8, 6], center=true);
+
+            translate([23, l/2 - 15/2, 6/2])
+            cube([30, 14.8, 6], center=true);
+
+            translate([23, -l/2 + 10/2 + 5, 10/2])
+            cube([21, 10, 10], center=true);
+
+            translate([23, l/2 - 10/2 - 5, 10/2])
+            cube([21, 10, 10], center=true);
+        }
+        // corner screw holes
+        translate([-w/2 + corner/2, l/2 - corner/2, 0])
+        cylinder(d=2.7, h=50, center=true);
+
+        translate([w/2 - corner/2, l/2 - corner/2, 0])
+        cylinder(d=2.7, h=50, center=true);
+
+        translate([-w/2 + corner/2, -l/2 + corner/2, 0])
+        cylinder(d=2.7, h=50, center=true);
+
+        translate([w/2 - corner/2, -l/2 + corner/2, 0])
+        cylinder(d=2.7, h=50, center=true);
+
+        // SSR mount holes
+        translate([-23, 24, 0])
+        cylinder(d=4.2, h=50, center=true);
+
+        translate([-23, -24, 0])
+        cylinder(d=4.2, h=50, center=true);
+
+        translate([-23, 24, -1])
+        M4_nut_tapering(h=10, cone=false, bridging=true);
+
+        translate([-23, -24, -1])
+        M4_nut_tapering(h=10, cone=false, bridging=true);
+
+        // liitinrima screw holes
+        translate([14, 0, 0])
+        cylinder(d=2.7, h=60, center=true);
+
+        translate([33.85, 0, 0])
+        cylinder(d=2.7, h=60, center=true);
+
+        // cable cuts
+        translate([23, 0, 12])
+        rotate([90, 0, 0])
+        cylinder(d=10, h=l + 10, center=true);
+
+        translate([23, l/2 - 15 + 5, 13/2])
+        rotate([90, 0, 0])
+        difference() {
+            rounded_cube_side(17.5, 12, 3, 8, center=true);
+            rounded_cube_side(13.5, 8, 4, 4, center=true);
+        }
+
+        translate([23, -l/2 + 15 - 5, 13/2])
+        rotate([90, 0, 0])
+        difference() {
+            rounded_cube_side(17.5, 12, 3, 8, center=true);
+            rounded_cube_side(13.5, 8, 4, 4, center=true);
+        }
+
+        // threads
+        translate([33.3, 19.5, -3.9])
+        adapter_mount_thread();
+
+        translate([-34.3, -19.5, -3.9])
+        adapter_mount_thread();
+    }
+}
+
+module adapter_SSR_1048ZD3_cover() {
+    w = 100;
+    l = 90;
+    corner = 12;
+    h = 47;
+
+    module _screw_hole() {
+        cylinder(d=3.3, h=100, center=true);
+        chamfered_cylinder(
+            6.8, (h - 40 + 5)*2, 2, center=true, $fn=30
+        );
+    }
+
+    difference() {
+        translate([0, 0, h/2])
+        rounded_cube_side(
+            w, l, h, corner, center=true, $fn=50
+        );
+
+        difference() {
+            translate([0, 0, h/2 + 0.8])
+            rounded_cube_side(
+                w - 4, l - 4, h, corner - 4, center=true, $fn=50
+            );
+
+            translate([-w/2 + corner/2, l/2 - corner/2, 0])
+            cylinder(d=corner - 1, h=100);
+
+            translate([w/2 - corner/2, l/2 - corner/2, 0])
+            cylinder(d=corner - 1, h=100);
+
+            translate([-w/2 + corner/2, -l/2 + corner/2, 0])
+            cylinder(d=corner - 1, h=100);
+
+            translate([w/2 - corner/2, -l/2 + corner/2, 0])
+            cylinder(d=corner - 1, h=100);
+
+            for(i = [0:10]) {
+                translate([-w/2 + i*12, 0, 0])
+                rotate([0, 0, 30])
+                cube([1.8, 1000, 4], center=true);
+
+                translate([-w/2 + i*12, 0, 0])
+                rotate([0, 0, -30])
+                cube([1.8, 1000, 4], center=true);
+            }
+        }
+
+        // screw holes
+        translate([-w/2 + corner/2, l/2 - corner/2, 0])
+        _screw_hole();
+
+        translate([w/2 - corner/2, l/2 - corner/2, 0])
+        _screw_hole();
+
+        translate([-w/2 + corner/2, -l/2 + corner/2, 0])
+        _screw_hole();
+
+        translate([w/2 - corner/2, -l/2 + corner/2, 0])
+        _screw_hole();
+
+        // cable cuts
+        translate([23, 0, h])
+        rotate([90, 0, 0])
+        hull() {
+            cylinder(d=10, h=l + 10, center=true);
+
+            translate([0, -6, 0])
+            cylinder(d=10, h=l + 10, center=true);
+        }
+
+        // vents
+        for(i = [0:3]) {
+            translate([-w/2 + 20 + i*10, 0, h/2])
+            rotate([90, 19, 0])
+            hull() {
+                translate([0, h/2 - 7, 0])
+                cylinder(d=4, h=l + 10, center=true, $fn=30);
+
+                translate([0, -h/2 + 7, 0])
+                cylinder(d=4, h=l + 10, center=true, $fn=30);
+            }
+        }
+
+        for(i = [0:2]) {
+            translate([-w/2 + 60 + i*10, 0, h/2])
+            rotate([90, 19, 0])
+            hull() {
+                translate([0, h/2 - 17, 0])
+                cylinder(d=4, h=l + 10, center=true, $fn=30);
+
+                translate([0, -h/2 + 7, 0])
+                cylinder(d=4, h=l + 10, center=true, $fn=30);
+            }
+        }
+
+        for(i = [0:5]) {
+            translate([0, -l/2 + 20 + i*10, h/2])
+            rotate([90, 19, 90])
+            hull() {
+                translate([0, h/2 - 7, 0])
+                cylinder(d=4, h=w + 10, center=true, $fn=30);
+
+                translate([0, -h/2 + 7, 0])
+                cylinder(d=4, h=w + 10, center=true, $fn=30);
+            }
+        }
     }
 }

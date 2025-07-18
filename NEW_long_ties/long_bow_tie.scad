@@ -18,11 +18,11 @@ _offset = 0;
 //long_bow_tie();
 //long_bow_tie(25);
 
-long_bow_tie_half(length);
+//long_bow_tie_half(length);
 //long_bow_tie_half(30);
 //long_bow_tie_half_split(length);
 
-//long_bow_tie_split(length);
+long_bow_tie_split(length);
 //long_bow_tie_split(30);
 
 
@@ -117,8 +117,10 @@ module long_bow_tie(
 module split(length) {
     translate([0, 0, -length/2 - 1])
     linear_extrude(height=length + 2)
-    polygon(points=[[0, -1.4], [1, -1.4], [2, -5],
-                    [-2, -5], [-1, -1.4]]);
+    polygon(points=[
+        [0, -1.5], [0.9, -1.5], [2, -5],
+        [-2, -5], [-0.9, -1.5]
+    ]);
 }
 
 module long_bow_tie_split(

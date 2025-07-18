@@ -28,12 +28,15 @@ atx_psu_height = 86 + 2*slop;
 //mock_PSU_240W();
 //mock_PSU_360W();
 //mock_PSU_600W();
+//mock_PSU_100W();
 
 //mock_SSR_75_DD();
+//mock_SSR_1048zZD3();
 //mock_titan();
 //mock_5015_fan();
 //mock_atx_psu();
 //mock_tl_smoother();
+
 
 ////// MODULES //////
 // LJ18A3-8-Z/BX
@@ -464,7 +467,7 @@ module bed_340(bed_angle=0) {
     }
 }
 
-module bed_340_300() {
+module bed_340_300(screws=false) {
     // Custom bed, holes match Creality K1 Max bed
     bed_w = 340;
     bed_l = 300;
@@ -473,16 +476,32 @@ module bed_340_300() {
         cube([bed_w, bed_l, 3], center=true);
 
         translate([-200/2, -bed_l/2 + 23, 0])
-        cylinder(d=4, h=8, center=true, $fn=20);
+        cylinder(d=4.1, h=8, center=true, $fn=20);
 
         translate([200/2, -bed_l/2 + 23, 0])
-        cylinder(d=4, h=8, center=true, $fn=20);
+        cylinder(d=4.1, h=8, center=true, $fn=20);
 
         translate([-260/2, bed_l/2 - 27, 0])
-        cylinder(d=4, h=8, center=true, $fn=20);
+        cylinder(d=4.1, h=8, center=true, $fn=20);
 
         translate([260/2, bed_l/2 - 27, 0])
-        cylinder(d=4, h=8, center=true, $fn=20);
+        cylinder(d=4.1, h=8, center=true, $fn=20);
+    }
+
+    if (screws) {
+
+        translate([-200/2, -bed_l/2 + 23, -40 + 3/2])
+        cylinder(d=4, h=40, $fn=20);
+
+        translate([200/2, -bed_l/2 + 23, -40 + 3/2])
+        cylinder(d=4, h=40, $fn=20);
+
+        translate([-260/2, bed_l/2 - 27, -40 + 3/2])
+        cylinder(d=4, h=40, $fn=20);
+
+        translate([260/2, bed_l/2 - 27, -40 + 3/2])
+        cylinder(d=4, h=40, $fn=20);
+
     }
 }
 
@@ -687,41 +706,84 @@ module mock_PSU_600W() {
         translate([w - 1.4 - 5, -1, 7.5])
         cube([5,21,d]);
 
-        translate([w+1,32.5,11])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w + 1, 32.5, 11])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([w+1,32.5,11+25])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w + 1, 32.5, 11 + 25])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([w+1,32.5+150,11])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w + 1, 32.5 + 150, 11])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([w+1,32.5+150,11+25])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w + 1, 32.5 + 150, 11 + 25])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([9,32.5,11])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        translate([9, 32.5, 11])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([9,32.5+150,11])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        translate([9, 32.5 + 150, 11])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([32,32.5,-0.1])
-        cylinder(d=3,h=10,$fn=20);
+        translate([32, 32.5, -0.1])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([w-32,32.5,-0.1])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w - 32, 32.5, -0.1])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([32,32.5+150,-0.1])
-        cylinder(d=3,h=10,$fn=20);
+        translate([32, 32.5 + 150, -0.1])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([w-32,32.5+150,-0.1])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w - 32, 32.5 + 150, -0.1])
+        cylinder(d=3, h=10, $fn=20);
+    }
+}
+
+module mock_PSU_100W() {
+    // S-100-12
+    w = 98;
+    h = 159;
+    d = 42;
+    
+    color("silver")
+    difference() {
+        cube([w, h, d]);
+
+        // connector area
+        translate([1.4, -1, 24])
+        cube([w - 2*1.4, 21, d]);
+
+        translate([-1, -1, 7.5])
+        cube([11, 21, d]);
+
+        translate([w - 1.1 - 15, -1, 7.5])
+        cube([15, 21, d]);
+
+        // mount holes
+        translate([w + 1, 22, 20])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
+
+        translate([w + 1, h - 20, 11])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
+
+        translate([w + 1, h - 20, 29])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
+
+        // bottom
+        translate([w - 33, 24, -0.1])
+        cylinder(d=3, h=10, $fn=20);
+
+        #translate([w - 33, 102, -0.1])
+        cylinder(d=3, h=10, $fn=20);
+
     }
 }
 
@@ -811,6 +873,113 @@ module mock_SSR_75_DD() {
 
     translate([-45.5/2 + 8.65, -60/2 + 6, 0])
     cylinder(d=7, h=22, $fn=40);
+}
+
+module mock_SSR_1048zZD3() {
+    difference() {
+        // main body
+        union() {
+
+            translate([0, 0, 31.5/2])
+            cube([44, 57, 31.5], center=true);
+        }
+
+        // mount holes
+        translate([0, 57/2, 50/2 + 3])
+        hull() {
+            cube([10, 1, 50], center=true);
+
+            translate([0, -4, 0])
+            cylinder(
+                d=10, h=50, center=true, $fn=40
+            );
+        }
+
+        translate([0, -57/2, 50/2 + 3])
+        hull() {
+            cube([10, 1, 50], center=true);
+
+            translate([0, 4, 0])
+            cylinder(
+                d=10, h=50, center=true, $fn=40
+            );
+        }
+
+        translate([0, 57/2 - 4, 0])
+        hull() {
+            cylinder(
+                d=4.2, h=10, center=true, $fn=40);
+
+            translate([0, -1, 0])
+            cylinder(
+                d=4.2, h=10, center=true, $fn=40
+            );
+        }
+
+        translate([0, -57/2 + 4, 0])
+        hull() {
+            cylinder(
+                d=4.2, h=10, center=true, $fn=40);
+
+            translate([0, 1, 0])
+            cylinder(
+                d=4.2, h=10, center=true, $fn=40
+            );
+        }
+
+        // terminals
+        translate([
+            44/2 - 14.5/2,
+            -57/2 + 9/2, 20 + 4.5/2
+        ])
+        cube([15, 10, 4.5], center=true);
+
+        translate([
+            -44/2 + 14.5/2,
+            -57/2 + 9/2, 20 + 4.5/2
+        ])
+        cube([15, 10, 4.5], center=true);
+
+        translate([
+            -44/2 + 14.5/2,
+            57/2 - 12/2, 20 + 5.5/2
+        ])
+        cube([15, 12.5, 5.5], center=true);
+
+        translate([
+            44/2 - 14.5/2,
+            57/2 - 12/2, 20 + 5.5/2
+        ])
+        cube([15, 12.5, 5.5], center=true);
+
+        translate([44/2 - 9.5, -57/2 + 6, 22])
+        cylinder(d=6, h=22, $fn=40);
+
+        translate([-44/2 + 9.5, -57/2 + 6, 22])
+        cylinder(d=6, h=22, $fn=40);
+
+        translate([44/2 - 7.5, 57/2 - 6.5, 22])
+        cylinder(d=6, h=22, $fn=40);
+
+        translate([-44/2 + 7.5, 57/2 - 6.5, 22])
+        cylinder(d=6, h=22, $fn=40);
+
+        // led
+        translate([-44/2 + 7, 57/2 - 21, 30])
+        cylinder(d=3, h=10, $fn=30);
+    }
+
+    translate([44/2 - 9.5, -57/2 + 6, 0])
+    cylinder(d=6, h=22, $fn=40);
+
+    translate([-44/2 + 9.5, -57/2 + 6, 0])
+    cylinder(d=6, h=22, $fn=40);
+
+    translate([44/2 - 7.5, 57/2 - 6.5, 0])
+    cylinder(d=6, h=22, $fn=40);
+
+    translate([-44/2 + 7.5, 57/2 - 6.5, 0])
+    cylinder(d=6, h=22, $fn=40);
 }
 
 module mock_titan() {

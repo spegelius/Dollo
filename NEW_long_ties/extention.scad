@@ -29,6 +29,7 @@ tip_size = 1.2;
 
 // 120cm extention
 //extention();
+extention(center_d=6.3);
 //extention(center_d=9);
 //extention_center();
 
@@ -54,9 +55,9 @@ tip_size = 1.2;
 //    length=120/2 + 30, stopper_position=30
 //);
 
-extention_center(
-    length=120/2 + 30, stopper_position=30, center_d=9
-);
+//extention_center(
+//    length=120/2 + 30, stopper_position=30, center_d=9
+//);
 
 
 //extention_center(

@@ -527,67 +527,75 @@ module dollo3d() {
     rotate([0, 0, 180])
     debug_bed_frame_340_300();
 
-//    translate([
-//        -unit_len_x/2 + 120,
-//        -unit_len_y/2 - corner_side + 23,
-//        unit_len_z/2
-//    ])
-//    rotate([90, 0, 0])
-//    render()
-//    raspberry_pi_3b_mount();
+    translate([
+        -unit_len_x/2 + 140,
+        -unit_len_y/2 - corner_side + 23,
+        unit_len_z/2
+    ])
+    rotate([90, 0, 0])
+    render()
+    raspberry_pi_3b_mount();
 
-//    translate([
-//        unit_len_x/2 - 40,
-//        -unit_len_y/2 - corner_side + 23,
-//        unit_len_z/2
-//    ])
-//    rotate([90, 0, 0])
-//    render()
-//    adapter_mks_sbase_box();
+    translate([
+        unit_len_x/2 - 10,
+        -unit_len_y/2 - corner_side + 23,
+        unit_len_z/2
+    ])
+    rotate([90, 0, 0])
+    render()
+    adapter_mks_sbase_box();
 
-//    translate([
-//        unit_len_x/2 - 100,
-//        -unit_len_y/2 - corner_side + 23,
-//        unit_len_z/2
-//    ])
-//    rotate([90, 0, 0])
-//    render()
-//    adapter_tl_smoother();
+    translate([
+        unit_len_x/2 - 70,
+        -unit_len_y/2 - corner_side + 23,
+        unit_len_z/2
+    ])
+    rotate([90, 0, 0])
+    render()
+    adapter_tl_smoother();
 
-//    translate([
-//        unit_len_x/2 - 140,
-//        -unit_len_y/2 - corner_side + 23,
-//        unit_len_z/2
-//    ])
-//    rotate([90, 0, 0])
-//    render()
-//    adapter_tl_smoother();
+    translate([
+        unit_len_x/2 - 120,
+        -unit_len_y/2 - corner_side + 23,
+        unit_len_z/2
+    ])
+    rotate([90, 0, 0])
+    render()
+    adapter_tl_smoother();
 
-//    translate([25, -unit_len_y/2 - corner_side + 7, 149])
-//    rotate([0, 90, 90]) {
-//        render()
-//        mock_PSU_360W();
-//
-//        translate([57, 182, -6/2])
-//        rotate([0, 0, 180])
-//        psu_inner_mount_360();
-//    }
+    translate([25, -unit_len_y/2 - corner_side + 7, 149])
+    rotate([0, 90, 90]) {
+        render()
+        mock_PSU_360W();
 
-//    translate([
-//        -unit_len_x/2 + 120,
-//        -unit_len_y/2 - corner_side + 13.5, 24.75
-//    ])
-//    rotate([90, 0, 90])
-//    psu_support_clip_360();
+        translate([57, 182, -6/2])
+        rotate([0, 0, 180])
+        psu_inner_mount_360();
+    }
 
-//    translate([
-//        unit_len_x/2 - 180,
-//        -unit_len_y/2 - corner_side + 23,
-//        unit_len_z/2
-//    ])
-//    rotate([90, 0, 0])
-//    render()
-//    atx_connector_small_mount();
+    translate([
+        -unit_len_x/2 + 120,
+        -unit_len_y/2 - corner_side + 13.5, 24.75
+    ])
+    rotate([90, 0, 90])
+    psu_support_clip_360();
+
+    translate([
+        unit_len_x/2 - 160,
+        -unit_len_y/2 - corner_side + 23,
+        unit_len_z/2
+    ])
+    rotate([90, 0, 0])
+    render()
+    atx_connector_small_mount();
+
+    translate([
+        -unit_len_x/2 + 40,
+        -unit_len_y/2 - corner_side + 23,
+        unit_len_z/2
+    ])
+    rotate([90, 0, 0])
+    adapter_SSR_1048zZD3();
 }
 
 module dollo3d_2() {

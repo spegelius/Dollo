@@ -503,11 +503,17 @@ module corner_90(
     // supports
     if (support==true)
     {
-        translate([0, 30/2, 0])
+        translate([0, 30/2 - 2, 0])
         cylinder(d=4, h=7.5);
 
-        translate([0, -30/2, 0])
+        translate([0, -30/2 + 2, 0])
         cylinder(d=4, h=7.5);
+
+        translate([0, 30/2 - 2, 0])
+        cylinder(d=11, h=0.2);
+
+        translate([0, -30/2 + 2, 0])
+        cylinder(d=11, h=0.2);
     }
 //    %rotate([0, 45, 0])
 //    translate([-2, 0, 11.8])

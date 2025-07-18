@@ -48,8 +48,8 @@ bolt_hole_up = 13;
 //psu_inner_mount_360();
 //psu_support_clip_360();
 
-psu_stabilizer_mount_240();
-//psu_support_clip_240();
+//psu_stabilizer_mount_240();
+psu_support_clip_240();
 
 
 ////// MODULES //////
@@ -526,10 +526,10 @@ module psu_inner_mount_360() {
         cylinder(d=8.2, h=6, center=true, $fn=40);
 
         translate([13.7, -10, -4])
-        _adapter_mount_thread();
+        adapter_mount_thread();
 
         translate([-36.5, 3.4, -4])
-        _adapter_mount_thread();
+        adapter_mount_thread();
     }
 }
 
@@ -618,10 +618,10 @@ module psu_stabilizer_mount_240() {
         cylinder(d=7.5, h=6, center=true, $fn=40);
 
         translate([16.7, -10, -4])
-        _adapter_mount_thread();
+        adapter_mount_thread();
 
         translate([-33.5, 3.4, -4])
-        _adapter_mount_thread();
+        adapter_mount_thread();
     }
 
     %translate([53.2, 187, 3])

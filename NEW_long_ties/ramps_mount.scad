@@ -505,10 +505,10 @@ module ramps_enclosure_mount() {
         cylinder(d=2.8, h=20, center=true, $fn=40);
 
         translate([5.65, 32, -1])
-        _adapter_mount_thread();
+        adapter_mount_thread();
 
         translate([-5.65, -26.5, -1])
-        _adapter_mount_thread();
+        adapter_mount_thread();
     }
 }
 
@@ -649,10 +649,10 @@ module raspberry_pi_3b_mount() {
         }
 
         translate([-6.55, 26, -1])
-        _adapter_mount_thread();
+        adapter_mount_thread();
 
         translate([4.7, -32.5, -1])
-        _adapter_mount_thread();
+        adapter_mount_thread();
     }
 }
 
@@ -784,10 +784,10 @@ module atx_connector_mount() {
         }
 
         translate([28.2, -13.5, -1])
-        _adapter_mount_thread();
+        adapter_mount_thread();
 
         translate([-28.05, 19, -1])
-        _adapter_mount_thread();
+        adapter_mount_thread();
 
     }
 }
@@ -841,10 +841,10 @@ module atx_connector_small_mount() {
         }
 
         translate([-5.55, -20, -1])
-        _adapter_mount_thread();
+        adapter_mount_thread();
 
         translate([5.75, 25.5, -1])
-        _adapter_mount_thread();
+        adapter_mount_thread();
 
     }
 }

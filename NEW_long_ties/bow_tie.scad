@@ -13,9 +13,9 @@ obj_leg= 12;
 $fn = smoothing;
 
 
-//bow_tie();
+bow_tie();
 //bow_tie(brim=true);
-bow_tie_plate_20();
+//bow_tie_plate_20();
 
 
 module bow_tie_master() {
@@ -44,10 +44,11 @@ module bow_tie_master() {
     }
 }
 
-module bow_tie(brim=false){
+module bow_tie(brim=false) {
 
     difference(){
         bow_tie_master();
+
         translate([0, 0, 13 - 3.8])
         rotate([90, 0, 90])
         cylinder(d=2.5, h=50, center=true);
