@@ -635,55 +635,60 @@ module mock_PSU_240W() {
 }
 
 module mock_PSU_360W() {
-    w = 114;
-    h = 215;
-    d = 50;
-    
-    color("silver")
+// P360W12V
+    w = 113.6;
+    h = 214;
+    d = 49.5;
+
+    //color("silver")
     difference() {
-        cube([w,h,d]);
+        cube([w, h, d]);
 
-        translate([1.4,-1,19])
-        cube([w-2*1.4,20,d]);
+        // front cut
+        translate([1.4, -1, 23])
+        cube([w - 2*1.4, 19, d]);
 
-        translate([1.4,-1,5])
-        cube([12,20,d]);
+        translate([1.4, -1, 7])
+        cube([17, 19, d]);
 
-        translate([w+1,32,11])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        // right side screw holes
+        translate([w + 1, 32, 11])
+        rotate([0, -90, 0])
+        cylinder(d=4, h=10, $fn=20);
 
-        translate([w+1,32,11+25])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w + 1, 32, d - 13])
+        rotate([0, -90, 0])
+        cylinder(d=4, h=10, $fn=20);
 
-        translate([w+1,32+150,11])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w + 1, 32 + 151, 11])
+        rotate([0, -90, 0])
+        cylinder(d=4, h=10, $fn=20);
 
-        translate([w+1,32+150,11+25])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w + 1, 32 + 151, d - 13])
+        rotate([0, -90, 0])
+        cylinder(d=4, h=10, $fn=20);
 
-        translate([9,32,11])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        // left side screw holes
+        #translate([9, 32, 11])
+        rotate([0, -90, 0])
+        cylinder(d=4, h=18, $fn=20);
 
-        translate([9,32+150,11])
-        rotate([0,-90,0])
-        cylinder(d=3,h=10,$fn=20);
+        #translate([9, 32 + 151, 11])
+        rotate([0, -90, 0])
+        cylinder(d=4, h=18, $fn=20);
 
-        translate([31.5,32,-0.1])
-        cylinder(d=3,h=10,$fn=20);
+        // bottom holes
+        translate([32, 32, -0.1])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([w-31.5,32,-0.1])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w - 32, 32, -0.1])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([31.5,32+150,-0.1])
-        cylinder(d=3,h=10,$fn=20);
+        translate([32, 32 + 151, -0.1])
+        cylinder(d=3, h=10, $fn=20);
 
-        translate([w-31.5,32+150,-0.1])
-        cylinder(d=3,h=10,$fn=20);
+        translate([w - 32, 32 + 151, -0.1])
+        cylinder(d=3, h=10, $fn=20);
     }
 }
 
