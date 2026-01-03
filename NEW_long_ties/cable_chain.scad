@@ -22,8 +22,9 @@ use <cable_clip.scad>;
 //_cable_chain_mount2();
 //_chain_barrel();
 
-cable_chain_link();
+//cable_chain_link();
 //cable_chain_link_heavy();
+//cable_chain_link_heavy2();
 
 //cable_chain_link_cliplock();
 //cable_chain_link_cliplock(holes=true);
@@ -34,7 +35,7 @@ cable_chain_link();
 //chain_link_plate(x=2, y=2);
 
 //chain_motor_mount_y_right();
-//chain_motor_mount_y_left();
+chain_motor_mount_y_left();
 //chain_motor_mount_x();
 
 //chain_frame_mount_right();
@@ -45,6 +46,7 @@ cable_chain_link();
 //chain_link_mount_4();
 
 //cable_chain_support(200, arms=3);
+//cable_chain_support(220, arms=3);
 //cable_chain_support(340, arms=3);
 //cable_chain_support_arm();
 
@@ -231,7 +233,7 @@ module _cable_chain_mount2() {
     }
 }
 
-module _chain_barrel(heavy=false, infill=true) {
+module _chain_barrel(heavy=0, infill=true) {
     difference() {
         union() {
             translate([0, 0, 12])
@@ -243,7 +245,7 @@ module _chain_barrel(heavy=false, infill=true) {
                     cube([25, 8, 1], center=true);
 
                     translate([0, 0.5, 2])
-                    cube([25, 7, 2], center=true);
+                    cube([25, 7, heavy], center=true);
                 } else {
                     translate([0, 1, 1 - 0.1/2])
                     cube([25, 8, 0.1], center=true);
@@ -259,7 +261,7 @@ module _chain_barrel(heavy=false, infill=true) {
 
                 if (heavy) {
                     translate([0, 0.5, 14])
-                    cube([25, 7, 2], center=true);
+                    cube([25, 7, heavy], center=true);
                 }
             }
             cable_chain_barrel();
@@ -267,13 +269,13 @@ module _chain_barrel(heavy=false, infill=true) {
         if (heavy && infill) {
             // infill
             translate([0, 2.5, 13.5])
-            cube([30, 0.1, 2], center=true);
+            cube([30, 0.1, heavy], center=true);
 
             translate([0, 0.5, 13.5])
-            cube([30, 0.1, 2], center=true);
+            cube([30, 0.1, heavy], center=true);
 
             translate([0, -1.5, 13.5])
-            cube([30, 0.1, 2], center=true);
+            cube([30, 0.1, heavy], center=true);
         }
 
         // rounding
@@ -366,10 +368,21 @@ module cable_chain_link_heavy(
     holes=false, studs=false
 ) {
     cable_chain_link(
-        brim=brim, infill=infill, heavy=true,
+        brim=brim, infill=infill, heavy=1,
         holes=holes, studs=holes
     );
 }
+
+module cable_chain_link_heavy2(
+    brim=true, infill=true,
+    holes=false, studs=false
+) {
+    cable_chain_link(
+        brim=brim, infill=infill, heavy=2,
+        holes=holes, studs=holes
+    );
+}
+
 
 module cable_chain_link_cliplock(
     brim=true, holes=false, studs=false
@@ -501,7 +514,7 @@ module chain_motor_mount_y_left() {
 
     module _cable_chain_end2() {
         union() {
-            _chain_barrel(heavy=true);
+            _chain_barrel(heavy=0);
             _cable_chain_mount2();
         }
     }
@@ -664,22 +677,31 @@ module chain_motor_mount_y_left() {
 
     module _motor_clip() {
         rotate([0, 0, 45])
-        union() {
-            _cable_shroud_motor_clip_body(h=h);
-            _tie_mount(h);
+        difference() {
+            union() {
+                _cable_shroud_motor_clip_body(h=h);
+                _tie_mount(h);
+            }
+
+            translate([0, -30, -10/2 - 7])
+            chamfered_cube(
+                16.5, 30, 10, 1, center=true
+            );
         }
     }
 
-
-
     union() {
         _motor_clip();
-
         _y_to_x_arm();
     }
 }
 
 module chain_motor_mount_x() {
+    chain_motor_mount_y_right();
+}
+
+// don't use
+module chain_motor_mount_x_old() {
     
     h = 17.5;
 
@@ -758,24 +780,25 @@ module chain_frame_mount_right() {
             cube([2, 4, 20], center=true);
 
             translate(
-                [20 + 1/2, -30 + 15/2,
+                [17 + 1/2, -30 + 15/2,
                  -25/2 + 10/2])
             cube([1, 15, 10], center=true);
         }
 
-        translate([20 + 25/2, -30, -25/2 + 6/2])
-        rotate([90, 0, 180]) {
-            _chain_barrel();
-            _cable_chain_mount2();
+        intersection() {
+            translate([17 + 25/2, -30, -25/2 + 6/2])
+            rotate([90, 0, 180]) {
+                _chain_barrel();
+                _cable_chain_mount2();
+            }
+
+            translate([0, 0, 100/2 - 25/2])
+            cube([200, 200, 100], center=true);
         }
 
-        translate([20 + 25 - 4.5, -30 + 6.5, -0.9])
-        rotate([0, 90, 0])
-        cylinder(d=4, h=2, center=true, $fn=50);
+        translate([16.2 + 25/2, -16.5, -25/2 + 8/2])
+        cube([25, 1, 8], center=true);
 
-        translate([20 + 4.5, -30 + 6.5, -0.9])
-        rotate([0, 90, 0])
-        cylinder(d=4, h=2, center=true, $fn=50);
     }
 }
 
