@@ -17,21 +17,28 @@ mounting_diamiter = 12;
 top_diamiter = 17;
 arm_thickness = 5;
 long_tie_len = .9*35;
-snap_location = 47 - 6.3 + long_tie_len/2;
+snap_location = 44 - 6.3 + long_tie_len/2;
 natch_height = 6;
 
 $fn=60;
 
 ////// VIEW //////
+//assembly_hot_end_mount(hot_end="E3D_v6", fan_duct="radial");
 //view_proper();
 //debug_mount();
 //debug_radial_fan();
 
-do_mount();
-//do_mount(M4=true);
-//mount();
-//mount(M4=true);
+//do_hot_end_mounts();
+//do_hot_end_mounts(M4=true);
+//hot_end_mount_1();
+//hot_end_mount_2();
+//hot_end_mount_1(M4=true);
+hot_end_mount_2(M4=true);
+//hot_end_mount_x_slide();
+
 //clamp();
+
+
 
 //rotate([0, 180, 0])
 //clamp_shroud_mount();
@@ -48,6 +55,7 @@ do_mount();
 //fan_duct_radial_e3dvolcano();
 
 //cable_pcb_mount_clamp();
+//cable_pcb_mount_top();
 
 
 ////// MODULES //////
@@ -59,68 +67,55 @@ module motor_mount_tie(height=15){
 }
 
 module y_mount_added(M4=false){
-    difference() {
-        union() {
-            motor_mount_tie();
+    union() {
+        motor_mount_tie();
 
-            translate([0, -29.99, 69])
-            rotate([90, 90, 0])
-            long_tie(11.5);
+        translate([0, -29.99, 69])
+        rotate([90, 90, 0])
+        long_tie(11.5);
 
+        translate([
+            1, -4 + ((10 - arm_thickness)/2),
+            hotend_depth/2
+        ])
+        cube([
+            25, arm_thickness, hotend_depth
+        ], center=true);
+
+        translate(
+            [1, -15, hotend_depth - (natch_height)]
+        )
+        cube([
+            25, 30, natch_height * 2
+        ], center=true);
+
+        if (M4) {
             translate([
-                1, -4 + ((10 - arm_thickness)/2),
-                hotend_depth/2
+                -4, -14.8, hotend_depth - 17.75
             ])
-            cube([
-                25, arm_thickness, hotend_depth
-            ], center=true);
+            rotate([-45, 0, 0])
+            cube([15, 32.0, 11], center=true);
 
-            translate(
-                [1, -15, hotend_depth - (natch_height)]
-            )
-            cube([
-                25, 30, natch_height * 2
-            ], center=true);
-
-            if (M4) {
-                translate([
-                    -4, -14.8, hotend_depth - 17.75
-                ])
-                rotate([-45, 0, 0])
-                cube([15, 32.0, 11], center=true);
-
-                translate([-4, -8, hotend_depth - 16.75])
-                cube([15, 10, 10], center=true);
-            } else {
-                translate([
-                    -4, -14.8, hotend_depth - 17.75
-                ])
-                rotate([-45, 0, 0])
-                cube([15, 32.0, 11], center=true);
-            }
-
-            translate([-4, -5, hotend_depth - 27])
-            cube([
-                15, 5, natch_height * 2
-            ], center=true);
-
-            translate([1, 1, 0])
-            cube([25, 8, 5], center=true);
-
-            translate([-11.5, 1, 65])
-            cube([26, 8, 28]);
+            translate([-4, -8, hotend_depth - 16.75])
+            cube([15, 10, 10], center=true);
+        } else {
+            translate([
+                -4, -14.8, hotend_depth - 17.75
+            ])
+            rotate([-45, 0, 0])
+            cube([15, 32.0, 11], center=true);
         }
-        translate([-12, 9.01, 86])
-        rotate([90, 0, 0])
-        rotate([0, 90, 0])
-        rotate([0, 0, 90])
-        male_dovetail(15);
 
-        translate([-12, 9.01, 86])
-        rotate([90, 0, 0])
-        rotate([0, 90, 0])
-        rotate([0, 0, -90])
-        male_dovetail(15);
+        translate([-4, -5, hotend_depth - 27])
+        cube([
+            15, 5, natch_height * 2
+        ], center=true);
+
+        translate([1, 1, 0])
+        cube([25, 8, 5], center=true);
+
+        translate([-11.5, 1, 60])
+        cube([26, 8, 33]);
     }
 }
 
@@ -169,14 +164,26 @@ module y_mount_taken(M4=false){
     rotate([0, -90, 0])
     cylinder(h=30, d=bolt_hole_dia, center=true, $fn=20);
 
-	translate([0, -2, hotend_depth-natch_height + 3])
+	translate([0, -2, hotend_depth - natch_height + 2])
     rotate([0, -90, 0])
     cylinder(h=30, d=bolt_hole_dia, center=true, $fn=20);
 
     dove_end();
+
+    // fan mount
+    translate([-12, 9.01, 86])
+    rotate([90, 0, 0])
+    rotate([0, 90, 0])
+    rotate([0, 0, 90])
+    male_dovetail(15);
+
+    // slide hole
+    translate([-10.5, 10.2, 70])
+    rotate([0, -90, 180])
+    male_dovetail(11);
 }
 
-module mount(M4=false){
+module _mount(M4=false){
 	difference(){
 		rotate([0, -90, 0]){
 			intersection(){
@@ -202,6 +209,54 @@ module mount(M4=false){
             hotend_depth
         ], center=true);
 	}
+}
+
+module hot_end_mount_1(M4=false) {
+
+    difference() {
+        _mount(M4=M4);
+
+        translate([-71, -2, -12.5])
+        hull() {
+            cylinder(d=6.5, h=1.5, $fn=30);
+            cylinder(d=3, h=3.25, $fn=30);
+        }
+
+        translate([-69, -26, -12.5])
+        hull() {
+            cylinder(d=6.5, h=1.5, $fn=30);
+            cylinder(d=3, h=3.25, $fn=30);
+        }
+
+    }
+}
+
+module hot_end_mount_2(M4=false) {
+
+    difference() {
+        mirror([0, 1, 0])
+        _mount(M4=M4);
+
+        translate([-71, 2, -12.5])
+        rotate([0, 0, 30])
+        M3_nut(4);
+
+        translate([-69, 26, -12.5])
+        M3_nut(4);
+    }
+}
+
+module hot_end_mount_x_slide() {
+    difference() {
+        long_bow_tie(20.5);
+
+        translate([0, 0, 10/2 + 5])
+        cube([30, 30, 10], center=true);
+
+        translate([0, 0, 10/2 + 4.4])
+        cube([30, 9, 10], center=true);
+
+    }
 }
 
 module _clamp_base(l=15) {
@@ -927,13 +982,12 @@ module fan_duct_radial_e3dvolcano(
     fan_duct_radial_supports();
 }
 
-module do_mount(M4=false) {
-    translate([0, 10, 25/2 - 1])
-    mount(M4=M4);
+module do_hot_end_mounts(M4=false) {
+    translate([0, -10, 25/2 - 1])
+    hot_end_mount_1(M4=M4);
 
-    translate([0, -65, 25/2 - 1])
-    mirror([0, 1, 0])
-    mount(M4=M4);
+    translate([0, 10, 25/2 - 1])
+    hot_end_mount_2(M4=M4);
 }
 
 module cable_pcb_mount() {
@@ -1026,59 +1080,70 @@ module cable_pcb_mount_clamp() {
     }
 }
 
-module view_proper() {
+module cable_pcb_mount_top() {
+    difference() {
+        union() {
 
-    x_pos = -110;
-    translate([0, -x_pos + 10.1, -449.7])
-    frame_mockup(bed_angle=45, units_x=2, units_y=2, units_z=2, x_pos=x_pos);
-    
-    //hot_end = "E3D_v6";
-    hot_end = "E3D_Volcano";
-    
-    //fan_duct = "axial";
-    fan_duct = "radial";
+            translate([-22, 0, 0])
+            rotate([0, 0, -90])
+            cable_pcb_mount();
+
+            translate([-18, -53, 3/2])
+            cube([13, 30, 3], center=true);
+
+            hull() {
+                translate([-18, -49, 3/2])
+                cube([13, 1, 3], center=true);
+
+                translate([-14, -40, 3/2])
+                cube([21, 1, 3], center=true);
+            }
+
+            hull() {
+                translate([-18, -37, 3/2])
+                cube([4, 1, 3], center=true);
+
+                translate([-18, -45, 11/2])
+                cube([4, 1, 11], center=true);
+
+            }
+
+            translate([-18, -55.5, 11/2])
+            cube([13, 25, 11], center=true);
+        }
+
+        translate([-18, -55.5 - 15, 11])
+        rotate([-90, 0, 0])
+        male_dovetail(25);
+    }
+}
+
+module assembly_hot_end_mount(hot_end="E3D_v6", fan_duct="radial") {
+//hot_end = "E3D_Volcano" or "E3D_v6";
+//fan_duct = "axial" or "radial";
 
     rotate([0, -90, 0])
     render()
-    mount();
+    hot_end_mount_1();
 
-    rotate([0, -90, 0])
-    mirror([0, 0, 1])
+    rotate([0, -90, 180])
     render()
-    mount();
+    hot_end_mount_2();
 
-    %translate([0, 1, -28.7])
-    rotate([-90, 0, 0])
-    render()
-    motor_mount();
+    translate([0, 5.2, -70])
+    rotate([0, 90, 90])
+    hot_end_mount_x_slide();
 
-    %translate([0, 49.2, -28.7])
-    rotate([-90, 0, 180])
-    render()
-    motor_mount();
-
-    %translate([0, 25.1, -42.2])
-    render()
-    do_rack(fast_render=true);
+//    translate([0, -4, 3.3])
+//    rotate([180, 0, 0])
+//    clamp();
 
     //%translate([29, -13.5, -120])
     //proximity_sensor(25.5, 5);
 
     //translate([29, -13.5, -90])
     //prox_sensor_clamp();
-    
-//    %translate([50, 40.1, -76.2])
-//    rotate([0, -90, 0])
-//    extention(support=false);
-//
-//    %translate([-60, -25, -76.2 - 43.5])
-//    rotate([-90, 0, 0])
-//    extention(support=false);
 
-    translate([0, -4, 3.3])
-    rotate([180, 0, 0])
-    clamp();
-    
 //    translate([-10, -40, -62])
 //    rotate([-90, 0, 0])
 //    leveling_switch_clamp();
@@ -1118,8 +1183,37 @@ module view_proper() {
     }
 }
 
+module view_proper() {
+
+    hot_end = "E3D_v6";
+    //hot_end = "E3D_Volcano";
+
+    //fan_duct = "axial";
+    fan_duct = "radial";
+
+    assembly_hot_end_mount(hot_end=hot_end, fan_duct=fan_duct);
+
+    %translate([0, 1, -28.7])
+    rotate([-90, 0, 0])
+    render()
+    motor_mount();
+
+    %translate([0, 49.2, -28.7])
+    rotate([-90, 0, 180])
+    render()
+    motor_mount();
+
+    %translate([0, 25.1, -42.2])
+    render()
+    do_rack(fast_render=true);
+
+    %translate([0, 25.1, -61.2])
+    rotate([0, -90, 0])
+    extention(support=false);
+}
+
 module debug_mount() {
-    mount(M4=true);
+    hot_end_mount_1(M4=true);
 
     translate([-127.6, -13, 0])
     rotate([0, 90, 0])
