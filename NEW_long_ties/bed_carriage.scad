@@ -216,7 +216,7 @@ module bed_rail_frame_mount() {
     }
 }
 
-module bed_rail_frame_mount_top() {
+module bed_rail_frame_mount_top(render_threads=true) {
     difference() {
         union() {
             _bed_rail_frame_mount();
@@ -227,10 +227,15 @@ module bed_rail_frame_mount_top() {
         cylinder(d=28, h=7, $fn=40);
 
         // screw trap thread
-        translate([0, 0, 4])
-        v_screw(
-            screw_d=34, pitch=1, h=6, direction=0, steps=100
-        );
+        if (render_threads) {
+            translate([0, 0, 4])
+            v_screw(
+                screw_d=34, pitch=1, h=6, direction=0, steps=100
+            );
+        } else {
+            translate([0, 0, 4])
+            cylinder(d=34, h=6, $fn=30);
+        }
     }
 }
 
