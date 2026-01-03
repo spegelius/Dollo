@@ -13,8 +13,10 @@ use <z_coupler.scad>;
 //z_motor_mount_old();
 //z_motor_mount();
 //z_motor_mount(supports=false);
-z_motor_support_base();
-//z_motor_support_nut();
+z_motor_support_base(render_threads=true);
+//z_motor_support_base(render_threads=false);
+//z_motor_support_nut(render_threads=true);
+//z_motor_support_nut(render_threads=false);
 
 
 module debug() {
@@ -205,7 +207,7 @@ module z_motor_mount(supports=true) {
     z_screw_motor_flex_coupler(fast_render=true);
 }
 
-module z_motor_support_base() {
+module z_motor_support_base(render_threads=true) {
     difference() {
         union() {
             translate([0, 0, 8/2])
@@ -213,16 +215,23 @@ module z_motor_support_base() {
                 30, 40, 8, 4, center=true
             );
 
-            translate([0, 0, 7])
-            v_screw(
-                h=11,
-                screw_d=20,
-                pitch=1.5,
-                direction=0,
-                steps=70,
-                depth=0.3,
-                chamfer=true
-            );
+            if (render_threads) {
+                translate([0, 0, 7])
+                v_screw(
+                    h=11,
+                    screw_d=20,
+                    pitch=1.9,
+                    direction=0,
+                    steps=70,
+                    depth=0.3,
+                    chamfer=true
+                );
+            } else {
+                translate([0, 0, 5])
+                chamfered_cylinder(
+                    20, 13, 1, $fn=30
+                );
+            }
         }
 
         rotate([90, 0, 0])
@@ -230,21 +239,25 @@ module z_motor_support_base() {
     }
 }
 
-module z_motor_support_nut() {
+module z_motor_support_nut(render_threads=true) {
     ridges = 30;
 
     difference() {
         chamfered_cylinder(40, 10, 1.2, center=true, $fn=50);
 
-        translate([0, 0, -6])
-        v_screw(
-            h=12,
-            screw_d=20.3,
-            pitch=1.5,
-            direction=0,
-            steps=70,
-            depth=0.3
-        );
+        if (render_threads) {
+            translate([0, 0, -6])
+            v_screw(
+                h=12,
+                screw_d=20.4,
+                pitch=1.9,
+                direction=0,
+                steps=70,
+                depth=0.3
+            );
+        } else {
+            cylinder(d=20.3, h=40, center=true, $fn=30);
+        }
 
         for(i = [1:ridges]) {
             rotate([0, 0, 360/ridges*i])
