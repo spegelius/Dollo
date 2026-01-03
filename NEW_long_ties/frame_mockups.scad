@@ -13,6 +13,9 @@ use <rack.scad>;
 use <motor_mount_small.scad>;
 use <cable_chain.scad>;
 use <x_spacer.scad>;
+use <hot_end_mount.scad>;
+
+use <../../PrinterParts/GreenBoy/mockups.scad>;
 
 
 corner_side = 60;
@@ -26,8 +29,8 @@ unit = 120;
 //_stabilizers_to_stl(360, 360, 670, 150);
 
 
-dollo3d();
-//dollo3d_2();
+//dollo3d();
+dollo3d_2();
 
 
 module _side(length) {
@@ -404,11 +407,11 @@ module _frame_mockup(
 
         translate([0, 0, -60])
         render()
-        z_motor_support_base();
+        z_motor_support_base(render_threads=false);
 
         translate([0, 0, -46])
         render()
-        z_motor_support_nut();
+        z_motor_support_nut(render_threads=false);
 
         render()
         translate([-29, 0, unit_len_z - 90])
@@ -418,28 +421,28 @@ module _frame_mockup(
         translate([0, 0, unit_len_z])
         rotate([0, 180, 0])
         render()
-        bed_rail_frame_mount_top();
+        bed_rail_frame_mount_top(render_threads=false);
     }
 
-    translate([-unit_len_x/2 - 45, 0, 90])
-    rotate([0, 0, 180])
-    _z_stuff();
-
-    translate([unit_len_x/2 + 45, 0, 90])
-    _z_stuff();
-
-    translate([0, -unit_len_y/2 - corner_side + 37, unit_len_z/2])
-    rotate([90, 0, 0])
-    render()
-    middle_panel(unit_len_y + 2*corner_side);
-
-    translate([
-        -unit_len_x/2 - corner_side,
-        unit_len_y/2 + corner_side
-    ])
-    rotate([180, 0, 0])
-    render()
-    leg_small_adjustable();
+//    translate([-unit_len_x/2 - 45, 0, 90])
+//    rotate([0, 0, 180])
+//    _z_stuff();
+//
+//    translate([unit_len_x/2 + 45, 0, 90])
+//    _z_stuff();
+//
+//    translate([0, -unit_len_y/2 - corner_side + 37, unit_len_z/2])
+//    rotate([90, 0, 0])
+//    render()
+//    middle_panel(unit_len_y + 2*corner_side);
+//
+//    translate([
+//        -unit_len_x/2 - corner_side,
+//        unit_len_y/2 + corner_side
+//    ])
+//    rotate([180, 0, 0])
+//    render()
+//    leg_small_adjustable(render_threads=false);
 }
 
 module _y_motors(unit_len_x, unit_len_z) {
@@ -473,17 +476,170 @@ module dollo3d() {
     unit_len_z = units_z*unit;
     z = 2*corner_side + unit_len_z - 30;
 
+    x_pos = 10;
+
     _frame_mockup(
-        units_x, units_y, units_z, x_pos=10, bed_angle=0,
+        units_x, units_y, units_z, x_pos=x_pos, bed_angle=0,
         stabilizers=150
     );
 
-    // X
-    translate([0, 25, 837.5])
+// ----------- X ------------
+    translate([0, x_pos + 15, z + 77.5])
     rotate([0, 0, 180])
     assembly_rack();
 
     translate([0, -25, 837.5 + 12.7])
+    rotate([90, -45, 0])
+    chain_motor_mount_y_right();
+
+    translate([-0.2, x_pos + 23, z + 125.5])
+    rotate([0, 180, 0])
+    cable_pcb_mount_top();
+
+    render()
+    translate([
+        unit_len_x/2, 25,
+        unit_len_z + 124 + 24.5
+    ])
+    rotate([90, 0, 90])
+    x_spacer(supports=false);
+//
+//    render()
+//    translate([210, -23.75, unit_len_z + 124 + 10.2])
+//    rotate([0, 0, 90])
+//    assembly_chainlink(15);
+//
+//    %translate([20, -38, unit_len_z + 124 + 10.4])
+//    rotate([-90 + 25, 0, 0])
+//    cable_chain_support(340, arms=3);
+//
+//    translate([22.5, 10, unit_len_z + 124 + 6.4])
+//    rotate([90, 0, -90])
+//    cable_chain_support_arm();
+
+// ----------- Y -----------
+//    translate([
+//        unit_len_x/2 + 45,
+//        25, unit_len_z + 124
+//    ])
+//    rotate([0, 0, -90])
+//    assembly_rack();
+//
+//    translate([
+//        unit_len_x/2 + 85,
+//        25, unit_len_z + 124 + 12.7
+//    ])
+//    rotate([90, 0, -90])
+//    chain_motor_mount_y_left();
+
+// ----------- Bed ---------
+//    translate([0, 20, unit_len_z])
+//    rotate([0, 0, 180])
+//    debug_bed_frame_340_300();
+
+// ----------- Hotend ------------
+//translate([0, x_pos + 40, z + 119.3])
+//rotate([0, 0, 180])
+//assembly_hot_end_mount(hot_end="E3D_v6", fan_duct="radial");
+
+translate([-3.8, x_pos + 64.4, z + 60.1])
+rotate([0, 0, 180])
+greenboy_mockup_dollo3d();
+
+// ------------ Electronics etc. -------------
+//    translate([
+//        -unit_len_x/2 + 140,
+//        -unit_len_y/2 - corner_side + 23,
+//        unit_len_z/2
+//    ])
+//    rotate([90, 0, 0])
+//    render()
+//    raspberry_pi_3b_mount();
+//
+//    translate([
+//        unit_len_x/2 - 10,
+//        -unit_len_y/2 - corner_side + 23,
+//        unit_len_z/2
+//    ])
+//    rotate([90, 0, 0])
+//    render()
+//    adapter_mks_sbase_box();
+
+//    translate([
+//        unit_len_x/2 - 70,
+//        -unit_len_y/2 - corner_side + 23,
+//        unit_len_z/2
+//    ])
+//    rotate([90, 0, 0])
+//    render()
+//    adapter_tl_smoother();
+//
+//    translate([
+//        unit_len_x/2 - 120,
+//        -unit_len_y/2 - corner_side + 23,
+//        unit_len_z/2
+//    ])
+//    rotate([90, 0, 0])
+//    render()
+//    adapter_tl_smoother();
+//
+//    translate([25, -unit_len_y/2 - corner_side + 7, 149])
+//    rotate([0, 90, 90]) {
+//        render()
+//        mock_PSU_360W();
+//
+//        translate([57, 182, -6/2])
+//        rotate([0, 0, 180])
+//        psu_inner_mount_360();
+//    }
+
+//    translate([
+//        -unit_len_x/2 + 120,
+//        -unit_len_y/2 - corner_side + 13.5, 24.75
+//    ])
+//    rotate([90, 0, 90])
+//    psu_support_clip_360();
+//
+//    translate([
+//        unit_len_x/2 - 160,
+//        -unit_len_y/2 - corner_side + 23,
+//        unit_len_z/2
+//    ])
+//    rotate([90, 0, 0])
+//    render()
+//    atx_connector_small_mount();
+//
+//    translate([
+//        -unit_len_x/2 + 40,
+//        -unit_len_y/2 - corner_side + 23,
+//        unit_len_z/2
+//    ])
+//    rotate([90, 0, 0])
+//    adapter_SSR_1048ZD3();
+}
+
+module dollo3d_2() {
+    units_x = 2;
+    units_y = 2;
+    units_z = 570/unit;
+
+    unit_len_x = units_x*unit;
+    unit_len_y = units_y*unit;
+    unit_len_z = units_z*unit;
+    z = 2*corner_side + unit_len_z - 30;
+
+    _frame_mockup(
+        units_x, units_y, units_z, x_pos=10, bed_angle=0
+    );
+
+    x_pos = 10;
+
+    // X
+    translate([0, x_pos + 15, z + 77.5])
+    rotate([0, 0, 180])
+    assembly_rack();
+
+    translate([0, -25, z + 90.2])
     rotate([90, -45, 0])
     chain_motor_mount_y_right();
 
@@ -495,10 +651,10 @@ module dollo3d() {
     rotate([90, 0, 90])
     x_spacer(supports=false);
 
-    render()
-    translate([210, -23.75, unit_len_z + 124 + 10.2])
-    rotate([0, 0, 90])
-    assembly_chainlink(15);
+//    render()
+//    translate([210, -23.75, unit_len_z + 124 + 10.2])
+//    rotate([0, 0, 90])
+//    assembly_chainlink(15);
 
     %translate([20, -38, unit_len_z + 124 + 10.4])
     rotate([-90 + 25, 0, 0])
@@ -523,144 +679,68 @@ module dollo3d() {
     rotate([90, 0, -90])
     chain_motor_mount_y_left();
 
-    translate([0, 20, unit_len_z])
+    // ----------- Hotend ------------
+    translate([0, x_pos + 40, z + 119.3])
     rotate([0, 0, 180])
-    debug_bed_frame_340_300();
-
-    translate([
-        -unit_len_x/2 + 140,
-        -unit_len_y/2 - corner_side + 23,
-        unit_len_z/2
-    ])
-    rotate([90, 0, 0])
-    render()
-    raspberry_pi_3b_mount();
-
-    translate([
-        unit_len_x/2 - 10,
-        -unit_len_y/2 - corner_side + 23,
-        unit_len_z/2
-    ])
-    rotate([90, 0, 0])
-    render()
-    adapter_mks_sbase_box();
-
-    translate([
-        unit_len_x/2 - 70,
-        -unit_len_y/2 - corner_side + 23,
-        unit_len_z/2
-    ])
-    rotate([90, 0, 0])
-    render()
-    adapter_tl_smoother();
-
-    translate([
-        unit_len_x/2 - 120,
-        -unit_len_y/2 - corner_side + 23,
-        unit_len_z/2
-    ])
-    rotate([90, 0, 0])
-    render()
-    adapter_tl_smoother();
-
-    translate([25, -unit_len_y/2 - corner_side + 7, 149])
-    rotate([0, 90, 90]) {
-        render()
-        mock_PSU_360W();
-
-        translate([57, 182, -6/2])
-        rotate([0, 0, 180])
-        psu_inner_mount_360();
-    }
-
-    translate([
-        -unit_len_x/2 + 120,
-        -unit_len_y/2 - corner_side + 13.5, 24.75
-    ])
-    rotate([90, 0, 90])
-    psu_support_clip_360();
-
-    translate([
-        unit_len_x/2 - 160,
-        -unit_len_y/2 - corner_side + 23,
-        unit_len_z/2
-    ])
-    rotate([90, 0, 0])
-    render()
-    atx_connector_small_mount();
-
-    translate([
-        -unit_len_x/2 + 40,
-        -unit_len_y/2 - corner_side + 23,
-        unit_len_z/2
-    ])
-    rotate([90, 0, 0])
-    adapter_SSR_1048zZD3();
-}
-
-module dollo3d_2() {
-    units_x = 2;
-    units_y = 2;
-    units_z = 570/unit;
-
-    unit_len_x = units_x*unit;
-    unit_len_y = units_y*unit;
-    unit_len_z = units_z*unit;
-    z = 2*corner_side + unit_len_z - 30;
-
-    _frame_mockup(
-        units_x, units_y, units_z, x_pos=10, bed_angle=0
-    );
+    assembly_hot_end_mount(hot_end="E3D_v6", fan_duct="axial");
 
     //translate([0, -unit_len_y/2, 17])
     //mock_atx_psu();
 
-    translate([
-        -20, -unit_len_y/2 - corner_side,
-        210
-    ])
-    rotate([90, 0, 0])
-    render()
-    atx_connector_mount();
-
-    translate([
-        unit_len_x/2 - 20, -unit_len_y/2 - corner_side - 6,
-        220
-    ])
-    rotate([90, 0, 0])
-    render()
-    ramps_enclosure();
-
-    translate([
-        unit_len_x/2 - 13.5, -unit_len_y/2 - corner_side,
-        221         
-    ])
-    rotate([90, 0, 0])
-    render()
-    ramps_enclosure_mount();
-
-    translate([
-        -unit_len_x/2 + 2, -unit_len_y/2 - corner_side - 10,
-        221
-    ])
-    rotate([90, 0, 0])
-    render()
-    raspberry_pi_3b_mount();
+//    translate([
+//        -20, -unit_len_y/2 - corner_side,
+//        210
+//    ])
+//    rotate([90, 0, 0])
+//    render()
+//    atx_connector_mount();
+//
+//    translate([
+//        unit_len_x/2 - 20, -unit_len_y/2 - corner_side - 6,
+//        220
+//    ])
+//    rotate([90, 0, 0])
+//    render()
+//    ramps_enclosure();
+//
+//    translate([
+//        unit_len_x/2 - 13.5, -unit_len_y/2 - corner_side,
+//        221
+//    ])
+//    rotate([90, 0, 0])
+//    render()
+//    ramps_enclosure_mount();
+//
+//    translate([
+//        -unit_len_x/2 + 2, -unit_len_y/2 - corner_side - 10,
+//        221
+//    ])
+//    rotate([90, 0, 0])
+//    render()
+//    raspberry_pi_3b_mount();
 
     // TODO
     //render()
-    translate([-68.5, -unit_len_y/2 - 70, 136.3])
-    rotate([90, 90, 0])
-    mock_PSU_240W();
+//    translate([-68.5, -unit_len_y/2 - 70, 136.3])
+//    rotate([90, 90, 0])
+//    mock_PSU_240W();
 
-    translate([118.5, -unit_len_y/2 - 67.5, 83])
-    rotate([90, -90, 0])
-    psu_stabilizer_mount_240();
+//    translate([118.5, -unit_len_y/2 - 67.5, 83])
+//    rotate([90, -90, 0])
+//    psu_stabilizer_mount_240();
 
-    translate([
-        -unit_len_x/2 + 120,
-        -unit_len_y/2 - corner_side + 13.5, 24.75
-    ])
-    rotate([90, 0, -90])
-    psu_support_clip_240();
+//    translate([
+//        -unit_len_x/2 + 120,
+//        -unit_len_y/2 - corner_side + 13.5, 24.75
+//    ])
+//    rotate([90, 0, -90])
+//    psu_support_clip_240();
+
+//    %translate([20, -38, unit_len_z + 124 + 10.4])
+//    rotate([-90 + 25, 0, 0])
+//    cable_chain_support(220, arms=3);
+//
+//    translate([22.5, 10, unit_len_z + 124 + 6.4])
+//    rotate([90, 0, -90])
+//    cable_chain_support_arm();
 }

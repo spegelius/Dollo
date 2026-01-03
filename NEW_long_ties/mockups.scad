@@ -20,6 +20,7 @@ atx_psu_height = 86 + 2*slop;
 //proximity_sensor();
 
 //e3dv6();
+//e3d_v6_nozzle();
 //e3d_Volcano();
 //prometheus();
 //bed_mk2();
@@ -36,6 +37,10 @@ atx_psu_height = 86 + 2*slop;
 //mock_5015_fan();
 //mock_atx_psu();
 //mock_tl_smoother();
+//mock_humidity_meter();
+//mock_humidity_meter_round();
+//mock_ptfe_pc4m10();
+//mock_ptfe_pc4m6();
 
 
 ////// MODULES //////
@@ -76,14 +81,25 @@ module proximity_sensor(nut_position=30, nut_gap=10) {
     cylinder(d=prox_sensor_washer_dia, h=1.5);
 }
 
-module _e3d_nozzle() {
-    cylinder(d1=1, d2=3.5, h=2, $fn=30);
+module e3d_v6_nozzle() {
+    difference() {
+        union() {
+            cylinder(d1=1, d2=4.5, h=2, $fn=30);
 
-    translate([0, 0, 2])
-    cylinder(d=7, h=2.5, $fn=6);
+            translate([0, 0, 2])
+            cylinder(d=8, h=3, $fn=6);
 
-    translate([0, 0, 4.5])
-    cylinder(d=4, h=2, $fn=30);
+            translate([0, 0, 2])
+            cylinder(d=6, h=10.5, $fn=30);
+        }
+
+        cylinder(d=0.4, h=30, center=true, $fn=10);
+
+        translate([0, 0, 2])
+        chamfered_cylinder(
+            2, 20, 0.9, $fn=20
+        );
+    }
 }
 
 module _e3dv6_heater_block() {
@@ -150,15 +166,15 @@ module _e3d_neck(threaded=false) {
 }
 
 module e3dv6() {
-    _e3d_nozzle();
+    e3d_v6_nozzle();
 
-    translate([0,0,5])
+    translate([0, 0, 5])
     _e3dv6_heater_block();
 
-    translate([0,0,19.6])
+    translate([0, 0, 19.6])
     _e3d_heatsink();
 
-    translate([0,0,19.6+e3d_heatsink_h])
+    translate([0, 0, 19.6 + e3d_heatsink_h])
     _e3d_neck();
 }
 
@@ -271,7 +287,8 @@ module mechanical_endstop() {
 }
 
 module mock_stepper_motor(
-    geared=false, center=false
+    geared=false, center=false, m_h=motor_height,
+    mg_h=27.5, s_h=22
 ) {
     module _stepper_motor() {
         difference() {
@@ -282,60 +299,62 @@ module mock_stepper_motor(
                     ])
                     cube([
                         motor_side_length,
-                        motor_height, motor_side_length
+                        m_h, motor_side_length
                     ], center=true);
 
                     translate([
                         0, 0, motor_side_length/2
                     ])
                     rotate([0, 45, 0])
-                    cube([54, 40, 54], center=true);
+                    cube([54, m_h, 54], center=true);
                 }
 
                 if (geared) {
+                    // gear housing
                     translate([
-                        0, 40/2, motor_side_length/2
+                        0, m_h/2, motor_side_length/2
                     ])
                     rotate([-90, 0, 0])
-                    cylinder(d=36, h=27.5);
+                    cylinder(d=36, h=mg_h);
 
                     translate([
-                        0, 40/2  + 27.5,
+                        0, m_h/2  + mg_h,
                         motor_side_length/2
                     ])
                     rotate([-90, 0, 0])
                     cylinder(d=22, h=2.2);
 
+                    // shaft
                     translate([
-                        0, 40/2 + 27.5,
+                        0, m_h/2 + mg_h,
                         motor_side_length/2
                     ])
                     rotate([-90, 0, 0])
                     motor_shaft(
-                        d=8, h=20, flat=1, $fn=40
+                        d=8, h=s_h, flat=1, $fn=40
                     );
                 } else {
                     translate([
-                        0, 40/2, motor_side_length/2
+                        0, m_h/2, motor_side_length/2
                     ])
                     rotate([-90, 0, 0])
                     cylinder(d=22, h=2);
 
                     translate([
-                        0, 40/2 + 2,motor_side_length/2
+                        0, m_h/2 + 2, motor_side_length/2
                     ])
                     rotate([-90, 0, 0])
-                    motor_shaft(h=22, $fn=40);
+                    motor_shaft(h=s_h, $fn=40);
                 }
 
                 // connector
                 translate([
-                    0, -motor_height/2 + 5/2 + 0.5, 0
+                    0, -m_h/2 + 5/2 + 0.5, 0
                 ])
                 cube([16, 5, 14], center=true);
             }
 
-            translate([0, 40/2, motor_side_length/2])
+            translate([0, m_h/2, motor_side_length/2])
             rotate([90, 0, 0])
             for (i=[0:3]) {
                 rotate([0, 0, i*(360/4)])
@@ -348,7 +367,7 @@ module mock_stepper_motor(
 
             if (geared) {
                 translate([
-                    0, 40/2 + 27.5,
+                    0, m_h/2 + mg_h,
                     motor_side_length/2
                 ])
                 rotate([90, 0, 0])
@@ -635,59 +654,54 @@ module mock_PSU_240W() {
 }
 
 module mock_PSU_360W() {
-// P360W12V
-    w = 113.6;
-    h = 214;
-    d = 49.5;
+    w = 114;
+    h = 215;
+    d = 50;
 
-    //color("silver")
+    color("silver")
     difference() {
         cube([w, h, d]);
 
-        // front cut
-        translate([1.4, -1, 23])
-        cube([w - 2*1.4, 19, d]);
+        translate([1.4, -1, 19])
+        cube([w - 2*1.4, 20, d]);
 
-        translate([1.4, -1, 7])
-        cube([17, 19, d]);
+        translate([1.4, -1, 5])
+        cube([12, 20, d]);
 
-        // right side screw holes
         translate([w + 1, 32, 11])
         rotate([0, -90, 0])
-        cylinder(d=4, h=10, $fn=20);
-
-        translate([w + 1, 32, d - 13])
-        rotate([0, -90, 0])
-        cylinder(d=4, h=10, $fn=20);
-
-        translate([w + 1, 32 + 151, 11])
-        rotate([0, -90, 0])
-        cylinder(d=4, h=10, $fn=20);
-
-        translate([w + 1, 32 + 151, d - 13])
-        rotate([0, -90, 0])
-        cylinder(d=4, h=10, $fn=20);
-
-        // left side screw holes
-        #translate([9, 32, 11])
-        rotate([0, -90, 0])
-        cylinder(d=4, h=18, $fn=20);
-
-        #translate([9, 32 + 151, 11])
-        rotate([0, -90, 0])
-        cylinder(d=4, h=18, $fn=20);
-
-        // bottom holes
-        translate([32, 32, -0.1])
         cylinder(d=3, h=10, $fn=20);
 
-        translate([w - 32, 32, -0.1])
+        translate([w + 1, 32, 11 + 25])
+        rotate([0, -90, 0])
         cylinder(d=3, h=10, $fn=20);
 
-        translate([32, 32 + 151, -0.1])
+        translate([w + 1, 32 + 150, 11])
+        rotate([0, -90, 0])
         cylinder(d=3, h=10, $fn=20);
 
-        translate([w - 32, 32 + 151, -0.1])
+        translate([w + 1, 32 + 150, 11 + 25])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
+
+        translate([9, 32, 11])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
+
+        translate([9, 32 + 150, 11])
+        rotate([0, -90, 0])
+        cylinder(d=3, h=10, $fn=20);
+
+        translate([31.5, 32, -0.1])
+        cylinder(d=3, h=10, $fn=20);
+
+        translate([w - 31.5, 32, -0.1])
+        cylinder(d=3, h=10, $fn=20);
+
+        translate([31.5, 32 + 150, -0.1])
+        cylinder(d=3, h=10, $fn=20);
+
+        translate([w - 31.5, 32 + 150, -0.1])
         cylinder(d=3, h=10, $fn=20);
     }
 }
@@ -1157,5 +1171,108 @@ module mock_tl_smoother() {
 
         translate([-22/2, -32/2, 0])
         cylinder(d=3.8, 5, center=true, $fn=30);
+    }
+}
+
+module mock_humidity_meter() {
+    union() {
+        translate([0, 0, 13.6/2])
+        cube([45, 25.8, 13.6], center=true);
+
+        hull() {
+            translate([0, 0, 13.6 + 0.1/2])
+            cube([47.6, 28.5, 0.1], center=true);
+
+            translate([0, 0, 13.6 + 2 - 0.1/2])
+            cube([45, 25, 0.1], center=true);
+        }
+
+        hull() {
+            translate([0, 0, 1/2 + 6])
+            cube([48.5, 5.5, 1], center=true);
+
+            translate([0, 0, 12/2])
+            cube([44.7, 5.5, 12], center=true);
+
+        }
+    }
+}
+
+module mock_humidity_meter_round() {
+    union() {
+        cylinder(d=41.5, h=14, $fn=40);
+
+        hull() {
+            translate([0, 0, 13])
+            cylinder(d=45.2, h=1.5, $fn=40);
+
+            translate([0, 0, 13])
+            cylinder(d=32, h=2, $fn=40);
+        }
+
+        hull() {
+            translate([0, 0, 1/2 + 6])
+            cube([5.5, 45.5, 1], center=true);
+
+            translate([0, 0, 12/2])
+            cube([5.5, 41.7, 12], center=true);
+
+        }
+    }
+}
+
+module mock_ptfe_pc4m10() {
+    difference() {
+        union() {
+            rounded_cylinder(9.5, 7, 0.5, $fn=30);
+
+            translate([0, 0, 6.6])
+            cylinder(d=11.4, h=6.2, $fn=6);
+
+            translate([0, 0, 12.4])
+            sphere(d=9.7, $fn=55);
+
+            cylinder(d=8, h=16.5, $fn=40);
+            cylinder(d=5.2, h=17.5, $fn=40);
+
+            translate([0, 0, 17])
+            cylinder(d=10, h=1.5, $fn=40);
+        }
+
+        cylinder(d=4, h=100, center=true, $fn=30);
+    }
+}
+
+//use <../lib/fittings.scad>;
+module mock_ptfe_pc4m6() {
+    difference() {
+        union() {
+            rounded_cylinder(5.9, 7, 0.5, $fn=30);
+
+            translate([0, 0, 5])
+            rounded_cylinder(7.2, 2, 0.5, $fn=30);
+
+            translate([0, 0, 6.5])
+            cylinder(d=11.5, h=6.5, $fn=6);
+
+            translate([0, 0, 7])
+            cylinder(d=5, h=10, $fn=30);
+
+            translate([0, 0, 7])
+            cylinder(d=7.8, h=8.6, $fn=30);
+
+            translate([0, 0, 11])
+            //sphere(d=9.7, $fn=55);
+            rounded_cylinder(9.7, 4, 2, $fn=30);
+
+            translate([0, 0, 17])
+            scale([1, 1.15, 1])
+            cylinder(d=10, h=1.5, $fn=40);
+        }
+
+        cylinder(d=2.7, h=100, center=true, $fn=30);
+
+        translate([0, 0, 7])
+        cylinder(d=4, h=100, center=true, $fn=30);
     }
 }
