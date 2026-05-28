@@ -473,6 +473,11 @@ module M8_nut(h=5.5, cone=true, bridging=false) {
         d=14.7, id=8.3, h=h, cone=cone, bridging=bridging);
 }
 
+module M10_nut(h=8, cone=true, bridging=false) {
+    _m_nut(
+        d=19.3, id=10.3, h=h, cone=cone, bridging=bridging);
+}
+
 module M3_nut_tapering(h=2.4, cone=true, bridging=false) {
     _m_nut_tapering(
         d=6.3, id=3.3, h=h, cone=cone, bridging=bridging);
@@ -492,10 +497,19 @@ module M8_nut_tapering(h=5.3, cone=true, bridging=false) {
     _m_nut_tapering(
         d=14.7, id=8.3, h=h, cone=cone, bridging=bridging);
 }
+
+module M10_nut_tapering(h=7.8, cone=true, bridging=false) {
+    _m_nut_tapering(
+        d=19.3, id=10.3, h=h, cone=cone, bridging=bridging);
+}
 //M3_nut();
 //M3_nut_tapering(5);
 //M4_nut(cone=false, bridging=true);
 //M4_nut_tapering(5);
+//M8_nut_tapering();
+//%cube([1, 12.8, 10], center=true);
+//M10_nut_tapering();
+//%cube([1, 16.8, 20], center=true);
 
 module test_nuts() {
     difference() {
@@ -1036,7 +1050,7 @@ module v_screw(
             );
 
             if(chamfer) {
-                c_h = h + screw_d/2 - screw_d/15;
+                c_h = h + screw_d/2 - pitch;
 
                 cylinder(d1=c_h*2, d2=0, h=c_h, $fn=steps);
             }
