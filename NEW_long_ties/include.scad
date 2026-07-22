@@ -920,11 +920,20 @@ module cube_donut(d, h, angle=360, rotation=45) {
 function hexagon_dia_to_cylinder(hex_dia) =
     (hex_dia/2) / sin(60) * 2;
 
-module hexagon(inner_diameter, height=10) {
-    cylinder(
-        d=hexagon_dia_to_cylinder(inner_diameter),
-        h=height, $fn=6
-    );
+module hexagon(inner_diameter, height=10, center=false) {
+    module _hxgn() {
+        cylinder(
+            d=hexagon_dia_to_cylinder(inner_diameter),
+            h=height, $fn=6
+        );
+    }
+
+    if(center) {
+        translate([0, 0, -height/2])
+        _hxgn();
+    } else {
+        _hxgn();
+    }
 }
 //hexagon(8, height=10);
 
